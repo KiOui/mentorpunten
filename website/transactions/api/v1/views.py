@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from mentorpunten.api.openapi import CustomAutoSchema
 from transactions.api.v1.serializers import AccountSerializer
 from transactions.models import Account
-from users.services import verify_identification_token
 
 
 class AccountRetrieveAPIView(CreateAPIView):
@@ -28,6 +27,7 @@ class AccountRetrieveAPIView(CreateAPIView):
     queryset = Account.objects.all()
 
     def post(self, request, **kwargs):
+        """POST request."""
         token = request.data.get("token", None)
         if token is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
