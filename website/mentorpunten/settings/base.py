@@ -19,9 +19,9 @@ INSTALLED_APPS = [
     "fontawesomefree",
     "autocompletefilter",
     "import_export",
-    'rest_framework',
-    'django_filters',
-    'rangefilter',
+    "rest_framework",
+    "django_filters",
+    "rangefilter",
     "announcements",
     "users",
     "thalia",
@@ -29,13 +29,11 @@ INSTALLED_APPS = [
     "corsheaders",
 ]
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = "users.User"
 
 ANONYMOUS_USER_NAME = None
 
-AUTHENTICATION_BACKENDS = (
-    "django.contrib.auth.backends.ModelBackend",  # default
-)
+AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)  # default
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -116,7 +114,7 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",
-    'DEFAULT_SCHEMA_CLASS': 'mentorpunten.api.openapi.CustomAutoSchema',
+    "DEFAULT_SCHEMA_CLASS": "mentorpunten.api.openapi.CustomAutoSchema",
 }
 
 # CORS
@@ -134,17 +132,17 @@ OAUTH2_PROVIDER = {
     },
 }
 
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
 # Messages
 MESSAGE_TAGS = {
-    messages.DEBUG: 'alert-info info',
-    messages.INFO: 'alert-info info',
-    messages.SUCCESS: 'alert-success success',
-    messages.WARNING: 'alert-warning warning',
-    messages.ERROR: 'alert-danger danger',
+    messages.DEBUG: "alert-info info",
+    messages.INFO: "alert-info info",
+    messages.SUCCESS: "alert-success success",
+    messages.WARNING: "alert-warning warning",
+    messages.ERROR: "alert-danger danger",
 }
 
 # Sites app

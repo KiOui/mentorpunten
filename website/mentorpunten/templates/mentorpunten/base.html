@@ -80,18 +80,16 @@
                         <ul class="navbar-nav w-100 order-2 d-flex justify-content-end">
                             {% if not user.is_authenticated %}
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url "thalia:login" %}">
+                                    <a class="nav-link" href="{% url "login" %}">
                                         Login
                                     </a>
                                 </li>
                             {% else %}
                                 <li class="nav-item dropdown">
-
-                                </li>
-                                <li class="nav-item d-none d-lg-flex align-items-center qr-button">
-                                    <button class="btn" data-bs-toggle="modal" data-bs-target="#qr-popup">
-                                        <i class="fa-solid fa-qrcode fa-xl"></i>
-                                    </button>
+                                    <form action="{% url 'logout' %}" method="POST">
+                                        {% csrf_token %}
+                                        <input type="submit" class="nav-link text-dark" value="Logout"/>
+                                    </form>
                                 </li>
                             {% endif %}
                         </ul>

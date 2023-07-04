@@ -6,25 +6,45 @@ import tinymce.models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Announcement',
+            name="Announcement",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(help_text='This is not shown on the announcement but can be used as an identifier in the admin area.', max_length=100)),
-                ('content', tinymce.models.HTMLField(max_length=500)),
-                ('since', models.DateTimeField(default=django.utils.timezone.now)),
-                ('until', models.DateTimeField(blank=True, null=True)),
-                ('icon', models.CharField(default='bullhorn', help_text='Font Awesome 6 abbreviation for icon to use.', max_length=150, verbose_name='Font Awesome 6 icon')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        help_text="This is not shown on the announcement but can be used as an identifier in the admin area.",
+                        max_length=100,
+                    ),
+                ),
+                ("content", tinymce.models.HTMLField(max_length=500)),
+                ("since", models.DateTimeField(default=django.utils.timezone.now)),
+                ("until", models.DateTimeField(blank=True, null=True)),
+                (
+                    "icon",
+                    models.CharField(
+                        default="bullhorn",
+                        help_text="Font Awesome 6 abbreviation for icon to use.",
+                        max_length=150,
+                        verbose_name="Font Awesome 6 icon",
+                    ),
+                ),
             ],
             options={
-                'ordering': ('-since',),
+                "ordering": ("-since",),
             },
         ),
     ]

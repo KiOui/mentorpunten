@@ -1,0 +1,42 @@
+{% extends 'admin/base.html' %}
+{% load static %}
+    {% block extrahead %}
+        {{ block.super }}
+        <meta name="msapplication-TileColor" content="#E62272">
+        <meta name="theme-color" content="#E62272">
+        <style>
+            :root {
+                --mentorpunten-base: #E62272;
+                --mentorpunten-base-dark: #CF1760;
+                --mentorpunten-2: white;
+                --mentorpunten-accent: #E62272;
+                --mentorpunten-dark: #CF1760;
+                --accent: white;
+                --primary: var(--mentorpunten-base);
+                --secondary: var(--mentorpunten-accent);
+                --link-fg: var(--body-fg);
+                --link-hover-color: var(--mentorpunten-base-dark);
+                --link-selected-fg: var(--mentorpunten-accent);
+                --header-bg: var(--mentorpunten-base);
+                --header-color: white;
+                --default-button-bg: var(--mentorpunten-dark);
+                --default-button-hover-bg: var(--mentorpunten-accent);
+                --button-hover-bg: var(--mentorpunten-base-dark);
+                --breadcrumbs-link-fg: var(--mentorpunten-2);
+                --breadcrumbs-fg: black;
+                --breadcrumbs-bg: var(--mentorpunten-base-dark);
+            }
+            #user-tools a:focus, #user-tools a:hover {
+                color: var(--mentorpunten-dark);
+            }
+            .content a:not(table a) {
+                color: var(--mentorpunten-base);
+            }
+            .content a:not(table a):focus, .content a:not(table a):hover{
+                color: var(--mentorpunten-base-dark);
+            }
+            #site-name {
+                text-transform: uppercase;
+            }
+        </style>
+{% endblock %}

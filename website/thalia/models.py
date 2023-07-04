@@ -20,9 +20,19 @@ class AuthenticationRequest(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     challenge = models.CharField(max_length=40, default=get_random_challenge)
 
+    def __str__(self):
+        """Convert this object to string."""
+        return f"{self.state}"
+
 
 class ThaliaUser(models.Model):
     """Thalia User object."""
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="thalia_user")
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="thalia_user"
+    )
     thalia_id = models.BigIntegerField()
+
+    def __str__(self):
+        """Convert this object to string."""
+        return f"{self.thalia_id}"

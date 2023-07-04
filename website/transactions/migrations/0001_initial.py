@@ -7,7 +7,6 @@ import uuid
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -19,11 +18,22 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Account",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 (
                     "user",
-                    models.OneToOneField(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL),
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
             ],
             options={
@@ -36,12 +46,28 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Transaction",
             fields=[
-                ("id", models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
                 ("amount", models.DecimalField(decimal_places=2, max_digits=10)),
                 ("timestamp", models.DateTimeField(auto_now_add=True)),
                 ("description", models.CharField(max_length=255)),
-                ("payable_object_id", models.CharField(blank=True, max_length=255, null=True)),
-                ("_balance_after", models.DecimalField(decimal_places=2, editable=False, max_digits=10)),
+                (
+                    "payable_object_id",
+                    models.CharField(blank=True, max_length=255, null=True),
+                ),
+                (
+                    "_balance_after",
+                    models.DecimalField(
+                        decimal_places=2, editable=False, max_digits=10
+                    ),
+                ),
                 (
                     "_previous_transaction",
                     models.OneToOneField(

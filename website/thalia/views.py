@@ -79,21 +79,25 @@ class CallbackView(TemplateView):
             code_verifier=authentication_request.challenge,
         )
 
-        response = oauth.get(f"{settings.THALIA_API_BASE_URI}{settings.THALIA_API_MEMBERS_URL}")
+        response = oauth.get(
+            f"{settings.THALIA_API_BASE_URI}{settings.THALIA_API_MEMBERS_URL}"
+        )
         if response.status_code != 200:
             return HttpResponse(status=500)
 
         member_data = response.json()
-        thalia_identifier = member_data['pk']
-        thalia_display_name = member_data['profile']['display_name']
+        thalia_identifier = member_data["pk"]
+        thalia_display_name = member_data["profile"]["display_name"]
 
         try:
             thalia_user = ThaliaUser.objects.get(thalia_id=thalia_identifier)
         except ThaliaUser.DoesNotExist:
-            user = User.objects.create_user(str(thalia_identifier), full_name=thalia_display_name)
-            thalia_user = ThaliaUser.objects.create(thalia_id=thalia_identifier, user=user)
+            user = User.objects.create_user(
+                str(thalia_identifier), full_name=thalia_display_name
+            )
+            thalia_user = ThaliaUser.objects.create(
+                thalia_id=thalia_identifier, user=user
+            )
 
         login(request, thalia_user.user)
         return redirect("/")
-
-

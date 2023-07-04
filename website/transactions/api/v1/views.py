@@ -16,15 +16,19 @@ class AccountRetrieveAPIView(CreateAPIView):
 
     Use this endpoint to get the transaction details for a user by using a token.
     """
+
     schema = CustomAutoSchema(
-        request_schema={"type": "object", "properties": {"token": {"type": "string", "example": "string"}}}
+        request_schema={
+            "type": "object",
+            "properties": {"token": {"type": "string", "example": "string"}},
+        }
     )
 
     serializer_class = AccountSerializer
     queryset = Account.objects.all()
 
     def post(self, request, **kwargs):
-        token = request.data.get('token', None)
+        token = request.data.get("token", None)
         if token is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -33,6 +37,8 @@ class AccountRetrieveAPIView(CreateAPIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         try:
             account = self.queryset.get(user__username=signed_material)
-            return Response(status=status.HTTP_200_OK, data=self.serializer_class(account).data)
+            return Response(
+                status=status.HTTP_200_OK, data=self.serializer_class(account).data
+            )
         except Account.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)

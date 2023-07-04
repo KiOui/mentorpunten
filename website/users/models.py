@@ -77,4 +77,3 @@ class User(AbstractUser):
             return self.full_name
         else:
             return self.username
-
