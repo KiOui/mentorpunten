@@ -6,7 +6,11 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mentorpunten.settings")
+    try:
+        import mentorpunten.settings.production  # noqa
+    except ModuleNotFoundError:
+        # Use the development settings if the production settings are not available (so we're on a dev machine)
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mentorpunten.settings.development")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

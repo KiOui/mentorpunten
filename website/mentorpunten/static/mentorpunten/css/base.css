@@ -1,0 +1,45 @@
+@import "variables.css";
+
+:root {
+    --link-color: var(--primary);
+    --link-color-hover: var(--primary-hover);
+    --bs-link-hover-color: var(--primary-hover);
+    --bs-nav-link-color: var(--primary);
+    --bs-nav-link-hover-color: var(--primary-hover);
+    --bs-nav-link-active-color: var(--primary);
+}
+.nav-link {
+    color: var(--primary);
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+a.no-color {
+    color: inherit;
+    text-decoration: underline;
+}
+
+.site-header, .page-footer {
+    background-color: var(--nav-background-color);
+    color: var(--nav-link-color);
+}
+
+.site-header .navbar-nav .nav-link {
+    color: var(--nav-link-color);
+}
+
+.site-header .navbar-nav .nav-link:hover {
+    color: var(--nav-link-hover-color);
+}
+
+.navbar-toggler {
+    border-color: #ffffff;
+}
