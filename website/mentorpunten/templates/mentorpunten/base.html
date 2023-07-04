@@ -1,0 +1,117 @@
+{% load static django_bootstrap5 announcements %}
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% block title %}Mentorpunten{% endblock %}
+    </title>
+    <script>
+        CSRF_TOKEN = "{{ csrf_token }}";
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Base CSS -->
+    {% bootstrap_css %}
+    <link href="{% static "mentorpunten/css/base.css" %}" rel="stylesheet" type="text/css">
+    {% block styles %}{% endblock %}
+
+    <!-- Fontawesome -->
+    <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
+
+    <!-- Base JS -->
+    <script src="{% static 'mentorpunten/js/base.js' %}"></script>
+
+    <!-- Icons -->
+    <meta name="msapplication-TileColor" content="#e8b365">
+    <meta name="theme-color" content="#e8b365">
+
+    <!-- TaTa.js notifications -->
+    <script src="{% static 'mentorpuntent/js/tata.js' %}"></script>
+
+    <!-- Announcements static files -->
+    <link rel="stylesheet" href="{% static 'announcements/css/announcements.css' %}" type="text/css">
+    <script src="{% static 'announcements/js/announcements.js' %}"></script>
+
+    <!-- VueJS -->
+    <script type="importmap">
+      {
+        "imports": {
+          "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js",
+          "qrcode": "https://cdn.jsdelivr.net/npm/qrcode.vue@3.4.0/dist/qrcode.vue.esm.js"
+        }
+      }
+
+    </script>
+    {% block header_js %}
+    {% endblock %}
+</head>
+<body class="d-flex flex-column h-100">
+<div id="page-container">
+    <section id="announcements-alerts">
+        {% render_announcements %}
+    </section>
+    {% block header %}
+        <nav class="navbar navbar-expand-lg site-header sticky-top navbar-dark">
+            <div class="container">
+                <div class="d-block d-lg-none">
+                    <a class="navbar-brand drop-out-header-mobile" href="/">Mentorpunten</a>
+                </div>
+                <div class="ms-auto d-lg-none d-flex justify-content-end">
+                    <button class="btn btn-primary hamburger-menu-button" type="button" data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                        <i class="fa-solid fa-bars fa-xl"></i>
+                    </button>
+                </div>
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+                     aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas-header" style="background-color: var(--nav-background-color);">
+                        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="offcanvas"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body" style="background-color: var(--nav-background-color);">
+                        <ul class="navbar-nav w-100 order-1 order-md-0">
+                            <li class="nav-item">
+                                <a class="nav-link extra-margin-top-mobile" href="{% url "index" %}">
+                                    Home
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav w-100 order-2 d-flex justify-content-end">
+                            {% if not user.is_authenticated %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url "login" %}">
+                                        Login
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item dropdown">
+                                    <form action="{% url 'logout' %}" method="POST">
+                                        {% csrf_token %}
+                                        <input type="submit" class="nav-link text-dark" value="Logout"/>
+                                    </form>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    {% endblock %}
+    <div class="page">
+        {% block page %}{% endblock %}
+    </div>
+</div>
+{% block footer %}
+<footer class="mt-auto footer">
+    <div class="container text-center">
+        <p class="text-muted mb-3" style="font-size: 1em;">
+            Thalia Introduction 2023/2024
+        </p>
+    </div>
+</footer>
+{% endblock %}
+{% bootstrap_javascript %}
+{% block js %}{% endblock %}
+</body>
+</html>

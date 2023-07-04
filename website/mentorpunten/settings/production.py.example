@@ -1,0 +1,82 @@
+from .base import *
+
+SECRET_KEY = "***************"
+
+DEBUG = False
+
+ALLOWED_HOSTS = ['mentorpunten.nl']
+
+SESSION_COOKIE_SECURE = True
+
+
+# Databases
+# https://docs.djangoproject.com/en/3.2/ref/databases/
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "USER": "tosti_admin",
+        "PASSWORD": "***************",
+        "NAME": "tosti",
+        "HOST": "mysql-tosti.science.ru.nl",
+        "PORT": "3306",
+    }
+}
+
+
+# Logging
+# https://docs.djangoproject.com/en/3.2/topics/logging/
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "file": {
+            "level": "ERROR",
+            "class": "logging.FileHandler",
+            "filename": BASE_DIR.parent.parent / "logs" / "django.log",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "ERROR",
+            "propagate": True,
+        },
+    },
+}
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.2/howto/static-files/
+
+STATIC_ROOT = BASE_DIR.parent / "static"
+STATIC_URL = "/static/"
+MEDIA_ROOT = BASE_DIR.parent.parent / "writable" / "media"
+MEDIA_URL = "/media/"
+
+
+# SPOTIFY
+SPOTIFY_CACHE_PATH = BASE_DIR.parent.parent / "writable" / "spotipycache"
+MARIETJE_CACHE_PATH = BASE_DIR.parent.parent / "writable" / "marietjecache"
+
+# SENTRY
+sentry_sdk.init(
+    dsn="***********",
+    integrations=[DjangoIntegration()],
+    traces_sample_rate=1.0,
+    send_default_pii=True,
+)
+
+# CACHES
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": BASE_DIR.parent.parent / "writable" / "cache",
+    }
+}
+
+THALIA_API_BASE_URI = "https://thalia.nu"
+THALIA_API_AUTHORIZATION_ENDPOINT = "/user/oauth/authorize/"
+THALIA_API_ACCESS_TOKEN_ENDPOINT = "/user/oauth/token/"
+THALIA_API_OAUTH_CLIENT_ID = "***********"
+THALIA_API_OAUTH_REDIRECT_URI = "https://mentorpunten.nl/users/callback"
