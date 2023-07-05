@@ -11,11 +11,10 @@ from transactions.models import Account, Transaction
 class AccountAdmin(admin.ModelAdmin):
     """Admin interface for the account model."""
 
-    list_display = ("user", "balance")
-    search_fields = ("user__username",)
+    list_display = ("name", "balance")
+    search_fields = ("name",)
     readonly_fields = ("balance",)
-    ordering = ("user__username",)
-    autocomplete_fields = ("user",)
+    ordering = ("name",)
 
 
 @register(Transaction)
@@ -23,7 +22,7 @@ class TransactionAdmin(AutocompleteFilterMixin, ExportMixin, admin.ModelAdmin):
     """Admin interface for the transaction model."""
 
     list_display = ("account", "amount", "description", "processor", "timestamp")
-    search_fields = ("account__user__username", "description", "processor__username")
+    search_fields = ("account__name", "description", "processor__username")
     autocomplete_fields = ("account", "processor")
     readonly_fields = (
         "processor",

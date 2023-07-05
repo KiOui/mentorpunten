@@ -25,6 +25,8 @@ INSTALLED_APPS = [
     "announcements",
     "users",
     "thalia",
+    "transactions",
+    "challenges",
     "oauth2_provider",
     "corsheaders",
 ]

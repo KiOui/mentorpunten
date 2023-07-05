@@ -11,7 +11,7 @@ User = get_user_model()
 class Account(models.Model):
     """Financial account of a user."""
 
-    user = models.OneToOneField(User, on_delete=models.PROTECT)
+    name = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
 
     @property
@@ -24,7 +24,7 @@ class Account(models.Model):
 
     def __str__(self):
         """Return the string representation of the account."""
-        return str(self.user)
+        return str(self.name)
 
     class Meta:
         """Meta options for the account model."""
@@ -47,7 +47,7 @@ class Transaction(models.Model):
         blank=False,
         related_name="transactions",
     )
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = models.IntegerField()
     timestamp = models.DateTimeField(auto_now_add=True, editable=False)
 
     description = models.CharField(max_length=255)
@@ -67,9 +67,7 @@ class Transaction(models.Model):
 
     # The following fields are used to link transactions together and maintain the integrity of the account
     # The fields are not editable because they should be calculated automatically. This is verified in the save method.
-    _balance_after = models.DecimalField(
-        max_digits=10, decimal_places=2, editable=False
-    )
+    _balance_after = models.IntegerField(editable=False)
     _previous_transaction = models.OneToOneField(
         "self",
         on_delete=models.PROTECT,
@@ -135,7 +133,7 @@ class Transaction(models.Model):
 
     def __str__(self):
         """Return the string representation of the transaction."""
-        return f"{self.timestamp:%Y-%m-%d %H:%M:%S} - €{self.amount} - {self.description} ({self.account})"
+        return f"{self.timestamp:%Y-%m-%d %H:%M:%S} - {self.amount} points - {self.description} ({self.account})"
 
     @property
     def next_transaction(self):
