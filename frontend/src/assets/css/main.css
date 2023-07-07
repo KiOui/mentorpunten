@@ -9,6 +9,11 @@
   font-weight: normal;
 }
 
+.navbar {
+  background-color: var(--nav-background-color);
+  color: var(--nav-link-color);
+}
+
 footer .navbar {
   background-color: var(--nav-background-color);
   color: var(--nav-link-color);

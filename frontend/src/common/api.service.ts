@@ -53,6 +53,14 @@ class _ApiService {
     return this.get("/users/me/");
   }
 
+  async getChallenges(): Promise<Response> {
+    return this.get("/challenges/");
+  }
+
+  async getChallenge(id: number): Promise<Response> {
+    return this.get(`/challenges/${id}/`);
+  }
+
   async get(resource: string): Promise<Response> {
     return fetch(`${this.baseUri}/api/v1${resource}`, {
       method: 'GET',
