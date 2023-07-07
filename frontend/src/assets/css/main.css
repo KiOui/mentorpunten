@@ -32,3 +32,8 @@ footer .navbar {
     padding: 0 2rem;
   }
 }
+
+.btn-primary {
+  background-color: #E62272 !important;
+  border-color: #E62272 !important;
+}
