@@ -6,9 +6,6 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 
 
-app_name = "api"
-
-
 def get_swagger_client_id():
     """Get the client_id for a Swagger OAuth2 application."""
     hosts = settings.ALLOWED_HOSTS

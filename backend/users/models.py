@@ -1,6 +1,16 @@
+import os
+from pathlib import Path
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+
+def user_upload_image_to(instance, filename):
+    """Upload challenge image to."""
+    extension = Path(filename).suffix
+    main_image_name = f"profile-image{extension}"
+    return os.path.join(os.path.join("users", instance.folder), main_image_name)
 
 
 class UserManager(BaseUserManager):
@@ -58,6 +68,12 @@ class User(AbstractUser):
 
     username = models.CharField(max_length=200, unique=True)
     full_name = models.CharField(max_length=200)
+    profile_image = models.ImageField(upload_to=user_upload_image_to, null=True, blank=True)
+
+    @property
+    def folder(self):
+        """Get folder to store images in."""
+        return f"{self.id}"
 
     def __str__(self):
         """
