@@ -38,7 +38,7 @@ class Challenge(models.Model):
     name = models.CharField(max_length=80, unique=True)
     slug = models.SlugField(unique=True, max_length=100)
     description = models.TextField()
-    image = models.ImageField(upload_to=challenge_upload_image_to)
+    image = models.ImageField(upload_to=challenge_upload_image_to, blank=True, null=True)
     disabled = models.BooleanField(default=False)
     active_from = models.DateTimeField(
         help_text="From which point in time this challenge will be active. Leave empty for no start time.",
