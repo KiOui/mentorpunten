@@ -1,6 +1,6 @@
 export default interface Credentials {
   accessToken: string;
-  expiresIn: number;
+  expires: number;
   tokenType: string;
   scope: string[];
 }

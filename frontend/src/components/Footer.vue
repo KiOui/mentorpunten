@@ -1,9 +1,37 @@
 <script setup lang="ts">
   import { useUserStore } from '@/stores/user.module';
+  import useApiService from "@/common/api.service";
+  import {onMounted, ref} from "vue";
 
   const store = useUserStore();
+  const ApiService = useApiService(store);
 
+  let user = ref(null);
 
+  function startLogin() {
+    store.newRandomState();
+    store.storeState();
+    window.location.href = ApiService.getAuthorizeRedirectURL(
+        store.stateKey,
+        null,
+        false
+    );
+  }
+
+  onMounted(() => {
+    ApiService.getUsersMe().then(response => {
+      if (response.status === 200) {
+        return response;
+      } else {
+        throw response;
+      }
+    }).then(
+        result => result.json()
+    ).then(data => {
+      user.value = data;
+      console.log(user);
+    });
+  });
 </script>
 
 <template>
@@ -19,8 +47,13 @@
         <li class="nav-item flex-grow-1 text-center">
           <font-awesome-icon icon="fa-solid fa-chart-line"/>
         </li>
-        <li class="nav-item flex-grow-1 text-center">
+        <li v-if="store.loggedIn" class="nav-item flex-grow-1 text-center">
           <font-awesome-icon icon="fa-solid fa-user"/>
+        </li>
+        <li v-else class="nav-item flex-grow-1 text-center">
+          <a href="#" @click="startLogin" class="nav-item">
+            <font-awesome-icon icon="fa-solid fa-right-to-bracket"/>
+          </a>
         </li>
       </ul>
     </div>

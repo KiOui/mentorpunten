@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
@@ -12,7 +13,7 @@ urlpatterns = [
     path("", IndexView.as_view(), name="index"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("thalia/", include(("thalia.urls", "thalia"), namespace="thalia")),
-    path("api/", include("mentorpunten.api.urls", namespace="api")),
+    path("api/", include("mentorpunten.api.urls")),
     path("oauth/", include("oauth2_provider.urls", namespace="oauth2_provider")),
     path(
         "login/",
@@ -37,3 +38,6 @@ urlpatterns = [
     path("admin/doc/", include("django.contrib.admindocs.urls")),
     path("admin/", admin.site.urls),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

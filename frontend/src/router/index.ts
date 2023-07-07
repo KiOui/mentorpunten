@@ -1,14 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/FeedView.vue'
+import FeedView from '../views/FeedView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView
-    }
+      name: 'Index',
+      component: FeedView
+    },
+    {
+      path: "/auth/callback",
+      name: "OAuth Authorization",
+      component: () => import("../views/Authorize.vue"),
+    },
   ]
 })
 
