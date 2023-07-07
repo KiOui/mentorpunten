@@ -40,4 +40,4 @@ class SubmissionSerializer(WritableModelSerializer):
 
         model = models.Submission
         fields = ["challenge", "team", "created", "updated", "image", "accepted"]
-        readonly_fields = ["challenge", "team", "created", "updated", "image"]
+        read_only_fields = ["challenge", "team", "created", "updated", "image"]
