@@ -22,13 +22,15 @@
     ).then(data => {
         challenge.value = data;
     });
+    // console.log(challenge);
 </script>
 
 <template>
     <div class="card my-2">
         <div class="card-body">
             <h3 class="card-title">{{ challenge.name }}</h3>
-            <p class="card-text">{{ challenge.description }}</p>
+            <p v-if="challenge.description.length<100" class="card-text">{{  challenge.description }}</p>
+            <p v-else class="card-text">{{ challenge.description.substring(0,100)+"..." }}</p>
             <router-link :to="{ name: 'Challenge', params: { id: id } }">
                 <button class="btn btn-primary">View</button>
             </router-link>

@@ -38,7 +38,6 @@
                 <form action="" method="post" class="input-group">
                     <input type="file" class="form-control" id="inputGroupFile" aria-describedby="inputGroupFileAddon" aria-label="Upload">
                     <button class="btn btn-primary" type="button" id="inputGroupFileAddon">Submit</button>
-                    <button class="btn btn-primary" type="button" id="inputGroupFileAddon">Submit</button>
                 </form>
             </div>
         </div>
