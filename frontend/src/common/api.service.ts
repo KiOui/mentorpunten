@@ -4,6 +4,7 @@ import type User from "@/models/user.model";
 import type Submission from "@/models/submission.model";
 import {useUserStore} from "@/stores/user.module";
 import type ChallengeUser from "@/models/challengeUser.model";
+import type Challenge from "@/models/challenge.model";
 
 class _ApiService {
   authorizationEndpoint: string;
@@ -80,6 +81,14 @@ class _ApiService {
 
   async getChallengesUsersMe(): Promise<ChallengeUser> {
     return this.get<ChallengeUser>("/challenges/users/me/");
+  }
+
+  async getChallenges(): Promise<Challenge[]> {
+    return this.get("/challenges/");
+  }
+
+  async getChallenge(id: number): Promise<Challenge> {
+    return this.get(`/challenges/${id}/`);
   }
 
   async fetch<T>(resource: string, method: string, data: object|null): Promise<T> {

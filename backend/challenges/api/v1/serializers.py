@@ -13,7 +13,7 @@ class ChallengeSerializer(serializers.ModelSerializer):
         """Meta class."""
 
         model = models.Challenge
-        fields = ["name", "slug", "description", "image", "disabled", "active_from", "active_until", "points"]
+        fields = ["id", "name", "slug", "description", "image", "disabled", "active_from", "active_until", "points"]
 
 
 class TeamSerializer(serializers.ModelSerializer):
