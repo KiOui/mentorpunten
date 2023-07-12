@@ -1,10 +1,10 @@
-import type {_StoreWithState, Store, StoreDefinition} from "pinia";
 import type Announcement from "@/models/announcement.model";
 import type User from "@/models/user.model";
 import type Submission from "@/models/submission.model";
 import {useUserStore} from "@/stores/user.module";
 import type ChallengeUser from "@/models/challengeUser.model";
 import type Challenge from "@/models/challenge.model";
+import type _Challenge from "@/models/api/_challenge.model";
 
 class _ApiService {
   authorizationEndpoint: string;
@@ -84,11 +84,11 @@ class _ApiService {
   }
 
   async getChallenges(): Promise<Challenge[]> {
-    return this.get("/challenges/");
+    return this.get<Challenge[]>("/challenges/");
   }
 
   async getChallenge(id: number): Promise<Challenge> {
-    return this.get(`/challenges/${id}/`);
+    return this.get<Challenge>(`/challenges/${id}/`);
   }
 
   async fetch<T>(resource: string, method: string, data: object|null): Promise<T> {

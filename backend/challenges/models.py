@@ -8,7 +8,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from transactions.models import Account
+from transactions.models import Account, Transaction
 
 User = get_user_model()
 
@@ -107,6 +107,7 @@ class Submission(models.Model):
     updated = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to=submission_upload_image_to)
     accepted = models.BooleanField(null=True, blank=True, default=None)
+    transaction = models.ForeignKey(Transaction, null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         """Convert this object to string."""

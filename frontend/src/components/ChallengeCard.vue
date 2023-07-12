@@ -1,26 +1,19 @@
 <script setup lang="ts">
-    const props = defineProps(['id'])
-
     import { RouterLink } from 'vue-router'
     import { useUserStore } from '@/stores/user.module';
     import useApiService from "@/common/api.service";
     import { ref, toRef } from 'vue';
+    import type Challenge from "@/models/challenge.model";
+
+    const props = defineProps(['id'])
 
     const store = useUserStore();
     const ApiService = useApiService(store);
-    let challenge = ref(null);
+    let challenge = ref<Challenge|null>(null);
     const id = toRef(props, 'id');
 
-    ApiService.getChallenge(id.value).then(response => {
-    if (response.status === 200) {
-        return response;
-    } else {
-        throw response;
-    }
-    }).then(
-        result => result.json()
-    ).then(data => {
-        challenge.value = data;
+    ApiService.getChallenge(id.value).then(result => {
+        challenge.value = result;
     });
     // console.log(challenge);
 </script>

@@ -1,4 +1,4 @@
 export default interface Account {
-    createdAt: string;
+    created_at: string;
     balance: number;
 }

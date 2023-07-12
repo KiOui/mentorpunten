@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from challenges import models
 from mentorpunten.api.serializers import WritableModelSerializer
-from transactions.api.v1.serializers import AccountSerializer
+from transactions.api.v1.serializers import AccountSerializer, TransactionSerializer
 from users.api.v1.serializers import UserSerializer
 
 
@@ -34,13 +34,14 @@ class SubmissionSerializer(WritableModelSerializer):
 
     challenge = ChallengeSerializer(many=False, read_only=True)
     team = TeamSerializer(many=False, read_only=True)
+    transaction = TransactionSerializer(many=False, read_only=True)
 
     class Meta:
         """Meta class."""
 
         model = models.Submission
-        fields = ["challenge", "team", "created", "updated", "image", "accepted"]
-        read_only_fields = ["challenge", "team", "created", "updated", "image"]
+        fields = ["challenge", "team", "created", "updated", "image", "accepted", "transaction"]
+        read_only_fields = ["challenge", "team", "created", "updated", "image", "transaction"]
 
 
 class ChallengeUserSerializer(serializers.ModelSerializer):

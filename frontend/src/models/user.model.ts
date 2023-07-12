@@ -1,5 +1,5 @@
 export default interface User {
   id: number;
-  displayName: string;
-  profileImage: string;
+  display_name: string;
+  profile_image: string;
 }

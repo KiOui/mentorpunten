@@ -4,7 +4,7 @@ export default interface Challenge {
     description: string;
     image: string | null;
     disabled: boolean;
-    activeFrom: string | null;
-    activeUntil: string | null;
+    active_from: string | null;
+    active_until: string | null;
     points: number;
 }

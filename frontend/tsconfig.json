@@ -8,5 +8,4 @@
       "path": "./tsconfig.app.json"
     }
   ],
-  "strict": true
 }
