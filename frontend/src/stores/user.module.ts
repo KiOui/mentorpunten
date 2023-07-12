@@ -15,13 +15,6 @@ export const useUserStore = defineStore('user', {
         stateKey: savedStateKey ? JSON.parse(savedStateKey) : null,
     }),
     getters: {
-        tokenType(state): null|string {
-            if (state.credentials === null || state.credentials.expires < Date.now()) {
-                return null;
-            } else {
-                return state.credentials.tokenType;
-            }
-        },
         accessToken(state): null|string {
             if (state.credentials === null || state.credentials.expires < Date.now()) {
                 return null;
@@ -29,10 +22,7 @@ export const useUserStore = defineStore('user', {
                 return state.credentials.accessToken;
             }
         },
-        loggedIn(state) {
-            return state.credentials !== null;
-        },
-        isLoggedIn(state): boolean {
+        loggedIn(state): boolean {
             return state.credentials !== null && state.credentials.expires >= Date.now();
         }
     },

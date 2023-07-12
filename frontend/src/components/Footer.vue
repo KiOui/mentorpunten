@@ -2,14 +2,15 @@
   import { useUserStore } from '@/stores/user.module';
   import useApiService from "@/common/api.service";
   import {onMounted, ref} from "vue";
+  import type User from "@/models/user.model";
 
   const store = useUserStore();
+
   const ApiService = useApiService(store);
 
-  let user = ref(null);
+  let user = ref<User|null>(null);
 
-  function startLogin() {
-    console.log("startLogin");
+  function startLogin(): void {
     store.newRandomState();
     store.storeState();
     window.location.href = ApiService.getAuthorizeRedirectURL(
@@ -24,17 +25,8 @@
       return;
     }
 
-    ApiService.getUsersMe().then(response => {
-      if (response.status === 200) {
-        return response;
-      } else {
-        throw response;
-      }
-    }).then(
-        result => result.json()
-    ).then(data => {
-      user.value = data;
-      console.log(user);
+    ApiService.getUsersMe().then(userData => {
+      user.value = userData;
     });
   });
 </script>

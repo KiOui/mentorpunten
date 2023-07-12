@@ -1,24 +1,29 @@
-import type {StoreDefinition} from "pinia";
+import type {_StoreWithState, Store, StoreDefinition} from "pinia";
+import type Announcement from "@/models/announcement.model";
+import type User from "@/models/user.model";
+import type Submission from "@/models/submission.model";
+import {useUserStore} from "@/stores/user.module";
+import type ChallengeUser from "@/models/challengeUser.model";
 
 class _ApiService {
   authorizationEndpoint: string;
   baseUri: string;
   clientId: string;
   redirectUri: string;
-  store: StoreDefinition;
+  authStore: ReturnType<typeof useUserStore>;
 
   constructor(
     clientId: string,
     baseUri: string,
     authorizationEndpoint: string,
     redirectUri: string,
-    store: StoreDefinition
+    authStore: ReturnType<typeof useUserStore>,
   ) {
     this.clientId = clientId;
     this.baseUri = baseUri;
     this.authorizationEndpoint = authorizationEndpoint;
     this.redirectUri = redirectUri;
-    this.store = store;
+    this.authStore = authStore;
   }
 
   getAuthorizationUri(): string {
@@ -30,7 +35,6 @@ class _ApiService {
     codeChallenge: null | string,
     isSHA256Challenge = false
   ): string {
-    console.log("getAuthorizeRedirectURL");
     const authURL = new URL(this.getAuthorizationUri());
     authURL.searchParams.append("client_id", this.clientId);
     authURL.searchParams.append("redirect_uri", this.redirectUri);
@@ -49,66 +53,88 @@ class _ApiService {
     return authURL.href;
   }
 
-  async getUsersMe(): Promise<Response> {
-    return this.get("/users/me/");
+  getAuthorizationHeader(): Headers {
+    const requestHeaders = new Headers();
+    const accessToken = this.authStore.accessToken;
+    if (accessToken !== null) {
+      requestHeaders.set("Authorization", `Bearer ${accessToken}`);
+    }
+    return requestHeaders;
   }
 
-  async get(resource: string): Promise<Response> {
-    return fetch(`${this.baseUri}/api/v1${resource}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `${this.store.tokenType} ${this.store.accessToken}`,
-      },
+  async getAnnouncements(): Promise<Announcement[]> {
+    return this.get<Announcement[]>("/announcements/");
+  }
+
+  async getUsersMe(): Promise<User> {
+    return this.get<User>("/users/me/");
+  }
+
+  async getChallengesSubmissions(): Promise<Submission[]> {
+    return this.get<Submission[]>("/challenges/submissions/");
+  }
+
+  async postChallengesSubmissions(data: object): Promise<Submission> {
+    return this.post<Submission>("/challenges/submissions/", data);
+  }
+
+  async getChallengesUsersMe(): Promise<ChallengeUser> {
+    return this.get<ChallengeUser>("/challenges/users/me/");
+  }
+
+  async fetch<T>(resource: string, method: string, data: object|null): Promise<T> {
+    let apiCall = null;
+    if (data !== null) {
+      apiCall = fetch(`${this.baseUri}/api/v1${resource}`, {
+        method: method,
+        headers: this.getAuthorizationHeader(),
+        body: JSON.stringify(data),
+      });
+    } else {
+       apiCall = fetch(`${this.baseUri}/api/v1${resource}`, {
+        method: method,
+        headers: this.getAuthorizationHeader()
+      });
+    }
+    return apiCall.then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        throw response;
+      }
+    }).then(result => {
+      return result.json() as Promise<T>;
     });
   }
 
-  async post(resource: string, data: object): Promise<Response> {
-    return fetch(`${this.baseUri}/api/v1${resource}`, {
-      method: 'POST',
-      headers: {
-        Authorization: `${this.store.tokenType} ${this.store.accessToken}`,
-      },
-      body: JSON.stringify(data),
-    });
+  async get<T>(resource: string): Promise<T> {
+    return this.fetch<T>(resource, 'GET', null);
   }
 
-  async put(resource: string, data: object): Promise<Response> {
-    return fetch(`${this.baseUri}/api/v1${resource}`, {
-      method: 'PUT',
-      headers: {
-        Authorization: `${this.store.tokenType} ${this.store.accessToken}`,
-      },
-      body: JSON.stringify(data),
-    });
+  async post<T>(resource: string, data: object): Promise<T> {
+    return this.fetch<T>(resource, 'POST', data);
   }
 
-  async patch(resource: string, data: object): Promise<Response> {
-    return fetch(`${this.baseUri}/api/v1${resource}`, {
-      method: 'PATCH',
-      headers: {
-        Authorization: `${this.store.tokenType} ${this.store.accessToken}`,
-      },
-      body: JSON.stringify(data),
-    });
+  async put<T>(resource: string, data: object): Promise<T> {
+    return this.fetch<T>(resource, 'PUT', data);
   }
 
-  async delete(resource: string): Promise<Response> {
-    return fetch(`${this.baseUri}/api/v1${resource}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `${this.store.tokenType} ${this.store.accessToken}`,
-      },
-    });
+  async patch<T>(resource: string, data: object): Promise<T> {
+    return this.fetch<T>(resource, 'PATCH', data);
+  }
+
+  async delete<T>(resource: string): Promise<T> {
+    return this.fetch<T>(resource, 'DELETE', null);
   }
 }
 
-const useApiService = (store) => {
+const useApiService = (authStore: ReturnType<typeof useUserStore>) => {
   return new _ApiService(
       import.meta.env.VITE_API_OAUTH_CLIENT_ID,
       import.meta.env.VITE_API_BASE_URI,
       import.meta.env.VITE_API_AUTHORIZATION_ENDPOINT,
       import.meta.env.VITE_API_OAUTH_REDIRECT_URI,
-      store
+      authStore
   )
 }
 

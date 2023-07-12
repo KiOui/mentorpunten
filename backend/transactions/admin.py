@@ -23,7 +23,6 @@ class TransactionAdmin(AutocompleteFilterMixin, ExportMixin, admin.ModelAdmin):
 
     list_display = ("account", "amount", "description", "processor", "timestamp")
     search_fields = ("account__name", "description", "processor__username")
-    autocomplete_fields = ("account", "processor")
     readonly_fields = (
         "processor",
         "payable_content_type",

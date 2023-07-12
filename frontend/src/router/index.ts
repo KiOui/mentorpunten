@@ -24,7 +24,7 @@ const router = createRouter({
       component: StatisticsView
     },
     {
-      path: '/user',
+      path: '/profile',
       name: 'Profile',
       component: ProfileView
     },

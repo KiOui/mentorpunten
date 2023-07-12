@@ -125,4 +125,4 @@ class ChallengeUser(models.Model):
 
     def __str__(self):
         """Convert this object to string."""
-        return self.user.__str__()
+        return f"{self.user}"

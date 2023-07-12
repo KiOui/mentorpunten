@@ -1,6 +1,8 @@
 import os
 
 from .base import *
+from corsheaders.defaults import default_headers
+
 
 SECRET_KEY = "django-insecure-)75&$s)bp14c@(z5r!-@qw&yjbk=tb7g#ps6=*6kp^4i=#pl=%"
 
@@ -22,6 +24,10 @@ DATABASES = {
 # Cors configuration
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r"^/(?:api|user/oauth)/.*"
+CORS_ALLOW_HEADERS = (
+    *default_headers,
+    "my-custom-header",
+)
 
 # OAuth configuration
 OAUTH2_PROVIDER["ALLOWED_REDIRECT_URI_SCHEMES"] = ["http", "https"]

@@ -8,7 +8,6 @@ class UserSerializer(serializers.ModelSerializer):
     """Serializers for Users."""
 
     display_name = serializers.CharField(source="__str__")
-    short_name = serializers.CharField(source="get_short_name")
 
     class Meta:
         """Meta class."""
@@ -18,7 +17,6 @@ class UserSerializer(serializers.ModelSerializer):
             "id",
             "full_name",
             "display_name",
-            "short_name",
             "profile_image"
         ]
-        read_only_fields = ["id", "full_name", "display_name", "short_name", "profile_image"]
+        read_only_fields = ["id", "full_name", "display_name", "profile_image"]

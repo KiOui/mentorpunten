@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.http import Http404
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView, ListCreateAPIView, RetrieveUpdateAPIView
@@ -6,6 +7,9 @@ from rest_framework.response import Response
 
 from challenges.api.v1 import serializers
 from challenges import models
+from challenges.api.v1.serializers import ChallengeUserSerializer
+from challenges.models import ChallengeUser
+from mentorpunten.api.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 
 
 class ChallengeListAPIView(ListAPIView):
@@ -130,3 +134,27 @@ class SubmissionRetrieveUpdateAPIView(RetrieveUpdateAPIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
         return super().update(request, *args, **kwargs)
+
+
+class ChallengeUserMeAPIView(RetrieveAPIView):
+    """
+    Me Retrieve API View.
+
+    Permission required: read
+
+    Use this API view to get details about the currently logged in User.
+    """
+
+    serializer_class = ChallengeUserSerializer
+    queryset = ChallengeUser.objects.all()
+    permission_classes = [IsAuthenticatedOrTokenHasScopeForMethod]
+    required_scopes_for_method = {
+        "GET": ["read"],
+    }
+
+    def get_object(self):
+        """Get the current logged-in User."""
+        try:
+            return self.queryset.get(user=self.request.user)
+        except ChallengeUser.DoesNotExist:
+            raise Http404()

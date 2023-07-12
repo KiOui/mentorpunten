@@ -41,3 +41,17 @@ class SubmissionSerializer(WritableModelSerializer):
         model = models.Submission
         fields = ["challenge", "team", "created", "updated", "image", "accepted"]
         read_only_fields = ["challenge", "team", "created", "updated", "image"]
+
+
+class ChallengeUserSerializer(serializers.ModelSerializer):
+    """Challenge User Serializer."""
+
+    user = UserSerializer(many=False, read_only=True)
+    team = TeamSerializer(many=False, read_only=True)
+
+    class Meta:
+        """Meta class."""
+
+        model = models.ChallengeUser
+        fields = ["user", "team"]
+        read_only_fields = ["user", "team"]
