@@ -32,8 +32,8 @@ class TeamSerializer(serializers.ModelSerializer):
 class SubmissionSerializer(WritableModelSerializer):
     """Submission serializer."""
 
-    challenge = ChallengeSerializer(many=False, read_only=True)
-    team = TeamSerializer(many=False, read_only=True)
+    challenge = ChallengeSerializer(many=False)
+    team = TeamSerializer(many=False)
     transaction = TransactionSerializer(many=False, read_only=True)
 
     class Meta:
@@ -41,7 +41,7 @@ class SubmissionSerializer(WritableModelSerializer):
 
         model = models.Submission
         fields = ["challenge", "team", "created", "updated", "image", "accepted", "transaction"]
-        read_only_fields = ["challenge", "team", "created", "updated", "image", "transaction"]
+        read_only_fields = ["created", "updated", "transaction"]
 
 
 class ChallengeUserSerializer(serializers.ModelSerializer):

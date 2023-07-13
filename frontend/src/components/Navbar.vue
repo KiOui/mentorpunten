@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar fixed-top">
+    <nav class="navbar">
         <div class="container">
             <ul class="navbar-nav w-100 d-flex justify-content-start flex-row">
                     <router-link :to="{ name: 'Challenges'}" class="text-white nav-item">

@@ -1,4 +1,5 @@
 export default interface Challenge {
+    id: number;
     name: string;
     slug: string;
     description: string;

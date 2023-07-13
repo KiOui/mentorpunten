@@ -5,6 +5,7 @@ import {useUserStore} from "@/stores/user.module";
 import type ChallengeUser from "@/models/challengeUser.model";
 import type Challenge from "@/models/challenge.model";
 import type _Challenge from "@/models/api/_challenge.model";
+import type Team from "@/models/team.model";
 
 class _ApiService {
   authorizationEndpoint: string;
@@ -54,8 +55,13 @@ class _ApiService {
     return authURL.href;
   }
 
-  getAuthorizationHeader(): Headers {
-    const requestHeaders = new Headers();
+  getAuthorizationHeader(headersInit: Headers | null = null): Headers {
+    let requestHeaders: Headers;
+    if (headersInit === null) {
+      requestHeaders = new Headers();
+    } else {
+      requestHeaders = headersInit;
+    }
     const accessToken = this.authStore.accessToken;
     if (accessToken !== null) {
       requestHeaders.set("Authorization", `Bearer ${accessToken}`);
@@ -71,12 +77,24 @@ class _ApiService {
     return this.get<User>("/users/me/");
   }
 
-  async getChallengesSubmissions(): Promise<Submission[]> {
-    return this.get<Submission[]>("/challenges/submissions/");
+  _addParametersToResource(resource: string, parameters: URLSearchParams | null): string {
+    if (parameters !== null) {
+      return `${resource}?${parameters.toString()}`;
+    } else {
+      return resource;
+    }
   }
 
-  async postChallengesSubmissions(data: object): Promise<Submission> {
-    return this.post<Submission>("/challenges/submissions/", data);
+  async getChallengesSubmissions(parameters: URLSearchParams | null = null): Promise<Submission[]> {
+    return this.get<Submission[]>(this._addParametersToResource("/challenges/submissions/", parameters));
+  }
+
+  async postChallengesSubmissions(data: FormData, headers: Headers | null = null): Promise<Submission> {
+    return this.post<Submission>("/challenges/submissions/", data, headers);
+  }
+
+  async getChallengesTeams(): Promise<Team[]> {
+    return this.get<Team[]>("/challenges/teams/");
   }
 
   async getChallengesUsersMe(): Promise<ChallengeUser> {
@@ -91,18 +109,18 @@ class _ApiService {
     return this.get<Challenge>(`/challenges/${id}/`);
   }
 
-  async fetch<T>(resource: string, method: string, data: object|null): Promise<T> {
+  async fetch<T>(resource: string, method: string, data: BodyInit|null, headers: Headers|null = null): Promise<T> {
     let apiCall = null;
     if (data !== null) {
       apiCall = fetch(`${this.baseUri}/api/v1${resource}`, {
         method: method,
-        headers: this.getAuthorizationHeader(),
-        body: JSON.stringify(data),
+        headers: this.getAuthorizationHeader(headers),
+        body: data,
       });
     } else {
        apiCall = fetch(`${this.baseUri}/api/v1${resource}`, {
         method: method,
-        headers: this.getAuthorizationHeader()
+        headers: this.getAuthorizationHeader(headers)
       });
     }
     return apiCall.then(response => {
@@ -116,24 +134,24 @@ class _ApiService {
     });
   }
 
-  async get<T>(resource: string): Promise<T> {
-    return this.fetch<T>(resource, 'GET', null);
+  async get<T>(resource: string, headers: Headers|null = null): Promise<T> {
+    return this.fetch<T>(resource, 'GET', null, headers);
   }
 
-  async post<T>(resource: string, data: object): Promise<T> {
-    return this.fetch<T>(resource, 'POST', data);
+  async post<T>(resource: string, data: BodyInit|null, headers: Headers|null = null): Promise<T> {
+    return this.fetch<T>(resource, 'POST', data, headers);
   }
 
-  async put<T>(resource: string, data: object): Promise<T> {
-    return this.fetch<T>(resource, 'PUT', data);
+  async put<T>(resource: string, data: BodyInit|null, headers: Headers|null = null): Promise<T> {
+    return this.fetch<T>(resource, 'PUT', data, headers);
   }
 
-  async patch<T>(resource: string, data: object): Promise<T> {
-    return this.fetch<T>(resource, 'PATCH', data);
+  async patch<T>(resource: string, data: BodyInit|null, headers: Headers|null = null): Promise<T> {
+    return this.fetch<T>(resource, 'PATCH', data, headers);
   }
 
-  async delete<T>(resource: string): Promise<T> {
-    return this.fetch<T>(resource, 'DELETE', null);
+  async delete<T>(resource: string, headers: Headers|null = null): Promise<T> {
+    return this.fetch<T>(resource, 'DELETE', null, headers);
   }
 }
 

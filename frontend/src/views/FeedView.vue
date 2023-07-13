@@ -2,7 +2,7 @@
   import {useUserStore} from "@/stores/user.module";
   import useApiService from "@/common/api.service";
   import Header from "@/components/Header.vue";
-  import {computed, ref} from "vue";
+  import {computed, onMounted, ref} from "vue";
   import SubmissionCard from "@/components/SubmissionCard.vue";
   import type Submission from "@/models/submission.model";
   import Loader from "@/components/Loader.vue";
@@ -13,9 +13,13 @@
   let feedLoading = ref<boolean>(true);
   let submissions = ref<Submission[]>([]);
 
-  ApiService.getChallengesSubmissions().then(result => {
-    submissions.value = result;
-    feedLoading.value = false;
+  onMounted(() => {
+    const params = new URLSearchParams();
+    params.append("accepted", "true");
+    ApiService.getChallengesSubmissions(params).then(result => {
+      submissions.value = result;
+      feedLoading.value = false;
+    });
   });
 
   const splittedSubmissions = computed(() => {
@@ -27,7 +31,7 @@
       result[chunkIndex].push(item);
       return result;
     }, [])
-  })
+  });
 </script>
 
 <template>

@@ -1,8 +1,13 @@
 from django.db.models import Q
 from django.http import Http404
 from django.utils import timezone
+from django_filters.rest_framework import FilterSet, DjangoFilterBackend
+from rest_framework import filters
 from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView, ListCreateAPIView, RetrieveUpdateAPIView
+from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from challenges.api.v1 import serializers
@@ -68,6 +73,13 @@ class SubmissionListCreateAPIView(ListCreateAPIView):
     serializer_class = serializers.SubmissionSerializer
     queryset = models.Submission.objects.all()
 
+    parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [IsAuthenticated]
+
+    pagination_class = LimitOffsetPagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["challenge", "team", "accepted"]
+
     def get_queryset(self):
         """
         Get queryset of submissions.
@@ -83,11 +95,8 @@ class SubmissionListCreateAPIView(ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         """Create a submission."""
-        if not self.request.user.is_authenticated:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-        elif self.request.user.challenge_user is None or self.request.user.challenge_user.team is None:
+        if self.request.user.challenge_user is None or self.request.user.challenge_user.team is None:
             return Response(status=status.HTTP_403_FORBIDDEN)
-
         challenge_id = request.data.get("challenge", None)
 
         try:
@@ -98,7 +107,12 @@ class SubmissionListCreateAPIView(ListCreateAPIView):
         if not challenge.active:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = self.get_serializer(data=request.data, accepted=False, team=self.request.user.challenge_user.team)
+        serializer = self.get_serializer(data={
+            "accepted": None,
+            "team": self.request.user.challenge_user.team.id,
+            "challenge": challenge.id,
+            "image": request.data.get("image")
+        })
 
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
