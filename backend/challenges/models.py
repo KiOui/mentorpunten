@@ -8,7 +8,11 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from mentorpunten.services import convert_image
+from tournaments.models import Tournament, Team
 from transactions.models import Account, Transaction
+
+from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
 
@@ -36,6 +40,7 @@ class Challenge(models.Model):
     """Challenge."""
 
     name = models.CharField(max_length=80, unique=True)
+    tournament = models.ForeignKey(Tournament, on_delete=models.PROTECT)
     slug = models.SlugField(unique=True, max_length=100)
     description = models.TextField()
     image = models.ImageField(upload_to=challenge_upload_image_to, blank=True, null=True)
@@ -78,24 +83,6 @@ class Challenge(models.Model):
         return self.name
 
 
-class Team(models.Model):
-    """Team of Users that can hand in Submissions for Challenges."""
-
-    name = models.CharField(max_length=100)
-    account = models.OneToOneField(
-        Account, on_delete=models.PROTECT, related_name="team"
-    )
-
-    @property
-    def points(self):
-        """Get points of team."""
-        return self.account.balance
-
-    def __str__(self):
-        """Convert this object to string."""
-        return f"{self.name}"
-
-
 class Submission(models.Model):
     """Submission for a Challenge."""
 
@@ -104,26 +91,34 @@ class Submission(models.Model):
     )
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="submissions")
     created = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name="submissions_created_by")
     updated = models.DateTimeField(auto_now=True)
-    image = models.ImageField(upload_to=submission_upload_image_to)
+    updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name="submissions_updated_by")
+    image = models.ImageField(verbose_name=_("image"), upload_to=submission_upload_image_to)
+    thumbnail = models.ImageField(verbose_name=_("thumbnail"), upload_to=submission_upload_image_to)
+    image_webp = models.ImageField(verbose_name=_("image webp"), upload_to=submission_upload_image_to)
     accepted = models.BooleanField(null=True, blank=True, default=None)
     transaction = models.ForeignKey(Transaction, null=True, blank=True, on_delete=models.SET_NULL)
+
+    def __init__(self, *args, **kwargs):
+        """Set old image variable."""
+        super(Submission, self).__init__(*args, **kwargs)
+        if kwargs.get("image", None) is not None:
+            self._image = None
+        else:
+            self._image = self.image
+
+    def save(self, *args, **kwargs):
+        """Convert images to webp on save."""
+        if self.image != self._image:
+            # Image has been updated
+            self.image = convert_image(self.image, "jpeg", to_name=get_random_filename(self.image.name))
+            self.thumbnail = convert_image(
+                self.image, "jpeg", resize_to=(600, 600), to_name="thumb_" + Path(self.image.name).stem + ".jpeg"
+            )
+            self.image_webp = convert_image(self.image, "webp")
+        super().save(*args, **kwargs)
 
     def __str__(self):
         """Convert this object to string."""
         return f"Submission for {self.challenge} for {self.team} at {self.created}"
-
-
-class ChallengeUser(models.Model):
-    """User that can be in a Team."""
-
-    user = models.OneToOneField(
-        User, primary_key=True, on_delete=models.CASCADE, related_name="challenge_user"
-    )
-    team = models.ForeignKey(
-        Team, null=True, blank=True, on_delete=models.SET_NULL, related_name="members"
-    )
-
-    def __str__(self):
-        """Convert this object to string."""
-        return f"{self.user}"

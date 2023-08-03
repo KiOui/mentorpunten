@@ -6,6 +6,7 @@ import type ChallengeUser from "@/models/challengeUser.model";
 import type Challenge from "@/models/challenge.model";
 import type _Challenge from "@/models/api/_challenge.model";
 import type Team from "@/models/team.model";
+import type Paginated from "@/models/paginated.model";
 
 class _ApiService {
   authorizationEndpoint: string;
@@ -85,8 +86,8 @@ class _ApiService {
     }
   }
 
-  async getChallengesSubmissions(parameters: URLSearchParams | null = null): Promise<Submission[]> {
-    return this.get<Submission[]>(this._addParametersToResource("/challenges/submissions/", parameters));
+  async getChallengesSubmissions(parameters: URLSearchParams | null = null): Promise<Paginated<Submission[]>> {
+    return this.get<Paginated<Submission[]>>(this._addParametersToResource("/challenges/submissions/", parameters));
   }
 
   async postChallengesSubmissions(data: FormData, headers: Headers | null = null): Promise<Submission> {
@@ -126,6 +127,11 @@ class _ApiService {
     return apiCall.then(response => {
       if (response.ok) {
         return response;
+      } else if (response.status === 403) {
+        // When receiving a 403 response, the access token is not valid anymore so we should reset it.
+        this.authStore.logOut();
+        this.authStore.storeState();
+        throw response;
       } else {
         throw response;
       }

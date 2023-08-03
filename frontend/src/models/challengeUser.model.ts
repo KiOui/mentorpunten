@@ -3,5 +3,5 @@ import type Team from "@/models/team.model";
 
 export default interface ChallengeUser {
     user: User;
-    team: Team;
+    team: Team | null;
 }

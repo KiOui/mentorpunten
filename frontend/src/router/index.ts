@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import ChallengesView from '../views/ChallengesView.vue'
-import GroupView from '../views/GroupView.vue'
+import TeamView from '../views/TeamView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import StatisticsView from '../views/StatisticsView.vue'
 import FeedView from '../views/FeedView.vue'
@@ -40,9 +40,19 @@ const router = createRouter({
       component: ProfileView
     },
     {
-      path: '/group',
-      name: 'Group',
-      component: GroupView
+      path: '/team/:id',
+      name: 'Team',
+      component: TeamView,
+      props: (route) => {
+        const id= Number.parseInt(route.params.id, 10);
+        if (Number.isNaN(id)) {
+          router.push("/");
+          return;
+        }
+        return {
+          "id": id
+        };
+      }
     },
     {
       path: '/',

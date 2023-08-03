@@ -4,8 +4,6 @@ from challenges.api.v1.views import (
     ChallengeRetrieveAPIView,
     SubmissionListCreateAPIView,
     SubmissionRetrieveUpdateAPIView,
-    TeamListAPIView,
-    TeamRetrieveAPIView, ChallengeUserMeAPIView,
 )
 
 urlpatterns = [
@@ -13,7 +11,4 @@ urlpatterns = [
     path("<int:pk>/", ChallengeRetrieveAPIView.as_view(), name="challenge_retrieve"),
     path("submissions/", SubmissionListCreateAPIView.as_view(), name="submissions_listcreate"),
     path("submissions/<int:pk>/", SubmissionRetrieveUpdateAPIView.as_view(), name="submissions_retrieveupdate"),
-    path("teams/", TeamListAPIView.as_view(), name="team_list"),
-    path("teams/<int:pk>/", TeamRetrieveAPIView.as_view(), name="team_retrieve"),
-    path("users/me/", ChallengeUserMeAPIView.as_view(), name="challengeuser_me_retrieve"),
 ]

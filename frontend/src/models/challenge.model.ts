@@ -8,4 +8,5 @@ export default interface Challenge {
     active_from: string | null;
     active_until: string | null;
     points: number;
+    completed: boolean | null;
 }

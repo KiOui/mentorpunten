@@ -1,6 +1,7 @@
 <script setup lang="ts">
     import { RouterLink } from 'vue-router'
     import type Challenge from "@/models/challenge.model";
+    import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
     defineProps<{challenge: Challenge}>();
 </script>
@@ -10,7 +11,7 @@
         <div class="card-body">
           <div class="row">
             <div class="col-8">
-              <h3 class="card-title">{{ challenge.name }}</h3>
+              <h3 class="card-title">{{ challenge.name }} <span v-if="challenge.completed" class="text-success"><font-awesome-icon icon="fa-solid fa-check"/></span></h3>
             </div>
             <div class="col-4 text-end">
               <span class="badge bg-success fs-6">{{ challenge.points }} points</span>

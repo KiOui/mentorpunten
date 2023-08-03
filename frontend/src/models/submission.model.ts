@@ -9,6 +9,6 @@ export default interface Submission {
     transaction: Transaction | null;
     created: string;
     updated: string;
-    image: string;
+    image: string | null;
     accepted: boolean | null;
 }

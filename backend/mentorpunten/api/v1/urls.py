@@ -8,6 +8,7 @@ app_name = "v1"
 urlpatterns = [
     path("announcements/", include("announcements.api.v1.urls")),
     path("challenges/", include("challenges.api.v1.urls")),
+    path("tournaments/", include("tournaments.api.v1.urls")),
     path("transactions/", include("transactions.api.v1.urls")),
     path("users/", include("users.api.v1.urls")),
     path(
