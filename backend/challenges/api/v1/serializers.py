@@ -33,8 +33,8 @@ class ChallengeSerializer(serializers.ModelSerializer):
     def get_completed(self, instance):
         """Get completed value of serializer."""
         request = self.context.get("request", None)
-        if request is not None and request.user is not None and request.user.is_authenticated and request.user.challenge_user is not None and request.user.challenge_user.team is not None:
-            return Submission.objects.filter(team=request.user.challenge_user.team, challenge=instance, accepted=True).exists()
+        if request is not None and request.user is not None and request.user.is_authenticated:
+            return Submission.objects.filter(team__members__in=[request.user], challenge=instance, accepted=True).exists()
         else:
             return None
 
@@ -52,10 +52,12 @@ class SubmissionSerializer(WritableModelSerializer):
     challenge = ChallengeSerializer(many=False)
     team = TeamSerializer(many=False)
     transaction = TransactionSerializer(many=False, read_only=True)
+    created_by = UserSerializer(many=False)
+    updated_by = UserSerializer(many=False)
 
     class Meta:
         """Meta class."""
 
         model = models.Submission
-        fields = ["challenge", "team", "created", "updated", "image", "accepted", "transaction"]
-        read_only_fields = ["created", "updated", "transaction"]
+        fields = ["challenge", "team", "tournament", "created", "created_by", "updated", "updated_by", "image", "image_webp", "thumbnail", "accepted", "transaction"]
+        read_only_fields = ["created", "updated", "transaction", "tournament"]

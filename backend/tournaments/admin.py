@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.db.models import Q
+from rangefilter.filters import DateRangeFilter
 
 from .models import Tournament, Team
 
@@ -14,6 +14,11 @@ User = get_user_model()
 class TournamentAdmin(admin.ModelAdmin):
 
     list_display = ['name', 'active_from', 'active_until']
+    search_fields = ('name',)
+    list_filter = (
+        ("active_from", DateRangeFilter,),
+        ("active_until", DateRangeFilter,),
+    )
 
     prepopulated_fields = {"slug": ("name",)}
 
@@ -69,4 +74,6 @@ class TeamAdmin(admin.ModelAdmin):
         return instance.members.count()
 
     list_display = ['name', 'tournament', 'balance', 'member_count']
+    search_fields = ('name',)
+    list_filter = ('tournament',)
     form = TeamAdminForm

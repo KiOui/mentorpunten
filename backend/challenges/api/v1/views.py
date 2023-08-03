@@ -1,5 +1,4 @@
 from django.db.models import Q
-from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.generics import ListAPIView, RetrieveAPIView, ListCreateAPIView, RetrieveUpdateAPIView
@@ -15,36 +14,19 @@ class ChallengeListAPIView(ListAPIView):
     """Challenge List API View."""
 
     serializer_class = serializers.ChallengeSerializer
-    queryset = models.Challenge.objects.all()
+    queryset = models.Challenge.objects.revealed_challenges()
 
-    def get_queryset(self):
-        """Get only the Challenges that are currently active or were active in the past."""
-        current_time = timezone.now()
-        return self.queryset.filter(
-            Q(disabled=False) &
-            (
-                    Q(active_from=None) |
-                    Q(active_from__lt=current_time)
-            )
-        )
+    pagination_class = StandardResultsSetPagination
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["tournament"]
 
 
 class ChallengeRetrieveAPIView(RetrieveAPIView):
     """Challenge Retrieve API View."""
 
     serializer_class = serializers.ChallengeSerializer
-    queryset = models.Challenge.objects.all()
-
-    def get_queryset(self):
-        """Get only the Challenges that are currently active or were active in the past."""
-        current_time = timezone.now()
-        return self.queryset.filter(
-            Q(disabled=False) &
-            (
-                    Q(active_from=None) |
-                    Q(active_from__lt=current_time)
-            )
-        )
+    queryset = models.Challenge.objects.revealed_challenges()
 
 
 class SubmissionListCreateAPIView(ListCreateAPIView):
@@ -57,7 +39,7 @@ class SubmissionListCreateAPIView(ListCreateAPIView):
 
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["challenge", "team", "accepted"]
+    filterset_fields = ["challenge", "team", "accepted", "created_by", "updated_by", "tournament"]
 
     def get_queryset(self):
         """
@@ -65,32 +47,46 @@ class SubmissionListCreateAPIView(ListCreateAPIView):
 
         The displayed queryset depends on whether the user is authenticated.
         """
-        if self.request.user.is_authenticated and self.request.user.challenge_user is not None and self.request.user.challenge_user.team is not None:
+        if self.request.user.is_authenticated:
             return self.queryset.filter(
-                Q(accepted=True) | Q(team=self.request.user.challenge_user.team)
+                Q(accepted=True) | Q(team__members__in=[self.request.user])
             )
         else:
             return self.queryset.filter(accepted=True)
 
     def create(self, request, *args, **kwargs):
         """Create a submission."""
-        if self.request.user.challenge_user is None or self.request.user.challenge_user.team is None:
+        if not request.user.is_authenticated:
             return Response(status=status.HTTP_403_FORBIDDEN)
-        challenge_id = request.data.get("challenge", None)
 
+        team_id = request.data.get("team", None)
+        try:
+            team = models.Team.objects.get(id=team_id, members__in=[request.user])
+        except models.Team.DoesNotExist:
+            # Team does not exist or user is not a member of the team.
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        challenge_id = request.data.get("challenge", None)
         try:
             challenge = models.Challenge.objects.get(id=challenge_id)
         except models.Challenge.DoesNotExist:
+            # Challenge does not exist.
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         if not challenge.active:
+            # Challenge is not active.
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        elif challenge.tournament != team.tournament:
+            # Tournament of Challenge and Tournament of Team do not correspond.
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         serializer = self.get_serializer(data={
             "accepted": None,
-            "team": self.request.user.challenge_user.team.id,
+            "team": team.id,
             "challenge": challenge.id,
-            "image": request.data.get("image")
+            "tournament": challenge.tournament,
+            "image": request.data.get("image"),
+            "created_by": request.user,
         })
 
         serializer.is_valid(raise_exception=True)
@@ -111,9 +107,9 @@ class SubmissionRetrieveUpdateAPIView(RetrieveUpdateAPIView):
 
         The displayed queryset depends on whether the user is authenticated.
         """
-        if self.request.user.is_authenticated and self.request.user.challenge_user is not None and self.request.user.challenge_user.team is not None:
+        if self.request.user.is_authenticated:
             return self.queryset.filter(
-                Q(accepted=True) | Q(team=self.request.user.challenge_user.team)
+                Q(accepted=True) | Q(team__members__in=[self.request.user])
             )
         else:
             return self.queryset.filter(accepted=True)

@@ -2,6 +2,7 @@ from autocompletefilter.admin import AutocompleteFilterMixin
 from autocompletefilter.filters import AutocompleteListFilter
 from django.contrib import admin, messages
 from django.utils.html import format_html
+from rangefilter.filters import DateRangeFilter
 
 from challenges.models import Challenge, Submission
 
@@ -10,14 +11,23 @@ from challenges.models import Challenge, Submission
 class ChallengeAdmin(admin.ModelAdmin):
     """Challenge Admin."""
 
-    list_display = ("name", "active_from", "active_until", "points", "active")
+    list_display = ("name", "tournament", "active_from", "active_until", "points", "number_of_submissions", "active")
     search_fields = ("name",)
     ordering = (
         "-active_from",
         "-active_until",
         "name",
     )
+    list_filter = (
+        "tournament",
+        ("active_from", DateRangeFilter,),
+        ("active_until", DateRangeFilter,),
+    )
     prepopulated_fields = {"slug": ("name",)}
+
+    def number_of_submissions(self, obj: Challenge):
+        """Get the number of submissions."""
+        return Submission.objects.filter(challenge=obj).count()
 
     def active(self, obj: Challenge):
         """Get whether a Challenge is currently active."""
@@ -30,14 +40,19 @@ class ChallengeAdmin(admin.ModelAdmin):
 class SubmissionAdmin(AutocompleteFilterMixin, admin.ModelAdmin):
     """Submission Admin."""
 
-    list_display = ("team", "challenge", "created", "updated", "accepted",)
+    list_display = ("team", "challenge", "tournament", "created", "updated", "accepted",)
     fields = ('challenge', 'team', 'created', 'updated', 'image', 'image_tag', 'accepted', 'transaction')
     readonly_fields = ('image_tag', 'created', 'updated')
 
     ordering = (
         "-created",
     )
-    list_filter = (("team", AutocompleteListFilter), ("challenge", AutocompleteListFilter), "accepted")
+    list_filter = (
+        ("team", AutocompleteListFilter),
+        ("challenge", AutocompleteListFilter),
+        ("tournament", AutocompleteListFilter),
+        "accepted"
+    )
 
     def image_tag(self, obj):
         """Print image in changeform view."""

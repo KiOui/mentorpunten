@@ -7,6 +7,9 @@ import pytz
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import Q
+from django.utils import timezone
+from queryable_properties.managers import QueryablePropertiesManager
 
 from mentorpunten.services import convert_image
 from tournaments.models import Tournament, Team
@@ -36,6 +39,52 @@ def submission_upload_image_to(instance, filename):
     return os.path.join(os.path.join(instance.challenge.folder, "submissions"), get_random_filename(filename))
 
 
+class ChallengeQueryset(models.QuerySet):
+    """Challenge queryset."""
+
+    def active(self):
+        """Only active Challenges."""
+        current_time = timezone.now()
+        return self.filter(
+            Q(disabled=False) &
+            (
+                    Q(active_from=None) |
+                    Q(active_from__lte=current_time)
+            ) &
+            (
+                Q(active_until=None) |
+                Q(active_until__gt=current_time)
+            )
+        )
+
+    def revealed(self):
+        """Only revealed Challenges."""
+        current_time = timezone.now()
+        return self.filter(
+            Q(disabled=False) &
+            (
+                    Q(active_from=None) |
+                    Q(active_from__lte=current_time)
+            )
+        )
+
+
+class ChallengeManager(QueryablePropertiesManager):
+    """Custom manager for Challenges."""
+
+    def get_queryset(self):
+        """Get Challenge Queryset."""
+        return ChallengeQueryset(self.model, using=self._db)
+
+    def active_challenges(self):
+        """Only active Challenges."""
+        return self.get_queryset().active()
+
+    def revealed_challenges(self):
+        """Only revealed Challenges."""
+        return self.get_queryset().revealed()
+
+
 class Challenge(models.Model):
     """Challenge."""
 
@@ -56,6 +105,8 @@ class Challenge(models.Model):
         blank=True,
     )
     points = models.PositiveIntegerField()
+
+    objects = ChallengeManager()
 
     @property
     def folder(self):
@@ -89,6 +140,7 @@ class Submission(models.Model):
     challenge = models.ForeignKey(
         Challenge, on_delete=models.PROTECT, related_name="submissions"
     )
+    tournament = models.ForeignKey(Tournament, null=True, blank=True, on_delete=models.SET_NULL, related_name="submissions")
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="submissions")
     created = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name="submissions_created_by")
@@ -122,3 +174,8 @@ class Submission(models.Model):
     def __str__(self):
         """Convert this object to string."""
         return f"Submission for {self.challenge} for {self.team} at {self.created}"
+
+    class Meta:
+        """Meta class."""
+
+        ordering = ("-created",)
