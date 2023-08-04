@@ -7,6 +7,7 @@ import { useCredentialsStore } from "@/stores/credentials.module";
 import type Team from "@/models/team.model";
 import type Paginated from "@/models/paginated.model";
 import type Tournament from "@/models/tournament.model";
+import type Transaction from "@/models/transaction.model";
 
 class _ApiService {
   authorizationEndpoint: string;
@@ -101,6 +102,10 @@ class _ApiService {
     return this.get<Team[]>(this._addParametersToResource("/tournaments/teams/", parameters));
   }
 
+  async getChallengesTeam(id: number): Promise<Team> {
+    return this.get<Team>(`/tournaments/teams/${id}/`);
+  }
+
   async getChallengesUsersMe(): Promise<ChallengeUser> {
     return this.get<ChallengeUser>("/challenges/users/me/");
   }
@@ -111,6 +116,10 @@ class _ApiService {
 
   async getChallenge(id: number): Promise<Challenge> {
     return this.get<Challenge>(`/challenges/${id}/`);
+  }
+
+  async getTransactions(parameters: URLSearchParams | null = null): Promise<Paginated<Transaction[]>> {
+    return this.get<Paginated<Transaction[]>>(this._addParametersToResource(`/transactions/`, parameters));
   }
 
   async fetch<T>(resource: string, method: string, data: BodyInit|null, headers: Headers|null = null): Promise<T> {

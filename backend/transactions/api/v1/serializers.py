@@ -10,11 +10,13 @@ class AccountSerializer(serializers.ModelSerializer):
         """Meta class."""
 
         model = models.Account
-        fields = ["created_at", "balance"]
+        fields = ["id", "created_at", "balance"]
 
 
 class TransactionSerializer(serializers.ModelSerializer):
     """Transaction Serializer."""
+
+    account = AccountSerializer(many=False)
 
     class Meta:
         """Meta class."""

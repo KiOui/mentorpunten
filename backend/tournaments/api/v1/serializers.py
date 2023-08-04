@@ -20,6 +20,7 @@ class TeamSerializer(serializers.ModelSerializer):
 
     account = AccountSerializer(many=False)
     members = UserSerializer(many=True)
+    tournament = TournamentSerializer(many=False)
 
     class Meta:
         """Meta class."""

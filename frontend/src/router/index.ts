@@ -6,6 +6,7 @@ import StatisticsView from '../views/StatisticsView.vue'
 import FeedView from '../views/FeedView.vue'
 import ChallengeView from '../views/ChallengeView.vue'
 import TournamentsView from '../views/TournamentsView.vue'
+import TransactionsView from "@/views/TransactionsView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -59,6 +60,21 @@ const router = createRouter({
       path: '/team/:id',
       name: 'Team',
       component: TeamView,
+      props: (route) => {
+        const id= Number.parseInt(route.params.id, 10);
+        if (Number.isNaN(id)) {
+          router.push("/");
+          return;
+        }
+        return {
+          "id": id
+        };
+      }
+    },
+    {
+      path: '/team/:id/transactions',
+      name: 'Transactions',
+      component: TransactionsView,
       props: (route) => {
         const id= Number.parseInt(route.params.id, 10);
         if (Number.isNaN(id)) {

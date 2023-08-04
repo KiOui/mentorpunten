@@ -1,6 +1,8 @@
+import type Account from "@/models/account.model";
+
 export default interface Transaction {
     id: string;
-    account: number;
+    account: Account;
     amount: number;
     timestamp: string;
     description: string;

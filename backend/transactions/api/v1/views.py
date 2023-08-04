@@ -1,5 +1,7 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import CreateAPIView, ListCreateAPIView, RetrieveAPIView
 
+from mentorpunten.api.v1.pagination import StandardResultsSetPagination
 from transactions.api.v1.serializers import AccountSerializer, TransactionSerializer
 from transactions.models import Account, Transaction
 
@@ -17,11 +19,16 @@ class AccountRetrieveAPIView(CreateAPIView):
     queryset = Account.objects.all()
 
 
-class TransactionListCreateAPIView(ListCreateAPIView):
-    """Transaction List Create API View."""
+class TransactionListAPIView(ListCreateAPIView):
+    """Transaction List API View."""
 
     serializer_class = TransactionSerializer
     queryset = Transaction.objects.all()
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ("account", "processor",)
+
+    pagination_class = StandardResultsSetPagination
 
 
 class TransactionRetrieveAPIView(RetrieveAPIView):
