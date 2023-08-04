@@ -16,8 +16,6 @@ class ChallengeListAPIView(ListAPIView):
     serializer_class = serializers.ChallengeSerializer
     queryset = models.Challenge.objects.revealed_challenges()
 
-    pagination_class = StandardResultsSetPagination
-
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["tournament"]
 

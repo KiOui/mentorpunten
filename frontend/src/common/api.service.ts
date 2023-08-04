@@ -110,8 +110,8 @@ class _ApiService {
     return this.get<ChallengeUser>("/challenges/users/me/");
   }
 
-  async getChallenges(): Promise<Paginated<Challenge[]>> {
-    return this.get<Paginated<Challenge[]>>("/challenges/");
+  async getChallenges(): Promise<Challenge[]> {
+    return this.get<Challenge[]>("/challenges/");
   }
 
   async getChallenge(id: number): Promise<Challenge> {
