@@ -1,9 +1,8 @@
 <script setup lang="ts">
 
 import SubmissionCard from "@/components/SubmissionCard.vue";
-import {computed, onMounted, ref} from "vue";
-import Submission from "@/models/submission.model";
-import { useCredentialsStore } from "@/stores/credentials.module";
+import {onMounted, ref} from "vue";
+import type Submission from "@/models/submission.model";
 import useApiService from "@/common/api.service";
 import {useToast} from "vue-toastification";
 import Loader from "@/components/Loader.vue";
@@ -17,7 +16,7 @@ const toast = useToast();
 let submissions = ref<Submission[]>([]);
 let submissionsLoading = ref<boolean|null>(true);
 let nextDataExists = ref<boolean>(true);
-let limit = ref<number>(20);
+let limit = ref<number>(40);
 
 onMounted(() => {
   addNewData();
@@ -25,17 +24,6 @@ onMounted(() => {
 
 defineExpose({
   refresh
-});
-
-const splittedSubmissions = computed(() => {
-  return submissions.value.reduce((result: Submission[][], item: Submission, index: number) => {
-    const chunkIndex = Math.floor(index / 3);
-    if (!result[chunkIndex]) {
-      result[chunkIndex] = [];
-    }
-    result[chunkIndex].push(item);
-    return result;
-  }, [])
 });
 
 function getSubmissionsQueryParameters(): URLSearchParams {
@@ -70,21 +58,18 @@ function refresh() {
 </script>
 
 <template>
-  <div v-for="(submissionsRow, index) in splittedSubmissions" class="row" v-bind:key="index">
-    <div class="col-md" v-for="submission in submissionsRow" v-bind:key="submission.id">
-      <SubmissionCard v-bind:submission="submission" v-bind:show-accepted="showAccepted" />
-    </div>
-    <div v-if="submissionsRow.length < 3" class="col-md"></div>
-    <div v-if="submissionsRow.length < 2" class="col-md"></div>
-  </div>
+  <SubmissionCard v-for="submission in submissions" v-bind:submission="submission" v-bind:show-accepted="showAccepted" v-bind:key="submission.id" />
   <div v-if="submissions.length === 0 && !submissionsLoading">
     <div class="alert alert-warning">
       {{ noSubmissionsWarning }}
     </div>
   </div>
   <Loader v-if="submissionsLoading" size="60px" background-color="#000000"/>
-  <div v-else-if="!submissionsLoading && nextDataExists">
-    <button v-on:click="addNewData" class="btn btn-primary">Load more</button>
+  <div v-else-if="!submissionsLoading && nextDataExists" class="w-100 d-flex justify-content-center">
+    <button v-on:click="addNewData" class="btn btn-primary text-center">Load more</button>
+  </div>
+  <div v-else-if="!submissionsLoading && !nextDataExists" class="alert alert-info text-center">
+    That's it for now! Check back later!
   </div>
 </template>
 

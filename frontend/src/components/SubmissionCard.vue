@@ -15,7 +15,7 @@ defineProps<{submission: Submission, showAccepted: boolean}>();
             <router-link :to="{ name: 'Team', params: { id: submission.team.id } }">
               <h3 class="card-title d-flex align-items-center">{{ submission.team.name }} <font-awesome-icon icon="fa-solid fa-angle-right" class="fs-6 ms-2 text-secondary"/></h3>
             </router-link>
-            <p class="card-subtitle mb-2 text-body-secondary">{{ submission.challenge.name }}</p>
+            <p class="card-subtitle mb-2 text-body-secondary">{{ submission.challenge.name }} - {{ submission.challenge.tournament.name }}</p>
             <template v-if="showAccepted">
               <div v-if="submission.accepted" class="badge bg-success">Accepted</div>
               <div v-else-if="submission.accepted === false" class="badge bg-danger">Denied</div>

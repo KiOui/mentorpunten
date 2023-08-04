@@ -1,3 +1,5 @@
+import type Tournament from "@/models/tournament.model";
+
 export default interface Challenge {
     id: number;
     name: string;
@@ -9,4 +11,5 @@ export default interface Challenge {
     active_until: string | null;
     points: number;
     completed: boolean | null;
+    tournament: Tournament;
 }

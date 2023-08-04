@@ -4,7 +4,7 @@ from rest_framework.fields import BooleanField, SerializerMethodField
 from challenges import models
 from challenges.models import Submission
 from mentorpunten.api.serializers import WritableModelSerializer
-from tournaments.api.v1.serializers import TeamSerializer
+from tournaments.api.v1.serializers import TeamSerializer, TournamentSerializer
 from transactions.api.v1.serializers import TransactionSerializer
 from users.api.v1.serializers import UserSerializer
 from drf_spectacular.utils import extend_schema_field
@@ -28,6 +28,7 @@ class ChallengeSerializer(serializers.ModelSerializer):
     """Challenge serializer."""
 
     completed = SerializerMethodField()
+    tournament = TournamentSerializer(many=False, read_only=True)
 
     @extend_schema_field(serializers.BooleanField)
     def get_completed(self, instance):
@@ -42,8 +43,8 @@ class ChallengeSerializer(serializers.ModelSerializer):
         """Meta class."""
 
         model = models.Challenge
-        fields = ["id", "name", "slug", "description", "image", "disabled", "active_from", "active_until", "points", "completed"]
-        read_only_fields = ["id", "name", "slug", "description", "image", "disabled", "active_from", "active_until", "points", "completed"]
+        fields = ["id", "name", "slug", "description", "image", "tournament", "disabled", "active_from", "active_until", "points", "completed"]
+        read_only_fields = ["id", "name", "slug", "description", "image", "tournament", "disabled", "active_from", "active_until", "points", "completed"]
 
 
 class SubmissionSerializer(WritableModelSerializer):
