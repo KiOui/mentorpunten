@@ -7,7 +7,7 @@ import type Tournament from "@/models/tournament.model";
 import type Transaction from "@/models/transaction.model";
 import TransactionCard from "@/components/TransactionCard.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import BackButtonNavBar from "@/components/BackButtonNavBar.vue";
+import Header from "@/components/Header.vue";
 
 const props = defineProps<{id: number}>();
 
@@ -77,7 +77,7 @@ const tournamentRanking = computed(() => {
 </script>
 
 <template>
-  <BackButtonNavBar/>
+  <Header :show-back-button="true"/>
   <div class="feed-container mx-auto">
     <Loader v-if="teamLoading === true" size="60px" background-color="#000000"/>
     <div v-else-if="teamLoading === null" class="alert alert-warning">

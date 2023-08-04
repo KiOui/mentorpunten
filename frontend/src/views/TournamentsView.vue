@@ -4,6 +4,7 @@
   import {onMounted, ref} from 'vue';
   import type Tournament from "@/models/tournament.model";
   import Loader from "@/components/Loader.vue";
+  import Header from "@/components/Header.vue";
 
   const ApiService = useApiService();
   const tournaments = ref<Tournament[] | null>(null);
@@ -20,6 +21,7 @@
 </script>
 
 <template>
+  <Header :show-back-button="false"/>
   <div class="feed-container mx-auto">
     <Loader v-if="tournamentsLoading === true" size="60px" background-color="#000000"/>
     <div v-else-if="tournamentsLoading === null" class="alert alert-warning">

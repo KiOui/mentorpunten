@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import SubmissionsList from "@/components/SubmissionsList.vue";
+import Header from "@/components/Header.vue";
 </script>
 
 <template>
+  <Header :show-back-button="false"/>
   <div class="feed-container mx-auto">
     <SubmissionsList :show-accepted="false" :submission-search-filters="[['accepted', 'true']]" no-submissions-warning="No submissions yet, why don't you make the first one?"/>
   </div>

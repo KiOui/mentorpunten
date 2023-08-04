@@ -4,6 +4,7 @@
   import {onMounted, ref} from 'vue';
   import type Challenge from "@/models/challenge.model";
   import Loader from "@/components/Loader.vue";
+  import Header from "@/components/Header.vue";
 
   const ApiService = useApiService();
   const challenges = ref<Challenge[] | null>(null);
@@ -20,6 +21,7 @@
 </script>
 
 <template>
+  <Header :show-back-button="true"/>
   <div class="feed-container mx-auto">
     <Loader v-if="challengesLoading === true" size="60px" background-color="#000000"/>
     <div v-else-if="challengesLoading === null" class="alert alert-warning">

@@ -2,13 +2,12 @@
 import {useCredentialsStore} from '@/stores/credentials.module';
 import useApiService from "@/common/api.service";
 import {onMounted, ref, toRef} from 'vue';
-import Navbar from "@/components/BackButtonNavBar.vue";
 import type Challenge from "@/models/challenge.model";
 import Loader from "@/components/Loader.vue";
 import type ChallengeUser from "@/models/challengeUser.model";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {useToast} from "vue-toastification";
-import BackButtonNavBar from "@/components/BackButtonNavBar.vue";
+import Header from "@/components/Header.vue";
 
 const props = defineProps<{ id: number }>();
 
@@ -77,7 +76,7 @@ function startUpload() {
 </script>
 
 <template>
-  <BackButtonNavBar/>
+  <Header :show-back-button="true"/>
   <div v-if="challenge !== null" class="custom-card">
         <div class="row">
           <div class="col-8">

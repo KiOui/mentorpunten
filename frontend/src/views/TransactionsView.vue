@@ -6,7 +6,7 @@ import type Team from "@/models/team.model";
 import useApiService from "@/common/api.service";
 import TransactionsList from "@/components/TransactionsList.vue";
 import Loader from "@/components/Loader.vue";
-import BackButtonNavBar from "@/components/BackButtonNavBar.vue";
+import Header from "@/components/Header.vue";
 
 const props = defineProps<{id: number}>();
 
@@ -26,7 +26,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <BackButtonNavBar/>
+  <Header :show-back-button="true"/>
   <div class="feed-container mx-auto">
     <Loader v-if="teamLoading === true" size="60px" background-color="#000000"/>
     <div v-else-if="teamLoading === null" class="alert alert-warning">
