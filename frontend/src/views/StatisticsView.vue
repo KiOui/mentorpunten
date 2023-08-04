@@ -32,9 +32,6 @@
 </script>
 
 <template>
-<<<<<<< HEAD
-  <Header :show-back-button="false"/>
-=======
   <div class="feed-container my-5 mx-auto">
     <Loader v-if="tournamentsLoading === true" size="60px" background-color="#000000"/>
     <div v-else-if="tournamentsLoading === null" class="alert alert-warning">
@@ -42,5 +39,4 @@
     </div>
     <TournamentStatisticsCard v-else-if="!tournamentsLoading && tournaments !== null" v-for="tournament in tournaments" v-bind:tournament="tournament" v-bind:key="tournament.id" />
   </div>
->>>>>>> df059a0e285f8bf274a4353572956728a3c4c3fc
 </template>
