@@ -1,13 +1,13 @@
 <script setup lang="ts">
-  import { useUserStore } from '@/stores/user.module';
+  import { useCredentialsStore } from '@/stores/credentials.module';
   import useApiService from "@/common/api.service";
   import {computed, ComputedRef, onMounted, ref, toRaw} from 'vue';
   import type Team from "@/models/team.model";
   import Loader from "@/components/Loader.vue";
   import Header from "@/components/Header.vue";
 
-  const store = useUserStore();
-  const ApiService = useApiService(store);
+  const store = useCredentialsStore();
+  const ApiService = useApiService();
   const teams = ref<Team[] | null>(null);
   const teamsLoading = ref<boolean>(true);
 

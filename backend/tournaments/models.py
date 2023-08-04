@@ -18,6 +18,11 @@ class TournamentQueryset(models.QuerySet):
         current_time = timezone.now()
         return self.filter(active_from__lte=current_time, active_until__gt=current_time)
 
+    def revealed(self):
+        """Only revealed Tournaments."""
+        current_time = timezone.now()
+        return self.filter(active_from__lte=current_time)
+
 
 class TournamentManager(QueryablePropertiesManager):
     """Custom manager for Tournaments."""
@@ -29,6 +34,10 @@ class TournamentManager(QueryablePropertiesManager):
     def active_tournaments(self):
         """Only active Tournaments."""
         return self.get_queryset().active()
+
+    def revealed_tournaments(self):
+        """Only revealed Tournaments."""
+        return self.get_queryset().revealed()
 
 
 class Tournament(models.Model):

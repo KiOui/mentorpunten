@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import {useUserStore} from "@/stores/user.module";
+  import { useCredentialsStore } from "@/stores/credentials.module";
   import useApiService from "@/common/api.service";
   import Loader from "@/components/Loader.vue";
   import {computed, ref} from "vue";
@@ -20,7 +20,7 @@
 
   const router = useRouter();
 
-  const store = useUserStore();
+  const store = useCredentialsStore();
   const ApiService = useApiService(store);
 
   function logout() {

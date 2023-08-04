@@ -3,15 +3,14 @@
 import SubmissionCard from "@/components/SubmissionCard.vue";
 import {computed, onMounted, ref} from "vue";
 import Submission from "@/models/submission.model";
-import {useUserStore} from "@/stores/user.module";
+import { useCredentialsStore } from "@/stores/credentials.module";
 import useApiService from "@/common/api.service";
 import {useToast} from "vue-toastification";
 import Loader from "@/components/Loader.vue";
 
-const props = defineProps<{submissionSearchFilters: string[][], showAccepted: boolean}>();
+const props = defineProps<{submissionSearchFilters: string[][], showAccepted: boolean, noSubmissionsWarning: string}>();
 
-const store = useUserStore();
-const ApiService = useApiService(store);
+const ApiService = useApiService();
 
 const toast = useToast();
 
@@ -80,7 +79,7 @@ function refresh() {
   </div>
   <div v-if="submissions.length === 0 && !submissionsLoading">
     <div class="alert alert-warning">
-      Your team has not made any submissions for this challenge yet.
+      {{ noSubmissionsWarning }}
     </div>
   </div>
   <Loader v-if="submissionsLoading" size="60px" background-color="#000000"/>

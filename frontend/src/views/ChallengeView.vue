@@ -1,15 +1,13 @@
 <script lang="ts" setup>
-import {useUserStore} from '@/stores/user.module';
+import {useCredentialsStore} from '@/stores/credentials.module';
 import useApiService from "@/common/api.service";
-import {computed, onMounted, ref, toRef} from 'vue';
+import {onMounted, ref, toRef} from 'vue';
 import Navbar from "@/components/Navbar.vue";
 import type Challenge from "@/models/challenge.model";
 import Loader from "@/components/Loader.vue";
-import type Submission from "@/models/submission.model";
 import type ChallengeUser from "@/models/challengeUser.model";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {useToast} from "vue-toastification";
-import SubmissionsList from "@/components/SubmissionsList.vue";
 
 const props = defineProps<{ id: number }>();
 
@@ -17,8 +15,8 @@ const submissionsList = ref();
 
 const toast = useToast();
 
-const store = useUserStore();
-const ApiService = useApiService(store);
+const store = useCredentialsStore();
+const ApiService = useApiService();
 let challengeLoading = ref<boolean | null>(true);
 let challenge = ref<Challenge | null>(null);
 let groupLoading = ref<boolean | null>(true);
@@ -114,7 +112,7 @@ function startUpload() {
   </div>
   <div v-if="store.loggedIn" class="container mt-5">
     <h2>Submissions</h2>
-    <SubmissionsList ref="submissionsList" show-accepted="true" submission-search-filters="[['team', String(groupData.team.id)], ['challenge', String(id.value)]]"/>
+    <SubmissionsList ref="submissionsList" show-accepted="true" submission-search-filters="[['team', String(groupData.team.id)], ['challenge', String(id.value)]]" no-submissions-warning="'Your team has not made any submissions for this challenge yet.'"/>
   </div>
 </template>
 

@@ -35,20 +35,21 @@ class TeamAdminForm(forms.ModelForm):
     def clean_members(self):
         """Clean members."""
         members = self.cleaned_data.get("members")
+        tournament = self.cleaned_data.get("tournament")
 
         if self.instance:
-            teams = Team.objects.filter(members__in=members).exclude(id=self.instance.id)
+            teams = Team.objects.filter(members__in=members, tournament=tournament).exclude(id=self.instance.id)
         else:
-            teams = Team.objects.filter(members__in=members)
+            teams = Team.objects.filter(members__in=members, tournament=tournament)
 
         if teams.count() > 0:
             # Some of the team members are in other teams.
             error_message = []
             for member in members:
                 if self.instance:
-                    member_team = Team.objects.filter(members__in=[member]).exclude(id=self.instance.id)
+                    member_team = Team.objects.filter(members__in=[member], tournament=tournament).exclude(id=self.instance.id)
                 else:
-                    member_team = Team.objects.filter(members__in=[member])
+                    member_team = Team.objects.filter(members__in=[member], tournament=tournament)
 
                 if member_team.count() > 0:
                     error_message.append(f"'{member} is also a member of team(s): {', '.join([team.name for team in member_team])}'")

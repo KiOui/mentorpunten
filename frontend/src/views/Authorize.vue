@@ -1,12 +1,11 @@
 <script setup type="ts">
   import { onMounted } from 'vue'
-  import { useUserStore} from "@/stores/user.module";
+  import { useCredentialsStore } from "@/stores/credentials.module";
   import Loader from "@/components/Loader.vue";
   import { parseHash } from "@/common/general.service";
   import router from "@/router";
-  import useApiService from "@/common/api.service";
 
-  const store = useUserStore()
+  const CredentialsStore = useCredentialsStore();
 
   function authorize() {
     try {
@@ -22,11 +21,10 @@
           let tokenType = parsedHash["token_type"];
           let scope = parsedHash["scope"].split("+");
           let expires = Date.now() + (parsedHash["expires_in"] * 1000) - 1000;
-          store.login({
+          CredentialsStore.login({
             accessToken, expires, tokenType, scope
           });
-          store.storeState();
-          const ApiService = useApiService(store);
+          CredentialsStore.storeState();
           router.push({ name: "Index" });
         } else {
           alert("State key did not match, please try again...");

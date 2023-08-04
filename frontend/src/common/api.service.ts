@@ -1,32 +1,31 @@
 import type Announcement from "@/models/announcement.model";
 import type User from "@/models/user.model";
 import type Submission from "@/models/submission.model";
-import {useUserStore} from "@/stores/user.module";
 import type ChallengeUser from "@/models/challengeUser.model";
 import type Challenge from "@/models/challenge.model";
-import type _Challenge from "@/models/api/_challenge.model";
+import { useCredentialsStore } from "@/stores/credentials.module";
 import type Team from "@/models/team.model";
 import type Paginated from "@/models/paginated.model";
+import type Tournament from "@/models/tournament.model";
 
 class _ApiService {
   authorizationEndpoint: string;
   baseUri: string;
   clientId: string;
   redirectUri: string;
-  authStore: ReturnType<typeof useUserStore>;
+  authStore: ReturnType<typeof useCredentialsStore>;
 
   constructor(
     clientId: string,
     baseUri: string,
     authorizationEndpoint: string,
-    redirectUri: string,
-    authStore: ReturnType<typeof useUserStore>,
+    redirectUri: string
   ) {
     this.clientId = clientId;
     this.baseUri = baseUri;
     this.authorizationEndpoint = authorizationEndpoint;
     this.redirectUri = redirectUri;
-    this.authStore = authStore;
+    this.authStore = useCredentialsStore();
   }
 
   getAuthorizationUri(): string {
@@ -86,6 +85,10 @@ class _ApiService {
     }
   }
 
+  async getTournaments(parameters: URLSearchParams | null = null): Promise<Tournament[]> {
+    return this.get<Tournament[]>(this._addParametersToResource("/tournaments/", parameters));
+  }
+
   async getChallengesSubmissions(parameters: URLSearchParams | null = null): Promise<Paginated<Submission[]>> {
     return this.get<Paginated<Submission[]>>(this._addParametersToResource("/challenges/submissions/", parameters));
   }
@@ -94,8 +97,8 @@ class _ApiService {
     return this.post<Submission>("/challenges/submissions/", data, headers);
   }
 
-  async getChallengesTeams(): Promise<Team[]> {
-    return this.get<Team[]>("/challenges/teams/");
+  async getChallengesTeams(parameters: URLSearchParams | null = null): Promise<Team[]> {
+    return this.get<Team[]>(this._addParametersToResource("/tournaments/teams/", parameters));
   }
 
   async getChallengesUsersMe(): Promise<ChallengeUser> {
@@ -161,13 +164,12 @@ class _ApiService {
   }
 }
 
-const useApiService = (authStore: ReturnType<typeof useUserStore>) => {
+const useApiService = () => {
   return new _ApiService(
       import.meta.env.VITE_API_OAUTH_CLIENT_ID,
       import.meta.env.VITE_API_BASE_URI,
       import.meta.env.VITE_API_AUTHORIZATION_ENDPOINT,
-      import.meta.env.VITE_API_OAUTH_REDIRECT_URI,
-      authStore
+      import.meta.env.VITE_API_OAUTH_REDIRECT_URI
   )
 }
 

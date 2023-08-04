@@ -1,33 +1,29 @@
 <script setup lang="ts">
-  import { useUserStore } from '@/stores/user.module';
   import useApiService from "@/common/api.service";
   import {onMounted, ref} from "vue";
   import type User from "@/models/user.model";
+  import {useCredentialsStore} from "@/stores/credentials.module";
 
-  const store = useUserStore();
+  const CredentialsStore = useCredentialsStore();
 
-  const ApiService = useApiService(store);
+  const ApiService = useApiService();
 
   let user = ref<User|null>(null);
 
   function startLogin(): void {
-    store.newRandomState();
-    store.storeState();
+    CredentialsStore.newRandomState();
+    CredentialsStore.storeState();
     window.location.href = ApiService.getAuthorizeRedirectURL(
-        store.stateKey,
+        CredentialsStore.stateKey,
         null,
         false
     );
   }
 
   onMounted(() => {
-    if (!store.loggedIn) {
-      return;
-    }
-
-    ApiService.getUsersMe().then(userData => {
-      user.value = userData;
-    });
+    CredentialsStore.getUser.then(storedUser => {
+      user.value = storedUser;
+    })
   });
 </script>
 
@@ -50,7 +46,7 @@
             <font-awesome-icon icon="fa-solid fa-chart-line"/>
           </li>
         </router-link>
-        <router-link :to="{ name: 'Profile' }" v-if="store.loggedIn" class="text-white nav-item flex-grow-1 text-center">
+        <router-link :to="{ name: 'Profile' }" v-if="user !== null" class="text-white nav-item flex-grow-1 text-center">
           <li>
             <font-awesome-icon icon="fa-solid fa-user"/>
           </li>
