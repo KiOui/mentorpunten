@@ -1,7 +1,5 @@
 import { defineStore } from 'pinia'
 import CryptoService from "@/common/crypto.service";
-import User from "@/models/user.model";
-import useApiService from "@/common/api.service";
 
 const TOKEN_KEY = "credentials";
 const OAUTH_STATE_KEY = "oauth_state";
@@ -15,8 +13,6 @@ export const useCredentialsStore = defineStore('credentials', {
         credentials: savedCredentials ? JSON.parse(savedCredentials) : null,
         /** @type string|null */
         stateKey: savedStateKey ? JSON.parse(savedStateKey) : null,
-        /** @type User|null */
-        user: null,
     }),
     getters: {
         accessToken(state): null|string {
@@ -29,24 +25,10 @@ export const useCredentialsStore = defineStore('credentials', {
         loggedIn(state): boolean {
             return state.credentials !== null && state.credentials.expires >= Date.now();
         },
-        async getUser(state): Promise<User | null> {
-            if (state.user !== null) {
-                return state.user;
-            } else {
-                const ApiService = useApiService();
-                return ApiService.getUsersMe().then(result => {
-                    state.user = result;
-                    return state.user;
-                }).catch(() => {
-                    return null;
-                });
-            }
-        }
     },
     actions: {
         logOut() {
             this.credentials = null;
-            this.user = null;
         },
         storeState(): void {
             localStorage.setItem(TOKEN_KEY, JSON.stringify(this.credentials));
