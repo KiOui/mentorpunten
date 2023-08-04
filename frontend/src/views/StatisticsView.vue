@@ -45,8 +45,6 @@
       }
     }
 
-    console.log(sortedTeams);
-
     const keys = Object.keys(sortedTeams);
     for (let i = 0; i < keys.length; i++) {
       const currentKey = Number(keys[i]);
@@ -55,7 +53,6 @@
       });
     }
 
-    console.log(Object.keys(sortedTeams));
     return sortedTeams;
   });
 </script>

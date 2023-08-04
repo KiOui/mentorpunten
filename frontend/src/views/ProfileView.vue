@@ -64,7 +64,7 @@
     <template v-else-if="user !== null">
       <div class="custom-card">
         <div class="d-flex flex-column">
-          <div class="d-flex justify-content-center">
+          <div class="d-flex justify-content-center mt-3">
             <img :src="user.profile_image" class="profile-image" alt="Profile image" style="color:#d9d9d9; background-color: #d9d9d9;"/>
           </div>
         </div>

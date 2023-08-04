@@ -1,8 +1,24 @@
 <script setup lang="ts">
 import {useRouter} from "vue-router";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import useApiService from "@/common/api.service";
+import {useCredentialsStore} from "@/stores/credentials.module";
 
-const props = defineProps<{showBackButton: boolean}>();
+defineProps<{showBackButton: boolean}>();
+
+const CredentialsStore = useCredentialsStore();
+
+const ApiService = useApiService();
+
+function startLogin(): void {
+  CredentialsStore.newRandomState();
+  CredentialsStore.storeState();
+  window.location.href = ApiService.getAuthorizeRedirectURL(
+      CredentialsStore.stateKey,
+      null,
+      false
+  );
+}
 
 const router = useRouter();
 
@@ -17,11 +33,25 @@ function goBack() {
 </script>
 
 <template>
-  <a v-if="showBackButton" v-on:click="goBack" style="position:absolute; margin-left: 1rem; margin-top: 0.75rem; color: white;">
-    <font-awesome-icon icon="fa-solid fa-arrow-left"/>
-  </a>
-  <div class="header text-center py-2">
-    <h1>MENTORPUNTEN</h1>
+  <div class="header">
+    <div class="feed-container mx-auto d-flex justify-content-between">
+      <div class="col-1 d-flex align-items-center">
+        <a v-if="showBackButton" v-on:click="goBack">
+          <font-awesome-icon icon="fa-solid fa-arrow-left"/>
+        </a>
+      </div>
+      <div class="col-10">
+        <h1 class="text-center">MENTORPUNTEN</h1>
+      </div>
+      <div class="col-1 d-flex align-items-center">
+        <router-link :to="{ name: 'Profile' }" v-if="CredentialsStore.loggedIn" class="text-white">
+          <font-awesome-icon icon="fa-solid fa-user"/>
+        </router-link>
+        <a v-else @click="startLogin">
+          <font-awesome-icon icon="fa-solid fa-right-to-bracket"/>
+        </a>
+      </div>
+    </div>
   </div>
 </template>
 
