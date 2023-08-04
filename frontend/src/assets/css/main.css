@@ -95,6 +95,8 @@ footer .navbar {
   font-size: 1.5rem;
   text-transform: uppercase;
   margin: 0;
+  text-decoration: none;
+  color: black;
 }
 
 .submission-heading h4{
@@ -102,4 +104,6 @@ footer .navbar {
   font-size: 1rem;
   text-transform: uppercase;
   margin: 0;
+  text-decoration: none;
+  color: black;
 }
