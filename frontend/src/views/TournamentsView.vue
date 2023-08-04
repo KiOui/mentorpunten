@@ -11,12 +11,9 @@
     ApiService.getTournaments().then(result => {
       tournaments.value = result;
     });
-    console.log(tournaments)
   });
 </script>
 
 <template>
-    <div class="mt-5">
-        <TournamentCard v-for="tournament in tournaments" v-bind:tournament="tournament" v-bind:key="tournament.id" />
-    </div>
+  <TournamentCard v-for="tournament in tournaments" v-bind:tournament="tournament" v-bind:key="tournament.id" />
 </template>

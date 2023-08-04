@@ -4,6 +4,7 @@
 #app {
   min-width: 100vw;
   min-height: 100vh;
+  background-color: #d9d9d9;
 }
 
 .navbar {
@@ -43,4 +44,30 @@ footer .navbar {
   font-family: 'Open sans';
   src: url('../fonts/OpenSans-Regular.ttf')
   format('truetype');
+}
+
+.custom-card {
+  border-radius: 0;
+  border: none;
+  background-color: white;
+  color: black;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  margin-top: 1rem;
+
+}
+
+.custom-card h1 {
+  font-family: 'Gill sans MT condensed';
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.custom-card h3 {
+  font-family: 'Open sans condensed';
+  font-size: 1.5rem;
+  margin: 0;
 }

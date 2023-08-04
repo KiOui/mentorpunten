@@ -4,19 +4,34 @@
     import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
     defineProps<{tournament: Tournament}>();
+
+    function start_end_time(tournament: Tournament): string {
+      if (tournament.active_from) {
+        const start_date = new Date(tournament.active_from);
+        const end_date = new Date(tournament.active_until);
+        const today_date = new Date();
+
+        return `${start_date.toLocaleDateString("en-GB")}, ${start_date.toLocaleTimeString(
+            "en-GB",
+          { hour: "2-digit", minute: "2-digit" }
+        )} until ${end_date.toLocaleDateString("en-GB")}, ${end_date.toLocaleTimeString(
+            "en-GB",
+          { hour: "2-digit", minute: "2-digit" }
+        )}`;
+      }
+      return "";
+    }
+    
 </script>
 
 <template>
-    <div class="mt-1 py-2 px-4">
-        <div class="row">
+    <router-link :to="{ name: 'Challenges', params: { id: tournament.id }}" style="text-decoration: none;">
+        <div class="custom-card">
             <h1>{{ tournament.name }}</h1>
+            <h3>{{ start_end_time(tournament) }}</h3>
         </div>
-        <div class="row">
-            <h3>{{ tournament.active_from }} until {{ tournament.active_until }}</h3>
-        </div>
-    </div>
+    </router-link>
 </template>
 
 <style scoped>
-
 </style>

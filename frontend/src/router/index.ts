@@ -16,9 +16,19 @@ const router = createRouter({
       component: TournamentsView
     },
     {
-      path: '/challenges',
+      path: '/challenges/:id',
       name: 'Challenges',
-      component: ChallengesView
+      component: ChallengesView,
+      props: (route) => {
+        const id= Number.parseInt(route.params.id, 10);
+        if (Number.isNaN(id)) {
+          router.push("/");
+          return;
+        }
+        return {
+          "id": id
+        };
+      }
     },
     {
       path: '/challenge/:id',
