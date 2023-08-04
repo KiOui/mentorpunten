@@ -161,5 +161,5 @@ class Transaction(models.Model):
 
         verbose_name = "transaction"
         verbose_name_plural = "transactions"
-        ordering = ["timestamp"]
-        get_latest_by = "timestamp"
+        ordering = ["-timestamp"]
+        get_latest_by = "-timestamp"
