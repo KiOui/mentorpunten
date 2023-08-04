@@ -1,6 +1,24 @@
 @import 'base.css';
 @import 'variables.css';
 
+@font-face {
+  font-family: 'Gill sans MT condensed';
+  src: url('../fonts/GillSansMT-Condensed.ttf')
+  format('truetype');
+}
+
+@font-face {
+  font-family: 'Open sans condensed';
+  src: url('../fonts/OpenSans-CondLight.ttf')
+  format('truetype');
+}
+
+@font-face {
+  font-family: 'Open sans';
+  src: url('../fonts/OpenSans-Regular.ttf')
+  format('truetype');
+}
+
 #app {
   min-width: 100vw;
   min-height: 100vh;
@@ -30,24 +48,10 @@ footer .navbar {
 .btn-primary {
   background-color: #E62272 !important;
   border-color: #E62272 !important;
-}
-
-@font-face {
-  font-family: 'Gill sans MT condensed';
-  src: url('../fonts/GillSansMT-Condensed.ttf')
-  format('truetype');
-}
-
-@font-face {
-  font-family: 'Open sans condensed';
-  src: url('../fonts/OpenSans-CondLight.ttf')
-  format('truetype');
-}
-
-@font-face {
-  font-family: 'Open sans';
-  src: url('../fonts/OpenSans-Regular.ttf')
-  format('truetype');
+  text-transform: uppercase;
+  font-family: 'Gill sans MT condensed' !important;
+  font-size: 1.2rem !important;
+  padding: 0.25rem 0.5rem !important;
 }
 
 .custom-card {
@@ -70,9 +74,24 @@ footer .navbar {
   margin: 0;
 }
 
+.custom-card h2 {
+  font-family: 'Gill sans MT condensed';
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  margin: 0;
+  margin-top: 1rem;
+}
+
 .custom-card h3 {
   font-family: 'Open sans condensed';
   font-size: 1.5rem;
+  margin: 0;
+}
+
+.custom-card h4 {
+  font-family: 'Open sans condensed';
+  font-size: 1.2rem;
+  text-transform: uppercase;
   margin: 0;
 }
 
@@ -81,6 +100,20 @@ footer .navbar {
   font-size: 1.2rem;
   margin: 0;
   line-height: 1;
+}
+
+.custom-card ul {
+  margin-top: 0.5rem;
+  list-style-type: none;
+  padding: 0;
+}
+
+.custom-card li {
+  font-family: 'Open sans condensed';
+  font-size: 1.2rem;
+  margin: 0;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
 .submission-heading {
@@ -95,6 +128,8 @@ footer .navbar {
   font-size: 1.5rem;
   text-transform: uppercase;
   margin: 0;
+  text-decoration: none;
+  color: black;
 }
 
 .submission-heading h4{
@@ -102,4 +137,6 @@ footer .navbar {
   font-size: 1rem;
   text-transform: uppercase;
   margin: 0;
+  text-decoration: none;
+  color: black;
 }

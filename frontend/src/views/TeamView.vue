@@ -78,59 +78,52 @@ const tournamentRanking = computed(() => {
 
 <template>
   <BackButtonNavBar/>
-  <div class="feed-container mx-auto my-5">
+  <div class="feed-container mx-auto">
     <Loader v-if="teamLoading === true" size="60px" background-color="#000000"/>
     <div v-else-if="teamLoading === null" class="alert alert-warning">
       There was an error loading this team, please try again.
     </div>
     <template v-else-if="!teamLoading && team !== null">
-      <div class="card mb-3">
-        <div class="card-header">
-          <div class="row">
-            <div class="col-8">
-              <h1>{{ team.name }}</h1>
-            </div>
-            <div class="col-4 text-end d-flex align-items-center justify-content-end">
-              <span v-if="team.account.balance < 0" class="badge bg-danger fs-6">- {{ team.account.balance * -1 }} points</span>
-              <span v-else-if="team.account.balance > 0" class="badge bg-success fs-6">{{ team.account.balance }} points</span>
-              <span v-else class="badge bg-info fs-6">{{ team.account.balance }} points</span>
-            </div>
-          </div>
+      <div class="custom-card text-center">
+        <h1> {{ team.name }}</h1>
+        <h4> total points: {{ team.account.balance }}</h4>
+      </div>
+
+      <div class="custom-card">
+        <h1 class="text-center">Tournament Rankings</h1>
+        <Loader v-if="teamsLoading === true || teams === null || team === null" size="60px" background-color="#000000"/>
+        <div v-else-if="teamsLoading === null || tournamentRanking === null" class="alert alert-warning">
+          There was an error loading the tournament ranking, please try again.
         </div>
-        <div class="card-body">
-          <h2>Tournament Rankings</h2>
-          <Loader v-if="teamsLoading === true || teams === null || team === null" size="60px" background-color="#000000"/>
-          <div v-else-if="teamsLoading === null || tournamentRanking === null" class="alert alert-warning">
-            There was an error loading the tournament ranking, please try again.
-          </div>
-          <div v-else class="d-flex justify-content-between">
-            <p>{{ team.tournament.name }}</p>
-            <p>#{{ tournamentRanking }}</p>
-          </div>
-          <h2>Group members</h2>
-          <ul>
-            <li v-for="member in team.members" v-bind:key="member.id">
-              {{ member.display_name }}
-            </li>
-          </ul>
+        <div v-else class="d-flex justify-content-between">
+          <h3>{{ team.tournament.name }}</h3>
+          <h3>#{{ tournamentRanking }}</h3>
         </div>
       </div>
-      <div class="card">
-        <div class="card-header">
-          <h2>Latest Transactions</h2>
-          <Loader v-if="latestTransactionsLoading === true" size="60px" background-color="#000000"/>
-          <div v-else-if="latestTransactionsLoading === null" class="alert alert-warning">
-            An error occurred during loading of the latest transactions, please try again.
-          </div>
-          <template v-else>
-            <TransactionCard v-for="transaction in latestTransactions" v-bind:key="transaction.id" v-bind:transaction="transaction"/>
-            <div class="w-100 d-flex justify-content-center my-3">
-              <router-link :to="{ name: 'Transactions', params: { id: team.id } }">
-                <button v-if="latestTransactions.length > 0" class="btn btn-primary">Show all transactions <font-awesome-icon icon="fa-solid fa-arrow-right"/></button>
-              </router-link>
-            </div>
-          </template>
+      
+      <div class="custom-card">
+        <h2>Group members</h2>
+        <ul>
+          <li v-for="member in team.members" v-bind:key="member.id">
+            {{ member.display_name }}
+          </li>
+        </ul>
+      </div>
+
+      <div class="custom-card">
+        <h2>Latest Transactions</h2>
+        <Loader v-if="latestTransactionsLoading === true" size="60px" background-color="#000000"/>
+        <div v-else-if="latestTransactionsLoading === null" class="alert alert-warning">
+          An error occurred during loading of the latest transactions, please try again.
         </div>
+        <template v-else>
+          <TransactionCard v-for="transaction in latestTransactions" v-bind:key="transaction.id" v-bind:transaction="transaction"/>
+          <div class="w-100 d-flex justify-content-center my-3">
+            <router-link :to="{ name: 'Transactions', params: { id: team.id } }">
+              <button v-if="latestTransactions.length > 0" class="btn btn-primary">Show all transactions</button>
+            </router-link>
+          </div>
+        </template>
       </div>
     </template>
   </div>
