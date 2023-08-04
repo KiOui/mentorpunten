@@ -9,18 +9,24 @@
 
   function authorize() {
     try {
-      const url = new URL(window.location);
+      const url = new URL(String(window.location));
       if (url.searchParams.get("error")) {
         alert(`Authorization failed: ${url.searchParams.get("error")}`);
       }
       else {
-        const parsedHash = parseHash(url.hash.substring(1));
-        let stateKey = parsedHash["state"];
-        if (stateKey === store.stateKey) {
-          let accessToken = parsedHash["access_token"];
-          let tokenType = parsedHash["token_type"];
-          let scope = parsedHash["scope"].split("+");
-          let expires = Date.now() + (parsedHash["expires_in"] * 1000) - 1000;
+        let parsedHash;
+        try {
+          parsedHash = parseHash(url.hash.substring(1));
+        } catch (e) {
+          alert(`An error occurred while parsing the response from the authentication server: ${e}. Please try again.`);
+          return;
+        }
+        let stateKey = parsedHash.state;
+        if (stateKey === CredentialsStore.stateKey) {
+          let accessToken = parsedHash.accessToken;
+          let tokenType = parsedHash.tokenType;
+          let scope = parsedHash.scope.split("+");
+          let expires = Date.now() + (Number(parsedHash.expiresIn) * 1000) - 1000;
           CredentialsStore.login({
             accessToken, expires, tokenType, scope
           });
@@ -35,7 +41,6 @@
     }
   }
 
-  // lifecycle hooks
   onMounted(() => {
     authorize();
   });
