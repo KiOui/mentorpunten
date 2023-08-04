@@ -11,7 +11,7 @@
 
   onMounted(() => {
     ApiService.getChallenges().then(result => {
-      challenges.value = result;
+      challenges.value = result.results;
       challengesLoading.value = false;
     }).catch(() => {
       challengesLoading.value = null;

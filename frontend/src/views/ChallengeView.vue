@@ -8,6 +8,7 @@ import Loader from "@/components/Loader.vue";
 import type ChallengeUser from "@/models/challengeUser.model";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {useToast} from "vue-toastification";
+import BackButtonNavBar from "@/components/BackButtonNavBar.vue";
 
 const props = defineProps<{ id: number }>();
 
@@ -76,7 +77,7 @@ function startUpload() {
 </script>
 
 <template>
-  <Navbar back="Challenges"/>
+  <BackButtonNavBar/>
   <div v-if="challenge !== null" class="custom-card">
         <div class="row">
           <div class="col-8">
