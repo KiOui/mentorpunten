@@ -27,7 +27,7 @@ onMounted(() => {
 
 <template>
   <BackButtonNavBar/>
-  <div class="feed-container mx-auto my-5">
+  <div class="feed-container mx-auto">
     <Loader v-if="teamLoading === true" size="60px" background-color="#000000"/>
     <div v-else-if="teamLoading === null" class="alert alert-warning">
       There was an error loading this team, please try again.
