@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import useApiService from "@/common/api.service";
-  import {onMounted, ref} from "vue";
+  import {computed, onMounted, ref} from "vue";
   import type Tournament from "@/models/tournament.model";
   import Loader from "@/components/Loader.vue";
   import TournamentStatisticsCard from "@/components/TournamentStatisticsCard.vue";
@@ -28,7 +28,35 @@
     }).catch(() => {
       teamsLoading.value = null;
     })
-  })
+  });
+
+  const sortedTeamsPerTournament = computed(() => {
+    if (teams.value === null) {
+      return {};
+    }
+    const sortedTeams: { [tournamentId: number]: Team[] } = {};
+    for (let i = 0; i < teams.value.length; i++) {
+      const currentTeam = teams.value[i];
+      if (Object.keys(sortedTeams).includes(String(currentTeam.tournament.id))) {
+        sortedTeams[currentTeam.tournament.id] = sortedTeams[currentTeam.tournament.id].concat(currentTeam);
+      } else {
+        sortedTeams[currentTeam.tournament.id] = [currentTeam];
+      }
+    }
+
+    console.log(sortedTeams);
+
+    const keys = Object.keys(sortedTeams);
+    for (let i = 0; i < keys.length; i++) {
+      const currentKey = Number(keys[i]);
+      sortedTeams[currentKey] = sortedTeams[currentKey].sort((teamA: Team, teamB: Team) => {
+        return teamB.account.balance - teamA.account.balance;
+      });
+    }
+
+    console.log(Object.keys(sortedTeams));
+    return sortedTeams;
+  });
 </script>
 
 <template>
@@ -37,6 +65,11 @@
     <div v-else-if="tournamentsLoading === null" class="alert alert-warning">
       Failed to load tournaments, please try again.
     </div>
-    <TournamentStatisticsCard v-else-if="!tournamentsLoading && tournaments !== null" v-for="tournament in tournaments" v-bind:tournament="tournament" v-bind:key="tournament.id" />
+    <TournamentStatisticsCard
+        v-else-if="!tournamentsLoading && tournaments !== null"
+        v-for="tournament in tournaments"
+        v-bind:tournament="tournament"
+        v-bind:key="tournament.id"
+        v-bind:teams="Object.keys(sortedTeamsPerTournament).includes(String(tournament.id)) ? sortedTeamsPerTournament[tournament.id] : []"/>
   </div>
 </template>

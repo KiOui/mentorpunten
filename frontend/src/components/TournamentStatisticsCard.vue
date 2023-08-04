@@ -1,33 +1,25 @@
 <script setup lang="ts">
-    import { RouterLink } from 'vue-router'
-    import type Tournament from "@/models/tournament.model";
+import { RouterLink } from 'vue-router'
+import type Tournament from "@/models/tournament.model";
+import type Team from "@/models/team.model";
+import {computed} from "vue";
 
-    defineProps<{tournament: Tournament}>();
+const props = defineProps<{tournament: Tournament, teams: Team[]}>();
 
-    function start_end_time(tournament: Tournament): string {
-      if (tournament.active_from) {
-        const start_date = new Date(tournament.active_from);
-        const end_date = new Date(tournament.active_until);
-        const today_date = new Date();
-
-        return `${start_date.toLocaleDateString("en-GB")}, ${start_date.toLocaleTimeString(
-            "en-GB",
-          { hour: "2-digit", minute: "2-digit" }
-        )} until ${end_date.toLocaleDateString("en-GB")}, ${end_date.toLocaleTimeString(
-            "en-GB",
-          { hour: "2-digit", minute: "2-digit" }
-        )}`;
-      }
-      return "";
-    }
-    
+const firstThreeTeams = computed(() => {
+  return props.teams.slice(0, 3);
+});
 </script>
 
 <template>
-    <router-link :to="{ name: 'Challenges', params: { id: tournament.id }}" style="text-decoration: none;">
+    <router-link :to="{ name: 'TournamentStatistics', params: { id: tournament.id }}" style="text-decoration: none;">
         <div class="custom-card">
             <h1>{{ tournament.name }}</h1>
-            <h3>{{ start_end_time(tournament) }}</h3>
+            <ul>
+              <li v-for="(team, index) in firstThreeTeams" v-bind:key="team.id">
+                #{{index + 1}}: {{ team.name }}, {{ team.account.balance }} points
+              </li>
+            </ul>
         </div>
     </router-link>
 </template>

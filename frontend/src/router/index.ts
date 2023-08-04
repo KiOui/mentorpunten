@@ -8,6 +8,7 @@ import ChallengeView from '../views/ChallengeView.vue'
 import TournamentsView from '../views/TournamentsView.vue'
 import TransactionsView from "@/views/TransactionsView.vue";
 import ProfileSubmissionsView from "@/views/ProfileSubmissionsView.vue";
+import TournamentStatisticsView from "@/views/TournamentStatisticsView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,6 +23,10 @@ const router = createRouter({
       name: 'Challenges',
       component: ChallengesView,
       props: (route) => {
+        if (Array.isArray(route.params.id)) {
+          router.push("/");
+          return;
+        }
         const id= Number.parseInt(route.params.id, 10);
         if (Number.isNaN(id)) {
           router.push("/");
@@ -37,6 +42,10 @@ const router = createRouter({
       name: 'Challenge',
       component: ChallengeView,
       props: (route) => {
+        if (Array.isArray(route.params.id)) {
+          router.push("/");
+          return;
+        }
         const id= Number.parseInt(route.params.id, 10);
         if (Number.isNaN(id)) {
           router.push("/");
@@ -53,6 +62,25 @@ const router = createRouter({
       component: StatisticsView
     },
     {
+      path: '/statistics/tournament/:id',
+      name: 'TournamentStatistics',
+      component: TournamentStatisticsView,
+      props: (route) => {
+        if (Array.isArray(route.params.id)) {
+          router.push("/");
+          return;
+        }
+        const id= Number.parseInt(route.params.id, 10);
+        if (Number.isNaN(id)) {
+          router.push("/");
+          return;
+        }
+        return {
+          "id": id
+        };
+      }
+    },
+    {
       path: '/profile',
       name: 'Profile',
       component: ProfileView
@@ -62,6 +90,10 @@ const router = createRouter({
       name: 'ProfileSubmissions',
       component: ProfileSubmissionsView,
       props: (route) => {
+        if (Array.isArray(route.params.id)) {
+          router.push("/");
+          return;
+        }
         const id= Number.parseInt(route.params.id, 10);
         if (Number.isNaN(id)) {
           router.push("/");
@@ -77,6 +109,10 @@ const router = createRouter({
       name: 'Team',
       component: TeamView,
       props: (route) => {
+        if (Array.isArray(route.params.id)) {
+          router.push("/");
+          return;
+        }
         const id= Number.parseInt(route.params.id, 10);
         if (Number.isNaN(id)) {
           router.push("/");
@@ -92,6 +128,10 @@ const router = createRouter({
       name: 'Transactions',
       component: TransactionsView,
       props: (route) => {
+        if (Array.isArray(route.params.id)) {
+          router.push("/");
+          return;
+        }
         const id= Number.parseInt(route.params.id, 10);
         if (Number.isNaN(id)) {
           router.push("/");
