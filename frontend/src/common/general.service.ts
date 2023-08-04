@@ -1,36 +1,34 @@
 
 
 function parseHash(hashString: string): {
-    access_token: string,
-    expires_in: string,
-    token_type: string,
+    accessToken: string,
+    expiresIn: string,
+    tokenType: string,
     scope: string,
     state: string
 } {
-    const returnValue: { access_token: string | null, expires_in: string | null, token_type: string | null, scope: string | null, state: string | null } = {
-        "access_token": null,
-        "expires_in": null,
-        "token_type": null,
-        "scope": null,
-        "state": null
-    }
-    const splittedHashString = hashString.split('&');
-    for (let i = 0; i < splittedHashString.length; i++) {
-        const item = splittedHashString[i];
+    let accessToken: string | null = null;
+    let expiresIn: string | null = null;
+    let tokenType: string | null = null;
+    let scope: string | null = null;
+    let state: string | null = null;
+    const splitHashString = hashString.split('&');
+    for (let i = 0; i < splitHashString.length; i++) {
+        const item = splitHashString[i];
         const parts = item.split('=');
         if (parts.length === 2) {
             const key = parts[0];
             const value = parts[1];
             if (key === "access_token") {
-                returnValue.access_token = value;
+                accessToken = value;
             } else if (key === "expires_in" ) {
-                returnValue.expires_in = value;
+                expiresIn = value;
             } else if (key === "token_type") {
-                returnValue.token_type = value;
+                tokenType = value;
             } else if (key === "scope") {
-                returnValue.scope = value;
+                scope = value;
             } else if (key === "state") {
-                returnValue.state = value;
+                state = value;
             } else {
                 throw new Error("Unknown key found in return hash.")
             }
@@ -39,14 +37,29 @@ function parseHash(hashString: string): {
         }
     }
 
-    const objectKeys = Object.keys(returnValue);
-    for (let i = 0; i < objectKeys.length; i++) {
-        const key = objectKeys[i];
-        if (returnValue[key] === null) {
-            throw new Error("One of the fields is not defined.")
+    if (accessToken === null) {
+        throw new Error("Access token not found in hash.");
+    }
+    else if (expiresIn === null) {
+        throw new Error("Expires in not found in hash.");
+    }
+    else if (tokenType === null) {
+        throw new Error("Token type not found in hash.");
+    }
+    else if (scope === null) {
+        throw new Error("Scope not found in hash.");
+    }
+    else if (state === null) {
+        throw new Error("State not found in hash.");
+    } else {
+        return {
+            accessToken: accessToken,
+            expiresIn: expiresIn,
+            tokenType: tokenType,
+            scope: scope,
+            state: state
         }
     }
-    return returnValue;
 }
 
 export { parseHash };
