@@ -3,18 +3,28 @@
   import useApiService from "@/common/api.service";
   import {onMounted, ref} from 'vue';
   import type Challenge from "@/models/challenge.model";
+  import Loader from "@/components/Loader.vue";
 
   const ApiService = useApiService();
-  let challenges = ref<Challenge[] | null>(null);
+  const challenges = ref<Challenge[] | null>(null);
+  const challengesLoading = ref<boolean | null>(true);
 
   onMounted(() => {
     ApiService.getChallenges().then(result => {
       challenges.value = result;
-      console.log(challenges.value);
+      challengesLoading.value = false;
+    }).catch(() => {
+      challengesLoading.value = null;
     });
   });
 </script>
 
 <template>
-  <ChallengeCard v-for="challenge in challenges" v-bind:challenge="challenge" v-bind:key="challenge.id" />
+  <div class="feed-container my-5 mx-auto">
+    <Loader v-if="challengesLoading === true" size="60px" background-color="#000000"/>
+    <div v-else-if="challengesLoading === null" class="alert alert-warning">
+      Failed to load challenges, please try again.
+    </div>
+    <ChallengeCard v-else v-for="challenge in challenges" v-bind:challenge="challenge" v-bind:key="challenge.id" />
+  </div>
 </template>
