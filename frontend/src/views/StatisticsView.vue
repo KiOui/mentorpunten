@@ -5,6 +5,7 @@
   import Loader from "@/components/Loader.vue";
   import TournamentStatisticsCard from "@/components/TournamentStatisticsCard.vue";
   import type Team from "@/models/team.model";
+  import Header from "@/components/Header.vue";
 
   const ApiService = useApiService();
 
@@ -32,7 +33,8 @@
 </script>
 
 <template>
-  <div class="feed-container my-5 mx-auto">
+  <Header :show-back-button="false"/>
+  <div class="feed-container mx-auto">
     <Loader v-if="tournamentsLoading === true" size="60px" background-color="#000000"/>
     <div v-else-if="tournamentsLoading === null" class="alert alert-warning">
       Failed to load tournaments, please try again.
