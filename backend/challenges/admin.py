@@ -41,8 +41,8 @@ class SubmissionAdmin(AutocompleteFilterMixin, admin.ModelAdmin):
     """Submission Admin."""
 
     list_display = ("team", "challenge", "tournament", "created", "updated", "accepted",)
-    fields = ('challenge', 'team', 'created', 'updated', 'image', 'image_tag', 'accepted', 'transaction')
-    readonly_fields = ('image_tag', 'created', 'updated')
+    fields = ('challenge', 'tournament', 'team', 'created', 'updated', 'image', 'image_tag', 'accepted', 'transaction')
+    readonly_fields = ('image_tag', 'created', 'updated', 'transaction')
 
     ordering = (
         "-created",

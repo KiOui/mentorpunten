@@ -2,7 +2,6 @@
 import {useCredentialsStore} from '@/stores/credentials.module';
 import useApiService from "@/common/api.service";
 import {onMounted, ref, toRef} from 'vue';
-import Navbar from "@/components/BackButtonNavBar.vue";
 import type Challenge from "@/models/challenge.model";
 import Loader from "@/components/Loader.vue";
 import type ChallengeUser from "@/models/challengeUser.model";

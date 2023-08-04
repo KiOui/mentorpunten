@@ -86,6 +86,10 @@ class _ApiService {
     }
   }
 
+  async getTournament(id: number): Promise<Tournament> {
+    return this.get<Tournament>(`/tournaments/${id}/`);
+  }
+
   async getTournaments(parameters: URLSearchParams | null = null): Promise<Tournament[]> {
     return this.get<Tournament[]>(this._addParametersToResource("/tournaments/", parameters));
   }
@@ -110,8 +114,8 @@ class _ApiService {
     return this.get<ChallengeUser>("/challenges/users/me/");
   }
 
-  async getChallenges(): Promise<Challenge[]> {
-    return this.get<Challenge[]>("/challenges/");
+  async getChallenges(parameters: URLSearchParams | null = null): Promise<Challenge[]> {
+    return this.get<Challenge[]>(this._addParametersToResource("/challenges/", parameters));
   }
 
   async getChallenge(id: number): Promise<Challenge> {

@@ -58,17 +58,17 @@ function refresh() {
 </script>
 
 <template>
-  <SubmissionCard v-for="submission in submissions" v-bind:submission="submission" v-bind:show-accepted="showAccepted" v-bind:key="submission.id" />
   <div v-if="submissions.length === 0 && !submissionsLoading">
     <div class="alert alert-warning">
       {{ noSubmissionsWarning }}
     </div>
   </div>
+  <SubmissionCard v-else v-for="submission in submissions" v-bind:submission="submission" v-bind:show-accepted="showAccepted" v-bind:key="submission.id" />
   <Loader v-if="submissionsLoading" size="60px" background-color="#000000"/>
   <div v-else-if="!submissionsLoading && nextDataExists" class="w-100 d-flex justify-content-center" style="margin-top: 1rem;">
     <button v-on:click="addNewData" class="btn btn-primary text-center">Load more</button>
   </div>
-  <div v-else-if="!submissionsLoading && !nextDataExists" class="alert alert-info text-center" style="margin-top: 1rem;">
+  <div v-else-if="!submissionsLoading && !nextDataExists && submissions.length > 0" class="alert alert-info text-center" style="margin-top: 1rem;">
     That's it for now! Check back later!
   </div>
 </template>

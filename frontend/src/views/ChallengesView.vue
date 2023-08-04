@@ -5,12 +5,14 @@
   import type Challenge from "@/models/challenge.model";
   import Loader from "@/components/Loader.vue";
 
+  const props = defineProps<{ id: number }>();
+
   const ApiService = useApiService();
   const challenges = ref<Challenge[] | null>(null);
   const challengesLoading = ref<boolean | null>(true);
 
   onMounted(() => {
-    ApiService.getChallenges().then(result => {
+    ApiService.getChallenges(new URLSearchParams([["tournament", String(props.id)]])).then(result => {
       challenges.value = result;
       challengesLoading.value = false;
     }).catch(() => {
