@@ -20,7 +20,7 @@
 </script>
 
 <template>
-  <div class="feed-container my-5 mx-auto">
+  <div class="feed-container mx-auto">
     <Loader v-if="challengesLoading === true" size="60px" background-color="#000000"/>
     <div v-else-if="challengesLoading === null" class="alert alert-warning">
       Failed to load challenges, please try again.

@@ -65,10 +65,10 @@ function refresh() {
     </div>
   </div>
   <Loader v-if="submissionsLoading" size="60px" background-color="#000000"/>
-  <div v-else-if="!submissionsLoading && nextDataExists" class="w-100 d-flex justify-content-center">
+  <div v-else-if="!submissionsLoading && nextDataExists" class="w-100 d-flex justify-content-center" style="margin-top: 1rem;">
     <button v-on:click="addNewData" class="btn btn-primary text-center">Load more</button>
   </div>
-  <div v-else-if="!submissionsLoading && !nextDataExists" class="alert alert-info text-center">
+  <div v-else-if="!submissionsLoading && !nextDataExists" class="alert alert-info text-center" style="margin-top: 1rem;">
     That's it for now! Check back later!
   </div>
 </template>

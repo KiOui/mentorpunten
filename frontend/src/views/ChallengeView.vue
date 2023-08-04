@@ -77,32 +77,27 @@ function startUpload() {
 
 <template>
   <Navbar back="Challenges"/>
-  <div v-if="challenge !== null" class="container mt-5">
-    <div class="card my-2">
-      <div class="card-body">
+  <div v-if="challenge !== null" class="custom-card">
         <div class="row">
           <div class="col-8">
-            <h3 class="card-title">{{ challenge.name }} <span v-if="challenge.completed" class="text-success"><font-awesome-icon icon="fa-solid fa-check"/></span></h3>
+            <h1 class="card-title">{{ challenge.name }}</h1>
           </div>
           <div class="col-4 text-end">
-            <span class="badge bg-success fs-6">{{ challenge.points }} points</span>
+            <h1><span v-if="challenge.completed" class="text-success"><font-awesome-icon icon="fa-solid fa-check"/></span></h1>
           </div>
         </div>
-        <p>
-          {{ challenge.description }}
-        </p>
+        <h3>{{ challenge.points }} points</h3>
+        <p style="margin-top: 1rem;">{{ challenge.description }}</p>
         <form v-if="store.loggedIn && !challenge.completed" class="input-group mt-3">
-          <label for="image" class="w-100 mb-2">Make a picture</label>
+          <label for="image" class="w-100 mb-2" style="font-family: 'Open sans condensed';">Make a picture</label>
           <input v-on:change="changeImageFile($event)" ref="imageField" type="file" class="form-control" id="image"
                  capture="user" accept="image/*" aria-label="Upload">
           <button v-if="!uploadingImage" v-on:click="startUpload()" class="btn btn-primary" type="button">Submit</button>
           <button v-else class="btn btn-primary disabled" type="button">Submit</button>
         </form>
-        <div v-else-if="challenge.completed" class="alert alert-success">
+        <div v-else-if="challenge.completed" class="alert alert-success" style="margin-top: 1rem;">
           You have already completed this challenge, no submissions are possible anymore.
         </div>
-      </div>
-    </div>
   </div>
   <Loader v-else-if="challengeLoading === true" size="60px" background-color="#000000"/>
   <div v-else class="container mt-5">
