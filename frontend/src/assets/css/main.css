@@ -51,7 +51,7 @@ footer .navbar {
   text-transform: uppercase;
   font-family: 'Gill sans MT condensed' !important;
   font-size: 1.2rem !important;
-  padding: 0.25rem 0.5rem !important;
+  padding: 0rem 0.75rem !important;
 }
 
 .custom-card {
@@ -93,6 +93,15 @@ footer .navbar {
   font-size: 1.2rem;
   text-transform: uppercase;
   margin: 0;
+}
+
+.custom-card h6 {
+  font-family: 'Gill Sans MT condensed';
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  margin: 0;
+  text-decoration: none;
+  color: var(--primary);
 }
 
 .custom-card p {
@@ -139,4 +148,13 @@ footer .navbar {
   margin: 0;
   text-decoration: none;
   color: black;
+}
+
+.link {
+  font-family: 'Gill Sans MT condensed';
+  font-size: 1rem;
+  text-transform: uppercase;
+  margin: 0;
+  text-decoration: none;
+  color: var(--primary);
 }

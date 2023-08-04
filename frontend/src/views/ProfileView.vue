@@ -7,6 +7,7 @@
   import type User from "@/models/user.model";
   import {useRouter} from "vue-router";
   import type Team from "@/models/team.model";
+  import Header from "@/components/Header.vue";
 
   let user = ref<User|null>(null);
   let userLoading = ref<boolean|null>(true);
@@ -54,6 +55,7 @@
 </script>
 
 <template>
+  <Header :show-back-button="false"/>
   <div class="feed-container mx-auto my-5">
     <Loader v-if="userLoading === true" size="60px" background-color="#000000"/>
     <div v-else-if="userLoading === null" class="alert alert-warning">
@@ -63,7 +65,7 @@
       <div class="custom-card">
         <div class="d-flex flex-column">
           <div class="d-flex justify-content-center">
-            <img :src="user.profile_image" class="profile-image" alt="Profile image"/>
+            <img :src="user.profile_image" class="profile-image" alt="Profile image" style="color:#d9d9d9; background-color: #d9d9d9;"/>
           </div>
         </div>
         <h1 class="text-center">{{ user.display_name }}</h1>
@@ -76,9 +78,9 @@
         You are not in any team yet, contact an administrator to join a team.
       </div>
       <div v-else-if="!teamsLoading && teams !== null" v-for="team in teams" class="custom-card" v-bind:key="team.id">
-        <h3>{{ team.tournament.name }}</h3>
-        <p>{{ team.name }}, {{ team.account.balance }} points</p>
-        <router-link :to="{ name: 'ProfileSubmissions', params: { id: team.id }}">Show Submissions</router-link>
+        <h2>{{ team.tournament.name }}</h2>
+        <p style="margin-bottom: 1rem;">{{ team.name }}, {{ team.account.balance }} points</p>
+        <router-link :to="{ name: 'ProfileSubmissions', params: { id: team.id }}" class="link">View Submissions</router-link>
       </div>
     </template>
     <div class="d-flex justify-content-center my-3">
@@ -89,8 +91,8 @@
 
 <style scoped>
   .profile-image {
-    height: 100px;
-    width: 100px;
+    height: 150px;
+    width: 150px;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;

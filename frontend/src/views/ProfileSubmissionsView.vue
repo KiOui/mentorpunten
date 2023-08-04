@@ -56,7 +56,7 @@ onMounted(() => {
 
 <template>
   <Header :show-back-button="true"/>
-  <div class="feed-container mx-auto my-5">
+  <div class="feed-container mx-auto">
     <Loader v-if="tournamentLoading === true" size="60px" background-color="#000000"/>
     <div v-else-if="tournamentLoading === null" class="alert alert-warning">
       An error occurred during loading of tournament data, please try again.
