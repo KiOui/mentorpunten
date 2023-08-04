@@ -95,6 +95,15 @@ footer .navbar {
   margin: 0;
 }
 
+.custom-card h6 {
+  font-family: 'Gill Sans MT condensed';
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  margin: 0;
+  text-decoration: none;
+  color: var(--primary);
+}
+
 .custom-card p {
   font-family: 'Open sans condensed';
   font-size: 1.2rem;

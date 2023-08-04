@@ -20,6 +20,10 @@
       }
       return "";
     }
+
+    function current_position(tournament: Tournament): string {
+      return "N/A";
+    }
     
 </script>
 
@@ -28,6 +32,7 @@
         <div class="custom-card">
             <h1>{{ tournament.name }}</h1>
             <h3>{{ start_end_time(tournament) }}</h3>
+            <h6>Current Position: {{ current_position(tournament) }}</h6>
         </div>
     </router-link>
 </template>
