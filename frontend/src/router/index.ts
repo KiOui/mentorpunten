@@ -5,10 +5,16 @@ import ProfileView from '../views/ProfileView.vue'
 import StatisticsView from '../views/StatisticsView.vue'
 import FeedView from '../views/FeedView.vue'
 import ChallengeView from '../views/ChallengeView.vue'
+import TournamentsView from '../views/TournamentsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/tournaments',
+      name: 'Tournaments',
+      component: TournamentsView
+    },
     {
       path: '/challenges',
       name: 'Challenges',

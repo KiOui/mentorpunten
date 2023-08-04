@@ -26,7 +26,7 @@
             <font-awesome-icon icon="fa-solid fa-images"/>
           </li>
         </router-link>
-        <router-link :to="{ name: 'Challenges' }" class="text-white nav-item flex-grow-1 text-center">
+        <router-link :to="{ name: 'Tournaments' }" class="text-white nav-item flex-grow-1 text-center">
           <li>
               <font-awesome-icon icon="fa-solid fa-trophy"/>
           </li>
