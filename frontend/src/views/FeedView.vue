@@ -6,7 +6,7 @@ import SubmissionsList from "@/components/SubmissionsList.vue";
   <div class="text-center py-2 bg-white">
     <h1 class="alert-text">SUBMIT A CHALLENGE</h1>
   </div>
-  <div class="feed-container my-4 mx-auto">
+  <div class="feed-container mx-auto">
     <SubmissionsList :show-accepted="false" :submission-search-filters="[['accepted', 'true']]" no-submissions-warning="No submissions yet, why don't you make the first one?"/>
   </div>
 </template>
