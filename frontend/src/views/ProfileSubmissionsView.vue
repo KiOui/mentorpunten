@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import BackButtonNavBar from "@/components/BackButtonNavBar.vue";
+import Header from "@/components/Header.vue";
 import Loader from "@/components/Loader.vue";
 import {onMounted, ref} from "vue";
 import type User from "@/models/user.model";
@@ -55,7 +55,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <BackButtonNavBar/>
+  <Header :show-back-button="true"/>
   <div class="feed-container mx-auto my-5">
     <Loader v-if="tournamentLoading === true" size="60px" background-color="#000000"/>
     <div v-else-if="tournamentLoading === null" class="alert alert-warning">
