@@ -26,3 +26,21 @@ footer .navbar {
   background-color: #E62272 !important;
   border-color: #E62272 !important;
 }
+
+@font-face {
+  font-family: 'Gill sans MT condensed';
+  src: url('../fonts/GillSansMT-Condensed.ttf')
+  format('truetype');
+}
+
+@font-face {
+  font-family: 'Open sans condensed';
+  src: url('../fonts/OpenSans-CondLight.ttf')
+  format('truetype');
+}
+
+@font-face {
+  font-family: 'Open sans';
+  src: url('../fonts/OpenSans-Regular.ttf')
+  format('truetype');
+}
