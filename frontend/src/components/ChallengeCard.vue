@@ -7,7 +7,7 @@
 </script>
 
 <template>
-    <div class="card my-2">
+    <!-- <div class="card my-2">
         <div class="card-body">
           <div class="row">
             <div class="col-8">
@@ -23,7 +23,13 @@
                 <button class="btn btn-primary">View</button>
             </router-link>
         </div>
-    </div>
+    </div> -->
+    <router-link :to="{ name: 'Challenge', params: { id: challenge.id }}" style="text-decoration: none;">
+        <div class="custom-card">
+            <h1>{{ challenge.name }}</h1>
+            <h3>{{ challenge.points }} points</h3>
+        </div>
+    </router-link>
 </template>
 
 <style scoped>
