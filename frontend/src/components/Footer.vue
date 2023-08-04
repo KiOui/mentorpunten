@@ -46,14 +46,19 @@
             <font-awesome-icon icon="fa-solid fa-chart-line"/>
           </li>
         </router-link>
-        <router-link :to="{ name: 'Profile' }" v-if="user !== null" class="text-white nav-item flex-grow-1 text-center">
+        <router-link :to="{ name: 'Profile' }" class="text-white nav-item flex-grow-1 text-center">
           <li>
             <font-awesome-icon icon="fa-solid fa-user"/>
           </li>
         </router-link>
-        <li v-else class="nav-item flex-grow-1 text-center" @click="startLogin">
+        <!-- <router-link :to="{ name: 'Profile' }" v-if="user !== null" class="text-white nav-item flex-grow-1 text-center">
+          <li>
+            <font-awesome-icon icon="fa-solid fa-user"/>
+          </li>
+        </router-link> -->
+        <!-- <li v-else class="nav-item flex-grow-1 text-center" @click="startLogin">
           <font-awesome-icon icon="fa-solid fa-right-to-bracket"/>
-        </li>
+        </li> -->
       </ul>
     </div>
   </nav>

@@ -1,4 +1,4 @@
-<script setup type="ts">
+<script setup lang="ts">
   import { onMounted } from 'vue'
   import { useCredentialsStore } from "@/stores/credentials.module";
   import Loader from "@/components/Loader.vue";

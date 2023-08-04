@@ -16,8 +16,5 @@
 </script>
 
 <template>
-  <Header title="Challenges"/>
-  <div class="container mt-5">
-    <ChallengeCard v-for="challenge in challenges" v-bind:challenge="challenge" v-bind:key="challenge.id" />
-  </div>
+  
 </template>
