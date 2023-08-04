@@ -36,11 +36,6 @@
             <font-awesome-icon icon="fa-solid fa-chart-line"/>
           </li>
         </router-link>
-        <router-link :to="{ name: 'Profile' }" class="text-white nav-item flex-grow-1 text-center">
-          <li>
-            <font-awesome-icon icon="fa-solid fa-user"/>
-          </li>
-        </router-link>
         <router-link :to="{ name: 'Profile' }" v-if="CredentialsStore.loggedIn" class="text-white nav-item flex-grow-1 text-center">
           <li>
             <font-awesome-icon icon="fa-solid fa-user"/>

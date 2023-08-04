@@ -9,18 +9,19 @@
 
   function authorize() {
     try {
-      const url = new URL(window.location);
+      const url = new URL(String(window.location));
       if (url.searchParams.get("error")) {
         alert(`Authorization failed: ${url.searchParams.get("error")}`);
       }
       else {
         const parsedHash = parseHash(url.hash.substring(1));
-        let stateKey = parsedHash["state"];
-        if (stateKey === store.stateKey) {
-          let accessToken = parsedHash["access_token"];
-          let tokenType = parsedHash["token_type"];
-          let scope = parsedHash["scope"].split("+");
-          let expires = Date.now() + (parsedHash["expires_in"] * 1000) - 1000;
+        console.log(parsedHash);
+        let stateKey = parsedHash.state;
+        if (stateKey === CredentialsStore.stateKey) {
+          let accessToken = parsedHash.access_token;
+          let tokenType = parsedHash.token_type;
+          let scope = parsedHash.scope.split("+");
+          let expires = Date.now() + (Number(parsedHash.expires_in) * 1000) - 1000;
           CredentialsStore.login({
             accessToken, expires, tokenType, scope
           });
