@@ -7,6 +7,7 @@
   import type User from "@/models/user.model";
   import {useRouter} from "vue-router";
   import type Team from "@/models/team.model";
+  import Header from "@/components/Header.vue";
 
   let user = ref<User|null>(null);
   let userLoading = ref<boolean|null>(true);
@@ -54,6 +55,7 @@
 </script>
 
 <template>
+  <Header :show-back-button="false"/>
   <div class="feed-container mx-auto my-5">
     <Loader v-if="userLoading === true" size="60px" background-color="#000000"/>
     <div v-else-if="userLoading === null" class="alert alert-warning">

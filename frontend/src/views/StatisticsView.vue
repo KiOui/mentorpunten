@@ -30,5 +30,5 @@
 </script>
 
 <template>
-  
+  <Header :show-back-button="false"/>
 </template>
