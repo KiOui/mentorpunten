@@ -35,7 +35,7 @@ function goBack() {
 <template>
   <div class="header">
     <div class="feed-container mx-auto d-flex justify-content-between">
-      <div class="col-1 d-flex align-items-center">
+      <div class="col-1 d-flex align-items-center" style="padding-left: 1rem;">
         <a v-if="showBackButton" v-on:click="goBack">
           <font-awesome-icon icon="fa-solid fa-arrow-left"/>
         </a>
