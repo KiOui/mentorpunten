@@ -18,7 +18,7 @@ class AuthenticationRequest(models.Model):
 
     state = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True)
-    challenge = models.CharField(max_length=40, default=get_random_challenge)
+    challenge = models.CharField(max_length=80, default=get_random_challenge)
 
     def __str__(self):
         """Convert this object to string."""

@@ -5,12 +5,10 @@ from django.urls import path, include
 from django.views.generic import RedirectView
 
 from .views import (
-    IndexView,
     LogoutView,
 )
 
 urlpatterns = [
-    path("", IndexView.as_view(), name="index"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("thalia/", include(("thalia.urls", "thalia"), namespace="thalia")),
     path("api/", include("mentorpunten.api.urls")),
