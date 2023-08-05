@@ -26,6 +26,8 @@ pillow = "^10.0.0"
 uritemplate = "^4.1.1"
 drf-spectacular = "^0.26.4"
 django-queryable-properties = "^1.8.4"
+uwsgi = "^2.0.22"
+psycopg2-binary = "^2.9.6"
 
 [tool.poetry.group.dev.dependencies]
 pydocstyle = "^6.3.0"
