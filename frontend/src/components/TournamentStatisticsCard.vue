@@ -1,27 +1,16 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router'
-import type Tournament from "@/models/tournament.model";
-import type Team from "@/models/team.model";
-import {computed} from "vue";
 
-const props = defineProps<{tournament: Tournament, teams: Team[]}>();
+import type Team from '@/models/team.model';
 
-const firstThreeTeams = computed(() => {
-  return props.teams.slice(0, 3);
-});
+defineProps<{team: Team, index: number}>();
 </script>
 
 <template>
-    <router-link :to="{ name: 'TournamentStatistics', params: { id: tournament.id }}" style="text-decoration: none;">
-        <div class="custom-card">
-            <h1>{{ tournament.name }}</h1>
-            <ul>
-              <li v-for="(team, index) in firstThreeTeams" v-bind:key="team.id">
-                #{{index + 1}}: {{ team.name }}, {{ team.account.balance }} points
-              </li>
-            </ul>
-        </div>
-    </router-link>
+  <div class="row w-100 justify-content-between ranking-header">
+        <h4 class="col-2 text-center">{{ index+2 }}</h4>
+        <h4 class="col-8">{{ team.name }}</h4>
+        <h4 class="col-2 text-center">{{ team.account.balance }}</h4>
+    </div>
 </template>
 
 <style scoped>

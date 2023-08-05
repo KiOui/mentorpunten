@@ -1,7 +1,12 @@
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
-from rest_framework.generics import ListAPIView, RetrieveAPIView, ListCreateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import (
+    ListAPIView,
+    RetrieveAPIView,
+    ListCreateAPIView,
+    RetrieveUpdateAPIView,
+)
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 
@@ -37,7 +42,14 @@ class SubmissionListCreateAPIView(ListCreateAPIView):
 
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["challenge", "team", "accepted", "created_by", "updated_by", "tournament"]
+    filterset_fields = [
+        "challenge",
+        "team",
+        "accepted",
+        "created_by",
+        "updated_by",
+        "tournament",
+    ]
 
     def get_queryset(self):
         """
@@ -78,19 +90,23 @@ class SubmissionListCreateAPIView(ListCreateAPIView):
             # Tournament of Challenge and Tournament of Team do not correspond.
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = self.get_serializer(data={
-            "accepted": None,
-            "team": team.id,
-            "challenge": challenge.id,
-            "tournament": challenge.tournament,
-            "image": request.data.get("image"),
-            "created_by": request.user,
-        })
+        serializer = self.get_serializer(
+            data={
+                "accepted": None,
+                "team": team.id,
+                "challenge": challenge.id,
+                "tournament": challenge.tournament,
+                "image": request.data.get("image"),
+                "created_by": request.user,
+            }
+        )
 
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
 
 class SubmissionRetrieveUpdateAPIView(RetrieveUpdateAPIView):

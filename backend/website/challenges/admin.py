@@ -11,7 +11,15 @@ from challenges.models import Challenge, Submission
 class ChallengeAdmin(admin.ModelAdmin):
     """Challenge Admin."""
 
-    list_display = ("name", "tournament", "active_from", "active_until", "points", "number_of_submissions", "active")
+    list_display = (
+        "name",
+        "tournament",
+        "active_from",
+        "active_until",
+        "points",
+        "number_of_submissions",
+        "active",
+    )
     search_fields = ("name",)
     ordering = (
         "-active_from",
@@ -20,8 +28,14 @@ class ChallengeAdmin(admin.ModelAdmin):
     )
     list_filter = (
         "tournament",
-        ("active_from", DateRangeFilter,),
-        ("active_until", DateRangeFilter,),
+        (
+            "active_from",
+            DateRangeFilter,
+        ),
+        (
+            "active_until",
+            DateRangeFilter,
+        ),
     )
     prepopulated_fields = {"slug": ("name",)}
 
@@ -40,32 +54,53 @@ class ChallengeAdmin(admin.ModelAdmin):
 class SubmissionAdmin(AutocompleteFilterMixin, admin.ModelAdmin):
     """Submission Admin."""
 
-    list_display = ("team", "challenge", "tournament", "created", "updated", "accepted",)
-    fields = ('challenge', 'tournament', 'team', 'created', 'updated', 'image', 'image_tag', 'accepted', 'transaction')
-    readonly_fields = ('image_tag', 'created', 'updated', 'transaction')
-
-    ordering = (
-        "-created",
+    list_display = (
+        "team",
+        "challenge",
+        "tournament",
+        "created",
+        "updated",
+        "accepted",
     )
+    fields = (
+        "challenge",
+        "tournament",
+        "team",
+        "created",
+        "updated",
+        "image",
+        "image_tag",
+        "accepted",
+        "transaction",
+    )
+    readonly_fields = ("image_tag", "created", "updated", "transaction")
+
+    ordering = ("-created",)
     list_filter = (
         ("team", AutocompleteListFilter),
         ("challenge", AutocompleteListFilter),
         ("tournament", AutocompleteListFilter),
-        "accepted"
+        "accepted",
     )
 
     def image_tag(self, obj):
         """Print image in changeform view."""
-        return format_html('<img src="{}" width="400px" style="max-width: 100%;" />'.format(obj.image.url))
+        return format_html(
+            '<img src="{}" width="400px" style="max-width: 100%;" />'.format(
+                obj.image.url
+            )
+        )
 
-    image_tag.short_description = 'Image preview'
+    image_tag.short_description = "Image preview"
 
     def changeform_view(self, request, object_id=None, form_url="", extra_context=None):
         """Display warning for already accepted submissions."""
         if object_id:
             obj = self.get_object(request, object_id)
             if (
-                Submission.objects.filter(challenge=obj.challenge, team=obj.team, accepted=True)
+                Submission.objects.filter(
+                    challenge=obj.challenge, team=obj.team, accepted=True
+                )
                 .exclude(pk=obj.pk)
                 .exists()
             ):

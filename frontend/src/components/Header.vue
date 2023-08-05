@@ -33,9 +33,9 @@ function goBack() {
 </script>
 
 <template>
-  <div class="header">
+  <div class="header sticky-top">
     <div class="feed-container mx-auto d-flex justify-content-between">
-      <div class="col-1 d-flex align-items-center">
+      <div class="col-1 d-flex align-items-center" style="padding-left: 1rem;">
         <a v-if="showBackButton" v-on:click="goBack">
           <font-awesome-icon icon="fa-solid fa-arrow-left"/>
         </a>
@@ -57,6 +57,8 @@ function goBack() {
 
 <style scoped>
   .header {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
     background-color: var(--nav-background-color);
     color: var(--nav-link-color);
   }

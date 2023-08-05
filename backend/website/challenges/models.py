@@ -31,12 +31,17 @@ def challenge_upload_image_to(instance, filename):
     """Upload challenge image to."""
     extension = Path(filename).suffix
     main_image_name = f"main-image{extension}"
-    return os.path.join(os.path.join(instance.challenge.folder, "challenge"), main_image_name)
+    return os.path.join(
+        os.path.join(instance.challenge.folder, "challenge"), main_image_name
+    )
 
 
 def submission_upload_image_to(instance, filename):
     """Upload submission images to."""
-    return os.path.join(os.path.join(instance.challenge.folder, "submissions"), get_random_filename(filename))
+    return os.path.join(
+        os.path.join(instance.challenge.folder, "submissions"),
+        get_random_filename(filename),
+    )
 
 
 class ChallengeQueryset(models.QuerySet):
@@ -46,26 +51,16 @@ class ChallengeQueryset(models.QuerySet):
         """Only active Challenges."""
         current_time = timezone.now()
         return self.filter(
-            Q(disabled=False) &
-            (
-                    Q(active_from=None) |
-                    Q(active_from__lte=current_time)
-            ) &
-            (
-                Q(active_until=None) |
-                Q(active_until__gt=current_time)
-            )
+            Q(disabled=False)
+            & (Q(active_from=None) | Q(active_from__lte=current_time))
+            & (Q(active_until=None) | Q(active_until__gt=current_time))
         )
 
     def revealed(self):
         """Only revealed Challenges."""
         current_time = timezone.now()
         return self.filter(
-            Q(disabled=False) &
-            (
-                    Q(active_from=None) |
-                    Q(active_from__lte=current_time)
-            )
+            Q(disabled=False) & (Q(active_from=None) | Q(active_from__lte=current_time))
         )
 
 
@@ -92,7 +87,9 @@ class Challenge(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.PROTECT)
     slug = models.SlugField(unique=True, max_length=100)
     description = models.TextField()
-    image = models.ImageField(upload_to=challenge_upload_image_to, blank=True, null=True)
+    image = models.ImageField(
+        upload_to=challenge_upload_image_to, blank=True, null=True
+    )
     disabled = models.BooleanField(default=False)
     active_from = models.DateTimeField(
         help_text="From which point in time this challenge will be active. Leave empty for no start time.",
@@ -140,17 +137,43 @@ class Submission(models.Model):
     challenge = models.ForeignKey(
         Challenge, on_delete=models.PROTECT, related_name="submissions"
     )
-    tournament = models.ForeignKey(Tournament, null=True, blank=True, on_delete=models.SET_NULL, related_name="submissions")
+    tournament = models.ForeignKey(
+        Tournament,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="submissions",
+    )
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="submissions")
     created = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name="submissions_created_by")
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="submissions_created_by",
+    )
     updated = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name="submissions_updated_by")
-    image = models.ImageField(verbose_name=_("image"), upload_to=submission_upload_image_to)
-    thumbnail = models.ImageField(verbose_name=_("thumbnail"), upload_to=submission_upload_image_to)
-    image_webp = models.ImageField(verbose_name=_("image webp"), upload_to=submission_upload_image_to)
+    updated_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="submissions_updated_by",
+    )
+    image = models.ImageField(
+        verbose_name=_("image"), upload_to=submission_upload_image_to
+    )
+    thumbnail = models.ImageField(
+        verbose_name=_("thumbnail"), upload_to=submission_upload_image_to
+    )
+    image_webp = models.ImageField(
+        verbose_name=_("image webp"), upload_to=submission_upload_image_to
+    )
     accepted = models.BooleanField(null=True, blank=True, default=None)
-    transaction = models.ForeignKey(Transaction, null=True, blank=True, on_delete=models.SET_NULL)
+    transaction = models.ForeignKey(
+        Transaction, null=True, blank=True, on_delete=models.SET_NULL
+    )
 
     def __init__(self, *args, **kwargs):
         """Set old image variable."""
@@ -164,9 +187,14 @@ class Submission(models.Model):
         """Convert images to webp on save."""
         if self.image != self._image:
             # Image has been updated
-            self.image = convert_image(self.image, "jpeg", to_name=get_random_filename(self.image.name))
+            self.image = convert_image(
+                self.image, "jpeg", to_name=get_random_filename(self.image.name)
+            )
             self.thumbnail = convert_image(
-                self.image, "jpeg", resize_to=(600, 600), to_name="thumb_" + Path(self.image.name).stem + ".jpeg"
+                self.image,
+                "jpeg",
+                resize_to=(600, 600),
+                to_name="thumb_" + Path(self.image.name).stem + ".jpeg",
             )
             self.image_webp = convert_image(self.image, "webp")
         super().save(*args, **kwargs)

@@ -22,4 +22,12 @@ class TransactionSerializer(serializers.ModelSerializer):
         """Meta class."""
 
         model = models.Transaction
-        fields = ["id", "account", "amount", "timestamp", "description", "processor", "balance_after"]
+        fields = [
+            "id",
+            "account",
+            "amount",
+            "timestamp",
+            "description",
+            "processor",
+            "balance_after",
+        ]
