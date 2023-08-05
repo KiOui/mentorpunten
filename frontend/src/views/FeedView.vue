@@ -1,19 +1,20 @@
 <script setup lang="ts">
-  import {useUserStore} from "@/stores/user.module";
-  import useApiService from "@/common/api.service";
-
-  const store = useUserStore();
-  const ApiService = useApiService(store);
-
-  ApiService.getUsersMe().then(result => {
-    return result.json();
-  }).then(data => {
-    console.log(data);
-  })
+import SubmissionsList from "@/components/SubmissionsList.vue";
+import Header from "@/components/Header.vue";
 </script>
 
 <template>
-  <main>
-
-  </main>
+  <Header :show-back-button="false"/>
+  <div class="feed-container mx-auto">
+    <SubmissionsList :show-accepted="false" :submission-search-filters="[['accepted', 'true']]" no-submissions-warning="No submissions yet, why don't you make the first one?"/>
+  </div>
 </template>
+
+<style scoped>
+.alert-text {
+  color: var(--primary);
+  font-family: 'Gill sans MT condensed', sans-serif;
+  text-decoration: none;
+  margin: 0;
+}
+</style>
