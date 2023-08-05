@@ -15,6 +15,8 @@ RUN rm -rf ./*
 COPY --from=builder /app/dist .
 COPY docker.blueprint.env /usr/share/nginx/docker.blueprint.env
 COPY resources/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+
 RUN chmod +x /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
