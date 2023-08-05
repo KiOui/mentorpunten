@@ -62,4 +62,15 @@ function parseHash(hashString: string): {
     }
 }
 
-export { parseHash };
+function getEnvVar(name: string): string {
+    // @ts-ignore
+    if (window?.__env__?.[name]) {
+        return window?.__env__?.[name];
+    } else if (import.meta.env[name]) {
+        return import.meta.env[name];
+    } else {
+        throw new Error(`Environment variable ${name} is not defined.`);
+    }
+}
+
+export { parseHash, getEnvVar };

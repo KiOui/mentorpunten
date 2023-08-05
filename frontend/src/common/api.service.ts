@@ -8,6 +8,7 @@ import type Team from "@/models/team.model";
 import type Paginated from "@/models/paginated.model";
 import type Tournament from "@/models/tournament.model";
 import type Transaction from "@/models/transaction.model";
+import {getEnvVar} from "@/common/general.service";
 
 class _ApiService {
   authorizationEndpoint: string;
@@ -179,10 +180,10 @@ class _ApiService {
 
 const useApiService = () => {
   return new _ApiService(
-      import.meta.env.VITE_API_OAUTH_CLIENT_ID,
-      import.meta.env.VITE_API_BASE_URI,
-      import.meta.env.VITE_API_AUTHORIZATION_ENDPOINT,
-      import.meta.env.VITE_API_OAUTH_REDIRECT_URI
+      getEnvVar('VITE_API_OAUTH_CLIENT_ID'),
+      getEnvVar('VITE_API_BASE_URI'),
+      getEnvVar('VITE_API_AUTHORIZATION_ENDPOINT'),
+      getEnvVar('VITE_API_OAUTH_REDIRECT_URI')
   )
 }
 
