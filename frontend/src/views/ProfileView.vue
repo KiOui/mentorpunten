@@ -79,7 +79,7 @@
       </div>
       <div v-else-if="!teamsLoading && teams !== null" v-for="team in teams" class="custom-card" v-bind:key="team.id">
         <h2>{{ team.tournament.name }}</h2>
-        <p style="margin-bottom: 1rem;">{{ team.name }}, {{ team.account.balance }} points</p>
+        <router-link :to="{ name: 'Team', params: { id: team.id } }" style="text-decoration: none; color: black;"><p style="margin-bottom: 1rem;">{{ team.name }}, {{ team.account.balance }} points</p></router-link>
         <router-link :to="{ name: 'ProfileSubmissions', params: { id: team.id }}" class="link">View Submissions</router-link>
       </div>
     </template>
