@@ -42,7 +42,7 @@ class TournamentManager(QueryablePropertiesManager):
 
 class Tournament(models.Model):
     """Tournament class."""
-    
+
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, max_length=100)
     active_from = models.DateTimeField()
@@ -67,7 +67,9 @@ class TeamQueryset(models.QuerySet):
     def active(self):
         """Only active Teams."""
         current = timezone.now()
-        return self.filter(tournament__active_from__lte=current, tournament__active_until__gt=current)
+        return self.filter(
+            tournament__active_from__lte=current, tournament__active_until__gt=current
+        )
 
 
 class TeamManager(QueryablePropertiesManager):
@@ -86,7 +88,9 @@ class Team(models.Model):
     """Team of Users that can hand in Submissions for Challenges."""
 
     name = models.CharField(max_length=100)
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='teams')
+    tournament = models.ForeignKey(
+        Tournament, on_delete=models.CASCADE, related_name="teams"
+    )
     members = models.ManyToManyField(User)
     account = models.OneToOneField(
         Account, on_delete=models.PROTECT, related_name="team", unique=True
@@ -107,4 +111,7 @@ class Team(models.Model):
         """Meta class."""
 
         ordering = ("name",)
-        unique_together = ("name", "tournament",)
+        unique_together = (
+            "name",
+            "tournament",
+        )
