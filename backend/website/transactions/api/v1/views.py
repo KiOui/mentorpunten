@@ -26,7 +26,10 @@ class TransactionListAPIView(ListCreateAPIView):
     queryset = Transaction.objects.all()
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ("account", "processor",)
+    filterset_fields = (
+        "account",
+        "processor",
+    )
 
     pagination_class = StandardResultsSetPagination
 

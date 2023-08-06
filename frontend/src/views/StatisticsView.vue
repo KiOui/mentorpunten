@@ -3,7 +3,7 @@
   import {computed, onMounted, ref} from "vue";
   import type Tournament from "@/models/tournament.model";
   import Loader from "@/components/Loader.vue";
-  import TournamentStatisticsCard from "@/components/TournamentStatisticsCard.vue";
+  import StatisticsCard from "@/components/StatisticsCard.vue";
   import type Team from "@/models/team.model";
   import Header from "@/components/Header.vue";
 
@@ -64,7 +64,7 @@
     <div v-else-if="tournamentsLoading === null" class="alert alert-warning">
       Failed to load tournaments, please try again.
     </div>
-    <TournamentStatisticsCard
+    <StatisticsCard
         v-else-if="!tournamentsLoading && tournaments !== null"
         v-for="tournament in tournaments"
         v-bind:tournament="tournament"

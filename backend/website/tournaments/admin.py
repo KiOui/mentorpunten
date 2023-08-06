@@ -12,12 +12,17 @@ User = get_user_model()
 
 @admin.register(Tournament)
 class TournamentAdmin(admin.ModelAdmin):
-
-    list_display = ['name', 'active_from', 'active_until']
-    search_fields = ('name',)
+    list_display = ["name", "active_from", "active_until"]
+    search_fields = ("name",)
     list_filter = (
-        ("active_from", DateRangeFilter,),
-        ("active_until", DateRangeFilter,),
+        (
+            "active_from",
+            DateRangeFilter,
+        ),
+        (
+            "active_until",
+            DateRangeFilter,
+        ),
     )
 
     prepopulated_fields = {"slug": ("name",)}
@@ -38,7 +43,9 @@ class TeamAdminForm(forms.ModelForm):
         tournament = self.cleaned_data.get("tournament")
 
         if self.instance:
-            teams = Team.objects.filter(members__in=members, tournament=tournament).exclude(id=self.instance.id)
+            teams = Team.objects.filter(
+                members__in=members, tournament=tournament
+            ).exclude(id=self.instance.id)
         else:
             teams = Team.objects.filter(members__in=members, tournament=tournament)
 
@@ -47,13 +54,21 @@ class TeamAdminForm(forms.ModelForm):
             error_message = []
             for member in members:
                 if self.instance:
-                    member_team = Team.objects.filter(members__in=[member], tournament=tournament).exclude(id=self.instance.id)
+                    member_team = Team.objects.filter(
+                        members__in=[member], tournament=tournament
+                    ).exclude(id=self.instance.id)
                 else:
-                    member_team = Team.objects.filter(members__in=[member], tournament=tournament)
+                    member_team = Team.objects.filter(
+                        members__in=[member], tournament=tournament
+                    )
 
                 if member_team.count() > 0:
-                    error_message.append(f"'{member} is also a member of team(s): {', '.join([team.name for team in member_team])}'")
-            raise ValidationError(f"The following members are also members of other teams: {', '.join(error_message)}")
+                    error_message.append(
+                        f"'{member} is also a member of team(s): {', '.join([team.name for team in member_team])}'"
+                    )
+            raise ValidationError(
+                f"The following members are also members of other teams: {', '.join(error_message)}"
+            )
         return members
 
     class Meta:
@@ -65,7 +80,6 @@ class TeamAdminForm(forms.ModelForm):
 
 @admin.register(Team)
 class TeamAdmin(admin.ModelAdmin):
-
     def balance(self, instance: Team):
         """Get balance."""
         return instance.account.balance
@@ -74,7 +88,7 @@ class TeamAdmin(admin.ModelAdmin):
         """Get member count."""
         return instance.members.count()
 
-    list_display = ['name', 'tournament', 'balance', 'member_count']
-    search_fields = ('name',)
-    list_filter = ('tournament',)
+    list_display = ["name", "tournament", "balance", "member_count"]
+    search_fields = ("name",)
+    list_filter = ("tournament",)
     form = TeamAdminForm

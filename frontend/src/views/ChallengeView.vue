@@ -8,6 +8,8 @@ import type ChallengeUser from "@/models/challengeUser.model";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {useToast} from "vue-toastification";
 import Header from "@/components/Header.vue";
+import type User from "@/models/user.model";
+import type Team from "@/models/team.model";
 
 const props = defineProps<{ id: number }>();
 
@@ -27,6 +29,15 @@ const id = toRef(props, 'id');
 const imageFile = ref<File | null>(null);
 const imageField = ref<HTMLInputElement | null>(null);
 
+let user = ref<User|null>(null);
+let userLoading = ref<boolean|null>(true);
+
+let userteams = ref<Team[]|null>(null);
+let userteamsLoading = ref<boolean|null>(true);
+
+let challengeteams = ref<Team[]|null>(null);
+let challengeteamsLoading = ref<boolean|null>(true);
+
 onMounted(() => {
   ApiService.getChallenge(id.value).then(result => {
     challenge.value = result;
@@ -34,15 +45,16 @@ onMounted(() => {
   }).catch(() => {
     challengeLoading.value = null;
   });
-  if (store.loggedIn) {
-    ApiService.getChallengesUsersMe().then(challengeUserData => {
-      group.value = challengeUserData;
-    }).catch(() => {
-      groupLoading.value = null;
-    });
-  } else {
-    groupLoading.value = null;
-  }
+  getChallengeTeam();
+  // if (store.loggedIn) {
+  //   ApiService.getChallengesUsersMe().then(challengeUserData => {
+  //     group.value = challengeUserData;
+  //   }).catch(() => {
+  //     groupLoading.value = null;
+  //   });
+  // } else {
+  //   groupLoading.value = null;
+  // }
 });
 
 function changeImageFile(event: Event) {
@@ -53,12 +65,58 @@ function changeImageFile(event: Event) {
   imageFile.value = files[0];
 }
 
+function getChallengeTeam() {
+
+  const userPromise = ApiService.getUsersMe().then(userData => {
+    user.value = userData;
+    userLoading.value = false;
+  }).catch(() => {
+    userLoading.value = null;
+  });
+
+  userPromise.then(() => {
+    if (user.value !== null) {
+      ApiService.getChallengesTeams(new URLSearchParams([["members", String(user.value.id)]])).then(result => {
+        userteams.value = result;
+        userteamsLoading.value = false;
+      }).catch(() => {
+        userteamsLoading.value = null;
+      })
+    } else {
+      userteamsLoading.value = false;
+    }
+  });
+
+  if (userteams.value === null) {
+    return {};
+  }
+
+  const sortedTeams: { [tournamentId: number]: Team[] } = {};
+  for (let i = 0; i < userteams.value.length; i++) {
+    const currentTeam = userteams.value[i];
+    if (Object.keys(sortedTeams).includes(String(currentTeam.tournament.id))) {
+      sortedTeams[currentTeam.tournament.id] = sortedTeams[currentTeam.tournament.id].concat(currentTeam);
+    } else {
+      sortedTeams[currentTeam.tournament.id] = [currentTeam];
+    }
+  }
+  if (challenge.value === null){
+    return {};
+  }
+  if(Object.keys(sortedTeams).includes(String(challenge.value.tournament.id))) {
+    return sortedTeams[challenge.value.tournament.id][0].id;
+  } else {
+    return "";
+  }
+}
+
 function startUpload() {
   if (challenge.value !== null && imageFile.value !== null) {
     uploadingImage.value = true;
     const formData = new FormData();
     formData.append("challenge", String(challenge.value.id));
     formData.append("image", imageFile.value, imageFile.value.name);
+    formData.append("team", String(getChallengeTeam()));
     ApiService.postChallengesSubmissions(formData).then(() => {
       toast.success("Image successfully submitted!");
       submissionsList.value.refresh();
@@ -105,10 +163,10 @@ function startUpload() {
       Failed to load challenge, please try again.
     </div>
   </div>
-  <div v-if="store.loggedIn" class="container mt-5">
+  <!-- <div v-if="store.loggedIn" class="container mt-5">
     <h2>Submissions</h2>
     <SubmissionsList ref="submissionsList" show-accepted="true" submission-search-filters="[['team', String(groupData.team.id)], ['challenge', String(id.value)]]" no-submissions-warning="'Your team has not made any submissions for this challenge yet.'"/>
-  </div>
+  </div> -->
 </template>
 
 <style scoped>

@@ -34,8 +34,14 @@ class ChallengeSerializer(serializers.ModelSerializer):
     def get_completed(self, instance):
         """Get completed value of serializer."""
         request = self.context.get("request", None)
-        if request is not None and request.user is not None and request.user.is_authenticated:
-            return Submission.objects.filter(team__members__in=[request.user], challenge=instance, accepted=True).exists()
+        if (
+            request is not None
+            and request.user is not None
+            and request.user.is_authenticated
+        ):
+            return Submission.objects.filter(
+                team__members__in=[request.user], challenge=instance, accepted=True
+            ).exists()
         else:
             return None
 
@@ -43,8 +49,32 @@ class ChallengeSerializer(serializers.ModelSerializer):
         """Meta class."""
 
         model = models.Challenge
-        fields = ["id", "name", "slug", "description", "image", "tournament", "disabled", "active_from", "active_until", "points", "completed"]
-        read_only_fields = ["id", "name", "slug", "description", "image", "tournament", "disabled", "active_from", "active_until", "points", "completed"]
+        fields = [
+            "id",
+            "name",
+            "slug",
+            "description",
+            "image",
+            "tournament",
+            "disabled",
+            "active_from",
+            "active_until",
+            "points",
+            "completed",
+        ]
+        read_only_fields = [
+            "id",
+            "name",
+            "slug",
+            "description",
+            "image",
+            "tournament",
+            "disabled",
+            "active_from",
+            "active_until",
+            "points",
+            "completed",
+        ]
 
 
 class SubmissionSerializer(WritableModelSerializer):
@@ -60,5 +90,18 @@ class SubmissionSerializer(WritableModelSerializer):
         """Meta class."""
 
         model = models.Submission
-        fields = ["challenge", "team", "tournament", "created", "created_by", "updated", "updated_by", "image", "image_webp", "thumbnail", "accepted", "transaction"]
+        fields = [
+            "challenge",
+            "team",
+            "tournament",
+            "created",
+            "created_by",
+            "updated",
+            "updated_by",
+            "image",
+            "image_webp",
+            "thumbnail",
+            "accepted",
+            "transaction",
+        ]
         read_only_fields = ["created", "updated", "transaction", "tournament"]

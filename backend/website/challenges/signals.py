@@ -32,7 +32,7 @@ def create_transaction_on_accept(sender, instance: Submission, **kwargs):
         instance.transaction = Transaction.objects.create(
             account=instance.team.account,
             amount=instance.challenge.points,
-            description=f"Completed challenge {instance.challenge.name}"
+            description=f"Completed challenge {instance.challenge.name}",
         )
 
     return instance

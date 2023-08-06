@@ -27,5 +27,3 @@ class TeamSerializer(serializers.ModelSerializer):
 
         model = models.Team
         fields = ("id", "name", "tournament", "account", "members")
-
-

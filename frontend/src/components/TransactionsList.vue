@@ -40,7 +40,7 @@ function addNewData() {
     nextDataExists.value = result.next !== null;
     transactions.value = transactions.value.concat(result.results);
   }).catch(() => {
-    toast.error("Failed to load submissions data, please try again.")
+    toast.error("Failed to load transactions data, please try again.")
   }).finally(() => {
     transactionsLoading.value = false;
   })

@@ -12,7 +12,10 @@ class TournamentListAPIView(ListAPIView):
     serializer_class = serializers.TournamentSerializer
 
     filter_backends = [filters.SearchFilter]
-    search_fields = ("name", "slug",)
+    search_fields = (
+        "name",
+        "slug",
+    )
 
     def get_queryset(self):
         """Get the queryset."""
@@ -28,13 +31,17 @@ class TournamentRetrieveAPIView(RetrieveAPIView):
         """Get the queryset."""
         return models.Tournament.objects.revealed_tournaments()
 
+
 class TeamListAPIView(ListAPIView):
     """Team List API View."""
 
     serializer_class = serializers.TeamSerializer
 
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
-    filterset_fields = ("tournament", "members",)
+    filterset_fields = (
+        "tournament",
+        "members",
+    )
     search_fields = ("name",)
 
     def get_queryset(self):
