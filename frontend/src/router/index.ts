@@ -9,6 +9,7 @@ import TournamentsView from '../views/TournamentsView.vue'
 import TransactionsView from "@/views/TransactionsView.vue";
 import ProfileSubmissionsView from "@/views/ProfileSubmissionsView.vue";
 import TournamentStatisticsView from "@/views/TournamentStatisticsView.vue";
+import LogoutView from "@/views/LogoutView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -146,6 +147,11 @@ const router = createRouter({
       path: '/',
       name: 'Index',
       component: FeedView
+    },
+    {
+      path: '/logout',
+      name: 'Logout',
+      component: LogoutView
     },
     {
       path: "/auth/callback",

@@ -1,4 +1,5 @@
 
+const LOGOUT_TOKEN_NAME = "logout_state";
 
 function parseHash(hashString: string): {
     accessToken: string,
@@ -73,4 +74,4 @@ function getEnvVar(name: string): string {
     }
 }
 
-export { parseHash, getEnvVar };
+export { LOGOUT_TOKEN_NAME, parseHash, getEnvVar };

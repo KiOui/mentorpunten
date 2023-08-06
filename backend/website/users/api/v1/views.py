@@ -33,17 +33,3 @@ class MeRetrieveAPIView(RetrieveAPIView):
             return self.queryset.get(pk=self.request.user.pk)
         except User.DoesNotExist:
             raise Http404()
-
-
-class LogoutAPIView(APIView):
-    """Logout User."""
-
-    permission_classes = [IsAuthenticatedOrTokenHasScopeForMethod]
-    required_scopes_for_method = {
-        "POST": ["write"],
-    }
-
-    def post(self, request, **kwargs):
-        """Logout a User if logged in."""
-        logout(request)
-        return Response(status=status.HTTP_200_OK)

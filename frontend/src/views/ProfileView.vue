@@ -1,15 +1,16 @@
 <script setup lang="ts">
-  import { useCredentialsStore } from "@/stores/credentials.module";
-  import useApiService from "@/common/api.service";
-  import Loader from "@/components/Loader.vue";
-  import {ref} from "vue";
-  import {onMounted} from "vue";
-  import type User from "@/models/user.model";
-  import {useRouter} from "vue-router";
-  import type Team from "@/models/team.model";
-  import Header from "@/components/Header.vue";
+import {useCredentialsStore} from "@/stores/credentials.module";
+import useApiService from "@/common/api.service";
+import Loader from "@/components/Loader.vue";
+import {onMounted, ref} from "vue";
+import type User from "@/models/user.model";
+import {useRouter} from "vue-router";
+import type Team from "@/models/team.model";
+import Header from "@/components/Header.vue";
+import {getEnvVar, LOGOUT_TOKEN_NAME} from "@/common/general.service";
+import CryptoService from "@/common/crypto.service";
 
-  let user = ref<User|null>(null);
+let user = ref<User|null>(null);
   let userLoading = ref<boolean|null>(true);
 
   let teams = ref<Team[]|null>(null);
@@ -20,15 +21,12 @@
   const store = useCredentialsStore();
   const ApiService = useApiService();
 
-  const logoutLoading = ref<boolean>(false);
-
   function logout() {
-    logoutLoading.value = true;
-    ApiService.logout().finally(() => {
-      store.logOut();
-      store.storeState();
-      router.push("/");
-    });
+    const logoutState = CryptoService.getRandomString(12);
+    localStorage.setItem(LOGOUT_TOKEN_NAME, logoutState);
+    const backUrl = encodeURIComponent(window.location.href);
+    const nextUrl = encodeURIComponent(`${new URL(router.resolve({name: 'Logout'}).href, window.location.origin).href}?logout=${logoutState}`);
+    window.location.href = `${getEnvVar('VITE_API_BASE_URI')}${getEnvVar('VITE_API_LOGOUT_URL')}?back=${backUrl}&next=${nextUrl}`;
   }
 
   onMounted(() => {

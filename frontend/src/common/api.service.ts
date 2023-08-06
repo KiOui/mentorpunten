@@ -79,10 +79,6 @@ class _ApiService {
     return this.get<User>("/users/me/");
   }
 
-  async logout(): Promise<string> {
-    return this.post<string>("/users/logout/", null);
-  }
-
   _addParametersToResource(resource: string, parameters: URLSearchParams | null): string {
     if (parameters !== null) {
       return `${resource}?${parameters.toString()}`;

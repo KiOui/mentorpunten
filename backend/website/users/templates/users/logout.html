@@ -1,0 +1,62 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Logout</title>
+    <style>
+        @font-face {
+          font-family: 'Gill sans MT condensed';
+          src: url('{% static 'users/fonts/GillSansMT-Condensed.ttf' %}')
+          format('truetype');
+        }
+
+        body {
+            min-width: 100vw;
+            min-height: 100vh;
+            background-color: rgb(230, 34, 114);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Gill sans MT condensed, sans-serif;
+        }
+
+        h1 {
+            text-transform: uppercase;
+            font-size: 4rem;
+            margin: 0;
+        }
+
+        p {
+            font-size: 1.2rem;
+        }
+
+        .logout-container {
+            background-color: white;
+            padding: 20px;
+            margin: 20px;
+        }
+
+        .confirm-button {
+
+        }
+
+        .deny-button {
+
+        }
+    </style>
+</head>
+<body>
+    <div class="logout-container">
+        <h1>Logout</h1>
+        <p>Are you sure you want to log out?</p>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}"/>
+            <input class="confirm-button" type="submit" name="submit" value="Yes"/>
+            <a href="{{ back }}" class="deny-button">No</a>
+        </form>
+    </div>
+</body>
+</html>
