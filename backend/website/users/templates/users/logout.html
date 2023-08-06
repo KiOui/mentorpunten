@@ -36,14 +36,51 @@
             background-color: white;
             padding: 20px;
             margin: 20px;
+            border-radius: 5px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .flex-grow {
+            flex-grow: 1;
+        }
+
+        .button {
+            display: inline-block;
+            font-family: Gill sans MT condensed, sans-serif;
+            padding: 0 12px;
+            font-size: 19px;
+            font-weight: 400;
+            line-height: 29px;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            vertical-align: middle;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 6px;
+            transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
         }
 
         .confirm-button {
-
+            margin-right: 2px;
+            background-color: #28a745;
+            color: white;
+            border-color: #28a745;
         }
 
         .deny-button {
-
+            margin-left: 2px;
+            background-color: #dc3545;
+            color: white;
+            border-color: #dc3545;
         }
     </style>
 </head>
@@ -54,8 +91,10 @@
         <form method="POST">
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ next }}"/>
-            <input class="confirm-button" type="submit" name="submit" value="Yes"/>
-            <a href="{{ back }}" class="deny-button">No</a>
+            <div class="button-container">
+                <input class="confirm-button button flex-grow" type="submit" name="submit" value="Yes"/>
+                <a href="{{ back }}" class="deny-button button flex-grow">No</a>
+            </div>
         </form>
     </div>
 </body>
