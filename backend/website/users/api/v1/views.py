@@ -1,8 +1,11 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, logout
 from django.http import Http404
+from rest_framework import status
 from rest_framework.generics import RetrieveAPIView
 
 from mentorpunten.api.permissions import IsAuthenticatedOrTokenHasScopeForMethod
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from users.api.v1.serializers import UserSerializer
 
 User = get_user_model()
@@ -30,3 +33,17 @@ class MeRetrieveAPIView(RetrieveAPIView):
             return self.queryset.get(pk=self.request.user.pk)
         except User.DoesNotExist:
             raise Http404()
+
+
+class LogoutAPIView(APIView):
+    """Logout User."""
+
+    permission_classes = [IsAuthenticatedOrTokenHasScopeForMethod]
+    required_scopes_for_method = {
+        "POST": ["write"],
+    }
+
+    def post(self, request, **kwargs):
+        """Logout a User if logged in."""
+        logout(request)
+        return Response(status=status.HTTP_200_OK)

@@ -4,6 +4,7 @@ import hashlib
 from django.contrib.auth import get_user_model, login
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
+from django.utils.http import urlencode
 from django.views.generic import TemplateView
 from django.conf import settings
 from oauthlib.oauth2 import WebApplicationClient
@@ -34,7 +35,7 @@ class LoginView(TemplateView):
 
         authorization_url = client.prepare_request_uri(
             f"{settings.THALIA_API_BASE_URI}{settings.THALIA_API_AUTHORIZATION_ENDPOINT}",
-            redirect_uri=settings.THALIA_API_OAUTH_REDIRECT_URI,
+            redirect_uri=settings.THALIA_API_OAUTH_REDIRECT_URI + "?" + urlencode({"next": request.GET.get("next") }),
             code_challenge=code_challenge,
             code_challenge_method="S256",
             state=authentication_request.state,
@@ -67,7 +68,7 @@ class CallbackView(TemplateView):
 
         oauth = OAuth2Session(
             client=client,
-            redirect_uri=settings.THALIA_API_OAUTH_REDIRECT_URI,
+            redirect_uri=settings.THALIA_API_OAUTH_REDIRECT_URI + "?" + urlencode({"next": request.GET.get("next") }),
             scope=["profile:read"],
         )
 
@@ -100,4 +101,8 @@ class CallbackView(TemplateView):
             )
 
         login(request, thalia_user.user)
-        return redirect("/")
+        next_query = request.GET.get("next", None)
+        if next_query is not None:
+            return redirect(next_query)
+        else:
+            return redirect("/")

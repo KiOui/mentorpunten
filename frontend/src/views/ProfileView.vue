@@ -20,10 +20,15 @@
   const store = useCredentialsStore();
   const ApiService = useApiService();
 
+  const logoutLoading = ref<boolean>(false);
+
   function logout() {
-    store.logOut();
-    store.storeState();
-    router.push("/");
+    logoutLoading.value = true;
+    ApiService.logout().finally(() => {
+      store.logOut();
+      store.storeState();
+      router.push("/");
+    });
   }
 
   onMounted(() => {
