@@ -12,6 +12,8 @@ User = get_user_model()
 
 @admin.register(Tournament)
 class TournamentAdmin(admin.ModelAdmin):
+    """Tournament Admin."""
+
     list_display = ["name", "active_from", "active_until"]
     search_fields = ("name",)
     list_filter = (
@@ -80,6 +82,8 @@ class TeamAdminForm(forms.ModelForm):
 
 @admin.register(Team)
 class TeamAdmin(admin.ModelAdmin):
+    """Team Admin."""
+
     def balance(self, instance: Team):
         """Get balance."""
         return instance.account.balance
