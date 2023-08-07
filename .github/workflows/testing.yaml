@@ -47,7 +47,7 @@ jobs:
           poetry run python3 website/manage.py check
 
       - name: "Run Django tests using Coverage"
-        run: poetry run coverage run backend/manage.py test backend/
+        run: poetry run coverage run website/manage.py test website/
 
       - name: "Check Coverage report"
         run: poetry run coverage report --omit "*/site-packages/*,*/migrations/*"
