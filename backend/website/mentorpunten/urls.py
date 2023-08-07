@@ -11,8 +11,7 @@ urlpatterns = [
     path(
         "login/",
         RedirectView.as_view(
-            # url="/thalia/login/" if not settings.DEBUG else "/admin-login",
-            url="/thalia/login",
+            url="/thalia/login/" if not settings.DEBUG else "/admin-login",
             query_string=True,
         ),
         name="login",

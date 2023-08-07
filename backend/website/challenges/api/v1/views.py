@@ -60,7 +60,7 @@ class SubmissionListCreateAPIView(ListCreateAPIView):
         if self.request.user.is_authenticated:
             return self.queryset.filter(
                 Q(accepted=True) | Q(team__members__in=[self.request.user])
-            )
+            ).distinct()
         else:
             return self.queryset.filter(accepted=True)
 
@@ -95,9 +95,9 @@ class SubmissionListCreateAPIView(ListCreateAPIView):
                 "accepted": None,
                 "team": team.id,
                 "challenge": challenge.id,
-                "tournament": challenge.tournament,
+                "tournament": challenge.tournament.id,
                 "image": request.data.get("image"),
-                "created_by": request.user,
+                "created_by": request.user.id,
             }
         )
 

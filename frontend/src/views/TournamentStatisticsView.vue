@@ -74,15 +74,17 @@ function first_team_points(): string {
 
 <template>
   <Header :show-back-button="true"/>
-  <div v-if="tournament !== null" class="custom-card text-center">
-    <h1>{{ tournament.name }}</h1>
-    <h4>{{ start_end_time(tournament) }}</h4>
+  <div class="feed-container mx-auto my-5">
+    <div v-if="tournament !== null" class="custom-card text-center">
+      <h1>{{ tournament.name }}</h1>
+      <h4>{{ start_end_time(tournament) }}</h4>
+    </div>
+    <div class="d-flex justify-content-between align-items-start first-of-tournament">
+      <h1>#1 {{ first_team_name() }}</h1>
+      <h1>{{ first_team_points() }} points</h1>
+    </div>
+    <TournamentStatisticsList v-if="teams !== null" v-bind:teams="teams.slice(1, teams.length)" />
   </div>
-  <div class="d-flex justify-content-between align-items-start first-of-tournament">
-    <h1>#1 {{ first_team_name() }}</h1>
-    <h1>{{ first_team_points() }} points</h1>
-  </div>
-  <TournamentStatisticsList v-if="teams !== null" v-bind:teams="teams.slice(1, teams.length)" />
 </template>
 
 <style>

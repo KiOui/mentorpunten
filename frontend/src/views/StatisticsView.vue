@@ -6,6 +6,7 @@
   import StatisticsCard from "@/components/StatisticsCard.vue";
   import type Team from "@/models/team.model";
   import Header from "@/components/Header.vue";
+  import type User from "@/models/user.model";
 
   const ApiService = useApiService();
 
@@ -14,6 +15,9 @@
 
   const teams = ref<Team[] | null>(null);
   const teamsLoading = ref<boolean | null>(true);
+
+  const user = ref<User | null>(null);
+  const userLoading = ref<boolean | null>(true);
 
   onMounted(() => {
     ApiService.getTournaments().then(result => {
@@ -28,7 +32,14 @@
       teamsLoading.value = false;
     }).catch(() => {
       teamsLoading.value = null;
-    })
+    });
+
+    ApiService.getUsersMe().then(result => {
+      user.value = result;
+      userLoading.value = false;
+    }).catch(() => {
+      userLoading.value = null;
+    });
   });
 
   const sortedTeamsPerTournament = computed(() => {
@@ -55,6 +66,29 @@
 
     return sortedTeams;
   });
+
+  function userTeamForTournament(tournament: Tournament): Team | null {
+    if (user.value === null) {
+      return null;
+    }
+
+    const sortedTeams = sortedTeamsPerTournament.value[tournament.id];
+    if (sortedTeams === undefined) {
+      return null;
+    }
+
+    for (let i = 0; i < sortedTeams.length; i++) {
+      const currentTeam = sortedTeams[i];
+      const currentTeamMemberIds = currentTeam.members.map((member) => {
+        return member.id;
+      });
+      if (currentTeamMemberIds.includes(user.value.id)) {
+        return currentTeam;
+      }
+    }
+
+    return null;
+  }
 </script>
 
 <template>
@@ -69,6 +103,7 @@
         v-for="tournament in tournaments"
         v-bind:tournament="tournament"
         v-bind:key="tournament.id"
+        v-bind:user-team="userTeamForTournament(tournament)"
         v-bind:teams="Object.keys(sortedTeamsPerTournament).includes(String(tournament.id)) ? sortedTeamsPerTournament[tournament.id] : []"/>
   </div>
 </template>
