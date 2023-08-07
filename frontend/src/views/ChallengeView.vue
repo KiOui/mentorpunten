@@ -52,7 +52,7 @@ onMounted(() => {
 
   Promise.all([userPromise, challengePromise]).then(() => {
     if (userLoading.value === false && user.value !== null && challengeLoading.value === false && challenge.value !== null) {
-      ApiService.getChallengesTeams(new URLSearchParams([["members", String(user.value.id)], ["tournament", String(challenge.value.id)]])).then(result => {
+      ApiService.getChallengesTeams(new URLSearchParams([["members", String(user.value.id)], ["tournament", String(challenge.value.tournament.id)]])).then(result => {
         if (result.length > 0) {
           userTeam.value = result[0];
         }
