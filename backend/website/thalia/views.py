@@ -89,6 +89,7 @@ class CallbackView(TemplateView):
         member_data = response.json()
         thalia_identifier = member_data["pk"]
         thalia_display_name = member_data["profile"]["display_name"]
+        photo = member_data['profile']['photo']['medium'] if 'photo' in member_data['profile'].keys() and 'medium' in member_data['profile']['photo'].keys() else None
 
         try:
             thalia_user = ThaliaUser.objects.get(thalia_id=thalia_identifier)
@@ -97,8 +98,12 @@ class CallbackView(TemplateView):
                 str(thalia_identifier), full_name=thalia_display_name
             )
             thalia_user = ThaliaUser.objects.create(
-                thalia_id=thalia_identifier, user=user
+                thalia_id=thalia_identifier, user=user,
             )
+
+        if thalia_user.user.profile_image != photo:
+            thalia_user.user.profile_image = photo
+            thalia_user.user.save()
 
         login(request, thalia_user.user)
         next_query = request.GET.get("next", None)

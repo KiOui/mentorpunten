@@ -68,9 +68,7 @@ class User(AbstractUser):
 
     username = models.CharField(max_length=200, unique=True)
     full_name = models.CharField(max_length=200)
-    profile_image = models.ImageField(
-        upload_to=user_upload_image_to, null=True, blank=True
-    )
+    profile_image = models.URLField(null=True, blank=True)
 
     @property
     def folder(self):
