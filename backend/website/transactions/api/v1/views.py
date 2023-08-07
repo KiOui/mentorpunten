@@ -23,7 +23,6 @@ class TransactionListAPIView(ListCreateAPIView):
     """Transaction List API View."""
 
     serializer_class = TransactionSerializer
-    queryset = Transaction.objects.all()
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields = (
@@ -32,6 +31,10 @@ class TransactionListAPIView(ListCreateAPIView):
     )
 
     pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+        """Get the Queryset."""
+        return Transaction.objects.all().order_by("-timestamp")
 
 
 class TransactionRetrieveAPIView(RetrieveAPIView):

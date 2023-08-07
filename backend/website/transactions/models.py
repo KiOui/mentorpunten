@@ -17,7 +17,7 @@ class Account(models.Model):
     @property
     def balance(self) -> float:
         """Return the balance of the account."""
-        latest_transaction = self.transactions.first()
+        latest_transaction = self.transactions.last()
         if latest_transaction:
             return latest_transaction._balance_after
         return 0
@@ -161,5 +161,5 @@ class Transaction(models.Model):
 
         verbose_name = "transaction"
         verbose_name_plural = "transactions"
-        ordering = ["-timestamp"]
-        get_latest_by = "-timestamp"
+        ordering = ["timestamp"]
+        get_latest_by = "timestamp"

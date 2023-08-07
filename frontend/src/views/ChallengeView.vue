@@ -36,7 +36,7 @@ let userTeam = ref<Team|null>(null);
 let userTeamLoading = ref<boolean|null>(true);
 
 onMounted(() => {
-  ApiService.getChallenge(id.value).then(result => {
+  const challengePromise = ApiService.getChallenge(id.value).then(result => {
     challenge.value = result;
     challengeLoading.value = false;
   }).catch(() => {
@@ -50,9 +50,9 @@ onMounted(() => {
     userLoading.value = null;
   });
 
-  userPromise.then(() => {
-    if (userLoading.value === false && user.value !== null) {
-      ApiService.getChallengesTeams(new URLSearchParams([["members", String(user.value.id)]])).then(result => {
+  Promise.all([userPromise, challengePromise]).then(() => {
+    if (userLoading.value === false && user.value !== null && challengeLoading.value === false && challenge.value !== null) {
+      ApiService.getChallengesTeams(new URLSearchParams([["members", String(user.value.id)], ["tournament", String(challenge.value.id)]])).then(result => {
         if (result.length > 0) {
           userTeam.value = result[0];
         }
@@ -111,15 +111,18 @@ function startUpload() {
       </div>
       <h3>{{ challenge.points }} points</h3>
       <p style="margin-top: 1rem;">{{ challenge.description }}</p>
-      <form v-if="store.loggedIn && !challenge.completed" class="input-group mt-3">
+      <form v-if="store.loggedIn && !challenge.completed && userTeam !== null" class="input-group mt-3">
         <label for="image" class="w-100 mb-2" style="font-family: 'Open sans condensed';">Make a picture</label>
         <input v-on:change="changeImageFile($event)" ref="imageField" type="file" class="form-control" id="image"
                capture="user" accept="image/*" aria-label="Upload">
         <button v-if="!uploadingImage" v-on:click="startUpload()" class="btn btn-primary" type="button">Submit</button>
         <button v-else class="btn btn-primary disabled" type="button">Submit</button>
       </form>
-      <div v-else-if="challenge.completed" class="alert alert-success" style="margin-top: 1rem;">
+      <div v-else-if="challenge.completed" class="alert alert-success mt-2">
         You have already completed this challenge, no submissions are possible anymore.
+      </div>
+      <div v-else-if="userTeam === null" class="alert alert-info mt-2">
+        You are not in a team for this tournament so you can not submit pictures.
       </div>
     </div>
     <Loader v-else-if="challengeLoading === true" size="60px" background-color="#000000"/>
