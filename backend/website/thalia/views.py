@@ -35,7 +35,9 @@ class LoginView(TemplateView):
 
         authorization_url = client.prepare_request_uri(
             f"{settings.THALIA_API_BASE_URI}{settings.THALIA_API_AUTHORIZATION_ENDPOINT}",
-            redirect_uri=settings.THALIA_API_OAUTH_REDIRECT_URI + "?" + urlencode({"next": request.GET.get("next") }),
+            redirect_uri=settings.THALIA_API_OAUTH_REDIRECT_URI
+            + "?"
+            + urlencode({"next": request.GET.get("next")}),
             code_challenge=code_challenge,
             code_challenge_method="S256",
             state=authentication_request.state,
@@ -68,7 +70,9 @@ class CallbackView(TemplateView):
 
         oauth = OAuth2Session(
             client=client,
-            redirect_uri=settings.THALIA_API_OAUTH_REDIRECT_URI + "?" + urlencode({"next": request.GET.get("next") }),
+            redirect_uri=settings.THALIA_API_OAUTH_REDIRECT_URI
+            + "?"
+            + urlencode({"next": request.GET.get("next")}),
             scope=["profile:read"],
         )
 
@@ -89,7 +93,12 @@ class CallbackView(TemplateView):
         member_data = response.json()
         thalia_identifier = member_data["pk"]
         thalia_display_name = member_data["profile"]["display_name"]
-        photo = member_data['profile']['photo']['medium'] if 'photo' in member_data['profile'].keys() and 'medium' in member_data['profile']['photo'].keys() else None
+        photo = (
+            member_data["profile"]["photo"]["medium"]
+            if "photo" in member_data["profile"].keys()
+            and "medium" in member_data["profile"]["photo"].keys()
+            else None
+        )
 
         try:
             thalia_user = ThaliaUser.objects.get(thalia_id=thalia_identifier)
@@ -98,7 +107,8 @@ class CallbackView(TemplateView):
                 str(thalia_identifier), full_name=thalia_display_name
             )
             thalia_user = ThaliaUser.objects.create(
-                thalia_id=thalia_identifier, user=user,
+                thalia_id=thalia_identifier,
+                user=user,
             )
 
         if thalia_user.user.profile_image != photo:

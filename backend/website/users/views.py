@@ -26,7 +26,7 @@ class LogoutView(TemplateView):
             return redirect(next_url)
 
         submit_value = request.POST.get("submit", None)
-        if submit_value == 'Yes':
+        if submit_value == "Yes":
             logout(request)
 
         next_url = request.POST.get("next", "/")

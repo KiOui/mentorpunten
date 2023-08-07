@@ -13,7 +13,7 @@
 
 <script lang="ts">
 export default {
-  name: "Loader",
+  name: "Loader", /* eslint-disable-line vue/multi-word-component-names */
   props: {
     size: String,
     backgroundColor: String,

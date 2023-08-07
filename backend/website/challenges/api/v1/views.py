@@ -70,7 +70,9 @@ class SubmissionListCreateAPIView(ListCreateAPIView):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         team_id = request.data.get("team", None)
-        possible_teams = models.Team.objects.filter(id=team_id, members__in=[request.user])
+        possible_teams = models.Team.objects.filter(
+            id=team_id, members__in=[request.user]
+        )
         if len(possible_teams) == 0:
             # Team does not exist or user is not a member of the team.
             return Response(status=status.HTTP_400_BAD_REQUEST)

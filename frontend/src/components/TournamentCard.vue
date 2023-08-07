@@ -1,7 +1,6 @@
 <script setup lang="ts">
     import { RouterLink } from 'vue-router'
     import type Tournament from "@/models/tournament.model";
-    import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
     import {startEndTimeOfTournament} from "@/common/general.service";
 
     defineProps<{tournament: Tournament}>();

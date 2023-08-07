@@ -104,4 +104,10 @@ class SubmissionSerializer(WritableModelSerializer):
             "accepted",
             "transaction",
         ]
-        read_only_fields = ["created", "updated", "transaction", "image_webp", "thumbnail"]
+        read_only_fields = [
+            "created",
+            "updated",
+            "transaction",
+            "image_webp",
+            "thumbnail",
+        ]

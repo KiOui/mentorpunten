@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type Submission from "@/models/submission.model";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {RouterLink} from "vue-router";
 
 defineProps<{submission: Submission, showAccepted: boolean}>();

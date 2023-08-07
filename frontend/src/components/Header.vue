@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts"> /* eslint-disable-line vue/multi-word-component-names */
 import {useRouter} from "vue-router";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import useApiService from "@/common/api.service";

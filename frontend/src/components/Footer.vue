@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts"> /* eslint-disable-line vue/multi-word-component-names */
 
 </script>
 

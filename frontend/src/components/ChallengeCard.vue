@@ -1,7 +1,6 @@
 <script setup lang="ts">
     import { RouterLink } from 'vue-router'
     import type Challenge from "@/models/challenge.model";
-    import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
     defineProps<{challenge: Challenge}>();
 </script>

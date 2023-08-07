@@ -156,7 +156,7 @@ const router = createRouter({
     {
       path: "/auth/callback",
       name: "OAuth Authorization",
-      component: () => import("../views/Authorize.vue"),
+      component: () => import("../views/AuthorizeView.vue"),
     },
   ]
 })

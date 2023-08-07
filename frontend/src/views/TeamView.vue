@@ -3,10 +3,8 @@ import type Team from "@/models/team.model";
 import {computed, onMounted, ref} from "vue";
 import useApiService from "@/common/api.service";
 import Loader from "@/components/Loader.vue";
-import type Tournament from "@/models/tournament.model";
 import type Transaction from "@/models/transaction.model";
 import TransactionCard from "@/components/TransactionCard.vue";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import Header from "@/components/Header.vue";
 
 const props = defineProps<{id: number}>();

@@ -90,12 +90,12 @@ onMounted(() => {
   });
 });
 
-function changeImageFile(event: Event) {
-  const files: FileList | null = (<HTMLInputElement>event.target).files;
-  if (files === null || files.length === 0) {
-    return;
+function changeImageFile(event: Event): void {
+  const htmlInputEvent = event.target as unknown as HTMLInputElement;
+  const files: FileList | null = htmlInputEvent.files;
+  if (files !== null && files.length > 0) {
+    imageFile.value = files[0];
   }
-  imageFile.value = files[0];
 }
 
 function startUpload() {
@@ -140,7 +140,7 @@ function startUpload() {
         <input v-on:change="changeImageFile($event)" ref="imageField" type="file" class="form-control" id="image"
                capture="user" accept="image/*" aria-label="Upload">
         <button v-if="!uploadingImage" v-on:click="startUpload()" class="btn btn-primary" type="button">Submit</button>
-        <button v-else class="btn btn-primary disabled" type="button">Submit</button>
+        <button v-else class="btn btn-primary disabled d-flex justify-content-center align-items-center" type="button">Submit <span class="loader ms-1"></span></button>
       </form>
       <div v-else-if="challenge.completed" class="alert alert-success mt-2 mb-1">
         You have already completed this challenge, no submissions are possible anymore.
@@ -174,5 +174,24 @@ function startUpload() {
 </template>
 
 <style scoped>
+.loader {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 2px solid var(--text-color);
+  border-bottom-color: var(--background-shade);
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
 
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 </style>

@@ -3,16 +3,9 @@ import { RouterLink } from 'vue-router'
 import type Tournament from "@/models/tournament.model";
 import type Team from "@/models/team.model";
 import {computed} from "vue";
-import {ref} from "vue";
-import type User from "@/models/user.model";
-import useApiService from "@/common/api.service";
 import {startEndTimeOfTournament} from "@/common/general.service";
 
 const props = defineProps<{tournament: Tournament, teams: Team[], userTeam: null | Team}>();
-
-const firstThreeTeams = computed(() => {
-  return props.teams.slice(0, 3);
-});
 
 const tournamentPosition = computed(() => {
   if (props.userTeam === null) {

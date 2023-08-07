@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
 import {onMounted, ref} from "vue";
-import type Transaction from "@/models/transaction.model";
 import type Team from "@/models/team.model";
 import useApiService from "@/common/api.service";
 import TransactionsList from "@/components/TransactionsList.vue";
