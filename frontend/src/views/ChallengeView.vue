@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {useCredentialsStore} from '@/stores/credentials.module';
 import useApiService from "@/common/api.service";
-import {onMounted, ref, toRef} from 'vue';
+import {computed, onMounted, ref, toRef} from 'vue';
 import type Challenge from "@/models/challenge.model";
 import Loader from "@/components/Loader.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
@@ -34,6 +34,30 @@ let userLoading = ref<boolean|null>(true);
 
 let userTeam = ref<Team|null>(null);
 let userTeamLoading = ref<boolean|null>(true);
+
+const challengeIsActive = computed(() => {
+  if (challenge.value === null) {
+    return false;
+  }
+
+  const today = new Date();
+
+  if (challenge.value.active_from !== null) {
+    const activeFromDate = new Date(challenge.value.active_from);
+    if (activeFromDate > today) {
+      return false;
+    }
+  }
+
+  if (challenge.value.active_until !== null) {
+    const activeUntilDate = new Date(challenge.value.active_until);
+    if (activeUntilDate < today) {
+      return false;
+    }
+  }
+
+  return true;
+});
 
 onMounted(() => {
   const challengePromise = ApiService.getChallenge(id.value).then(result => {
@@ -111,17 +135,20 @@ function startUpload() {
       </div>
       <h3>{{ challenge.points }} points</h3>
       <p style="margin-top: 1rem;">{{ challenge.description }}</p>
-      <form v-if="store.loggedIn && !challenge.completed && userTeam !== null" class="input-group mt-3">
+      <form v-if="store.loggedIn && !challenge.completed && userTeam !== null && challengeIsActive" class="input-group mt-3">
         <label for="image" class="w-100 mb-2" style="font-family: 'Open sans condensed';">Make a picture</label>
         <input v-on:change="changeImageFile($event)" ref="imageField" type="file" class="form-control" id="image"
                capture="user" accept="image/*" aria-label="Upload">
         <button v-if="!uploadingImage" v-on:click="startUpload()" class="btn btn-primary" type="button">Submit</button>
         <button v-else class="btn btn-primary disabled" type="button">Submit</button>
       </form>
-      <div v-else-if="challenge.completed" class="alert alert-success mt-2">
+      <div v-else-if="challenge.completed" class="alert alert-success mt-2 mb-1">
         You have already completed this challenge, no submissions are possible anymore.
       </div>
-      <div v-else-if="userTeam === null" class="alert alert-info mt-2">
+      <div v-else-if="!challengeIsActive" class="alert alert-warning mt-2 mb-1">
+        This challenge is not active.
+      </div>
+      <div v-else-if="userTeam === null" class="alert alert-info mt-2 mb-1">
         You are not in a team for this tournament so you can not submit pictures.
       </div>
     </div>
