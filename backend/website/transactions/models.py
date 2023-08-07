@@ -17,9 +17,9 @@ class Account(models.Model):
     @property
     def balance(self) -> float:
         """Return the balance of the account."""
-        last_transaction = self.transactions.last()
-        if last_transaction:
-            return last_transaction._balance_after
+        latest_transaction = self.transactions.first()
+        if latest_transaction:
+            return latest_transaction._balance_after
         return 0
 
     def __str__(self):

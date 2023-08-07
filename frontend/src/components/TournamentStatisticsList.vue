@@ -14,7 +14,10 @@ const props = defineProps<{teams: Team[] | null}>();
         <h4 class="col-2 text-center">points</h4>
     </div>
     <div v-if="props.teams !== null" class="row">
-        <TournamentStatisticsCard v-for="team in props.teams" v-bind:team="team" v-bind:key="team.id" v-bind:index="props.teams.indexOf(team)"/>
+        <div v-if="props.teams.length === 0" class="alert alert-info mt-3 mb-2">
+          No other teams in this tournament.
+        </div>
+        <TournamentStatisticsCard v-else v-for="team in props.teams" v-bind:team="team" v-bind:key="team.id" v-bind:index="props.teams.indexOf(team)"/>
     </div>
   </div>
 </template>

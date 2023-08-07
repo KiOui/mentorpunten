@@ -1,3 +1,4 @@
+import type Tournament from "@/models/tournament.model";
 
 const LOGOUT_TOKEN_NAME = "logout_state";
 
@@ -74,4 +75,20 @@ function getEnvVar(name: string): string {
     }
 }
 
-export { LOGOUT_TOKEN_NAME, parseHash, getEnvVar };
+function startEndTimeOfTournament(tournament: Tournament): string {
+    if (tournament.active_from) {
+        const start_date = new Date(tournament.active_from);
+        const end_date = new Date(tournament.active_until);
+
+        return `${start_date.toLocaleDateString("en-GB")}, ${start_date.toLocaleTimeString(
+            "en-GB",
+            { hour: "2-digit", minute: "2-digit" }
+        )} until ${end_date.toLocaleDateString("en-GB")}, ${end_date.toLocaleTimeString(
+            "en-GB",
+            { hour: "2-digit", minute: "2-digit" }
+        )}`;
+    }
+    return "";
+}
+
+export { LOGOUT_TOKEN_NAME, parseHash, getEnvVar, startEndTimeOfTournament };
