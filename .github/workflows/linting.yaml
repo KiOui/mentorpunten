@@ -39,7 +39,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
 
       - name: "Run Black"
-        run: poetry run black --quiet --check backend
+        run: poetry run black --quiet --check website
 
       - name: "Run flake8"
         run: >-

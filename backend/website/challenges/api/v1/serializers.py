@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from rest_framework.fields import BooleanField, SerializerMethodField
+from rest_framework.fields import SerializerMethodField
 
 from challenges import models
 from challenges.models import Submission

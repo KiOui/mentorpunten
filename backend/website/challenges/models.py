@@ -13,7 +13,7 @@ from queryable_properties.managers import QueryablePropertiesManager
 
 from mentorpunten.services import convert_image
 from tournaments.models import Tournament, Team
-from transactions.models import Account, Transaction
+from transactions.models import Transaction
 
 from django.utils.translation import gettext_lazy as _
 

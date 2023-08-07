@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 from challenges.models import Submission
@@ -27,8 +27,8 @@ def create_transaction_on_accept(sender, instance: Submission, **kwargs):
         obj = None
 
     if obj is None or (obj.accepted is None or obj.accepted is False):
-        # Submission is being created with accepted == True (obj is None) OR Submission is being edited and the accepted
-        # value is being set to True now.
+        # Submission is being created with accepted == True (obj is None) OR Submission is being edited and the
+        # accepted value is being set to True now.
         instance.transaction = Transaction.objects.create(
             account=instance.team.account,
             amount=instance.challenge.points,
