@@ -27,6 +27,15 @@
     <div v-else-if="tournamentsLoading === null" class="alert alert-warning">
       Failed to load tournaments, please try again.
     </div>
+    <div v-else-if="tournaments?.length === 0" class="alert alert-warning">
+      There are currently no tournaments.
+    </div>
     <TournamentCard v-else v-for="tournament in tournaments" v-bind:tournament="tournament" v-bind:key="tournament.id" />
   </div>
 </template>
+
+<style>
+.alert {
+  margin-top: 1rem;
+}
+</style>

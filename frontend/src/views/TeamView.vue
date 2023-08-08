@@ -116,7 +116,7 @@ const tournamentRanking = computed(() => {
         </div>
         <template v-else>
           <TransactionCard v-for="transaction in latestTransactions" v-bind:key="transaction.id" v-bind:transaction="transaction"/>
-          <div class="w-100 d-flex justify-content-center my-3">
+          <div class="w-100 d-flex justify-content-center" style="margin-top: 1rem;">
             <router-link :to="{ name: 'Transactions', params: { id: team.id } }">
               <button v-if="latestTransactions.length > 0" class="btn btn-primary">Show all transactions</button>
             </router-link>
