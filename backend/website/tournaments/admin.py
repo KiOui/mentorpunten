@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from import_export.admin import ImportExportModelAdmin
 from rangefilter.filters import DateRangeFilter
 
 from .models import Tournament, Team
@@ -81,7 +82,7 @@ class TeamAdminForm(forms.ModelForm):
 
 
 @admin.register(Team)
-class TeamAdmin(admin.ModelAdmin):
+class TeamAdmin(ImportExportModelAdmin):
     """Team Admin."""
 
     def balance(self, instance: Team):

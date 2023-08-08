@@ -7,7 +7,9 @@ from django.contrib.auth.admin import (
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.models import Group, Permission
 from django import forms
+from import_export.admin import ExportMixin
 
+from users.resources import UserResource
 
 User = get_user_model()
 
@@ -33,10 +35,12 @@ class UserAdminForm(forms.ModelForm):
         exclude = []
 
 
-class UserAdmin(BaseUserAdmin):
+class UserAdmin(ExportMixin, BaseUserAdmin):
     """User admin model for the User object."""
 
     form = UserAdminForm
+
+    resource_class = UserResource
 
     search_fields = [
         "username",
