@@ -29,6 +29,15 @@
     <div v-else-if="challengesLoading === null" class="alert alert-warning">
       Failed to load challenges, please try again.
     </div>
+    <div v-else-if="challenges?.length === 0" class="alert alert-warning">
+      There are no challenges for this tournament yet.
+    </div>
     <ChallengeCard v-else v-for="challenge in challenges" v-bind:challenge="challenge" v-bind:key="challenge.id" />
   </div>
 </template>
+
+<style scoped>
+.alert {
+  margin-top: 1rem;
+}
+</style>

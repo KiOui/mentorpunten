@@ -58,7 +58,7 @@ function addNewData() {
     </div>
   </div>
   <Loader v-if="transactionsLoading" size="60px" background-color="#000000"/>
-  <div v-else-if="!transactionsLoading && nextDataExists" class="w-100 d-flex justify-content-center my-3">
+  <div v-else-if="!transactionsLoading && nextDataExists" class="w-100 d-flex justify-content-center" style="margin-top: 1rem;">
     <button v-on:click="addNewData" class="btn btn-primary text-center">Load more</button>
   </div>
   <div v-else-if="!transactionsLoading && !nextDataExists" class="alert alert-info text-center" style="margin-top: 1rem;">

@@ -123,7 +123,7 @@ function startUpload() {
 
 <template>
   <Header :show-back-button="true"/>
-  <div class="feed-container mx-auto my-5">
+  <div class="feed-container mx-auto">
     <div v-if="challenge !== null" class="custom-card">
       <div class="row">
         <div class="col-8">
@@ -158,18 +158,18 @@ function startUpload() {
         Failed to load challenge, please try again.
       </div>
     </div>
-    <div v-if="store.loggedIn" class="container mt-5">
-      <h2>Submissions</h2>
-      <div v-if="challengeLoading === null" class="alert alert-warning">
-        Failed loading challenge data, please try again.
-      </div>
-      <div v-else-if="userTeamLoading === null" class="alert alert-warning">
-        Failed loading team data, please try again.
-      </div>
-      <template v-else-if="challenge !== null && userTeam !== null">
-        <SubmissionsList ref="submissionsList" :show-accepted="true" :submission-search-filters="[['team', String(userTeam.id)], ['challenge', String(challenge.id)]]" :no-submissions-warning="'Your team has not made any submissions for this challenge yet.'"/>
-      </template>
+    <div v-if="store.loggedIn" class="custom-card" style="margin-top: 1rem; margin-bottom: -1rem;">
+      <h1>Submissions</h1>
     </div>
+    <div v-if="challengeLoading === null" class="alert alert-warning">
+      Failed loading challenge data, please try again.
+    </div>
+    <div v-else-if="userTeamLoading === null" class="alert alert-warning">
+      Failed loading team data, please try again.
+    </div>
+    <template v-else-if="challenge !== null && userTeam !== null">
+      <SubmissionsList ref="submissionsList" :show-accepted="true" :submission-search-filters="[['team', String(userTeam.id)], ['challenge', String(challenge.id)]]" :no-submissions-warning="'Your team has not made any submissions for this challenge yet.'"/>
+    </template>
   </div>
 </template>
 

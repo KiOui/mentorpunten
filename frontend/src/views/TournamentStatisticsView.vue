@@ -32,6 +32,8 @@ onMounted(() => {
     }).catch(() => {
       teamsLoading.value = null;
     });
+  
+  console.log(teams.value);
 });
 
 const firstTeam: ComputedRef<Team | null> = computed(() => {
@@ -45,18 +47,26 @@ const firstTeam: ComputedRef<Team | null> = computed(() => {
 
 <template>
   <Header :show-back-button="true"/>
-  <div class="feed-container mx-auto my-5">
+  <div class="feed-container mx-auto">
     <div v-if="tournament !== null" class="custom-card text-center">
       <h1>{{ tournament.name }}</h1>
       <h4>{{ startEndTimeOfTournament(tournament) }}</h4>
     </div>
-    <div class="d-flex justify-content-between align-items-start first-of-tournament">
-      <template v-if="firstTeam !== null">
-        <h1>#1 {{ firstTeam.name }}</h1>
-        <h1>{{ firstTeam.account.balance }} points</h1>
-      </template>
+    <div v-else-if="teamsLoading === null" class="alert alert-warning">
+      Failed to load tournaments, please try again.
     </div>
-    <TournamentStatisticsList v-if="teams !== null" v-bind:teams="teams.slice(1, teams.length)" />
+    <div v-if="teams?.length === 0" class="alert alert-warning">
+      There are currently no teams in this tournament.
+    </div>
+    <div v-else>
+      <div class="d-flex justify-content-between align-items-start first-of-tournament">
+        <template v-if="firstTeam !== null">
+          <h1>#1 {{ firstTeam.name }}</h1>
+          <h1>{{ firstTeam.account.balance }} points</h1>
+        </template>
+      </div>
+      <TournamentStatisticsList v-if="teams !== null" v-bind:teams="teams.slice(1, teams.length)" />
+    </div>
   </div>
 </template>
 

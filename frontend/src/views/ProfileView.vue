@@ -59,7 +59,7 @@ let user = ref<User|null>(null);
 
 <template>
   <Header :show-back-button="false"/>
-  <div class="feed-container mx-auto my-5">
+  <div class="feed-container mx-auto">
     <Loader v-if="userLoading === true" size="60px" background-color="#000000"/>
     <div v-else-if="userLoading === null" class="alert alert-warning">
       Failed to load user data, please try again.
@@ -86,7 +86,7 @@ let user = ref<User|null>(null);
         <router-link :to="{ name: 'ProfileSubmissions', params: { id: team.id }}" class="link">View Submissions</router-link>
       </div>
     </template>
-    <div class="d-flex justify-content-center my-3">
+    <div class="d-flex justify-content-center" style="margin-top: 1rem;">
       <button v-on:click="logout" class="btn btn-primary">Logout</button>
     </div>
   </div>
@@ -100,5 +100,9 @@ let user = ref<User|null>(null);
     background-repeat: no-repeat;
     background-size: cover;
     border-radius: 100%;
+  }
+
+  .alert {
+    margin-top: 1rem;
   }
 </style>
