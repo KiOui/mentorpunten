@@ -95,8 +95,8 @@ class _ApiService {
     return this.get<Tournament[]>(this._addParametersToResource("/tournaments/", parameters));
   }
 
-  async getChallengesSubmissions(parameters: URLSearchParams | null = null): Promise<Paginated<Submission[]>> {
-    return this.get<Paginated<Submission[]>>(this._addParametersToResource("/challenges/submissions/", parameters));
+  async getChallengesSubmissions(parameters: URLSearchParams | null = null): Promise<Paginated<Submission>> {
+    return this.get<Paginated<Submission>>(this._addParametersToResource("/challenges/submissions/", parameters));
   }
 
   async postChallengesSubmissions(data: FormData, headers: Headers | null = null): Promise<Submission> {

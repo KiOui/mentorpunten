@@ -4,6 +4,7 @@ from pathlib import Path
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.contrib.auth.models import Permission
 
 
 def user_upload_image_to(instance, filename):
@@ -69,6 +70,13 @@ class User(AbstractUser):
     username = models.CharField(max_length=200, unique=True)
     full_name = models.CharField(max_length=200)
     profile_image = models.URLField(null=True, blank=True)
+
+    def get_user_permissions(user):
+        if user.is_superuser:
+            return [(x.id, x.name) for x in Permission.objects.all()]
+        return [(x.id, x.name) for x in user.user_permissions.all()] | [
+            (x.id, x.name) for x in Permission.objects.filter(group__user=user)
+        ]
 
     @property
     def folder(self):
