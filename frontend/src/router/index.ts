@@ -10,6 +10,7 @@ import TransactionsView from "@/views/TransactionsView.vue";
 import ProfileSubmissionsView from "@/views/ProfileSubmissionsView.vue";
 import TournamentStatisticsView from "@/views/TournamentStatisticsView.vue";
 import LogoutView from "@/views/LogoutView.vue";
+import SubmissionAcceptView from "@/views/SubmissionAcceptView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -142,6 +143,11 @@ const router = createRouter({
           "id": id
         };
       }
+    },
+    {
+      path: '/acceptsubmissions',
+      name: 'SubmissionAccept',
+      component: SubmissionAcceptView
     },
     {
       path: '/',

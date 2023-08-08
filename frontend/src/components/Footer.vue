@@ -21,6 +21,11 @@
             <font-awesome-icon icon="fa-solid fa-chart-line"/>
           </li>
         </router-link>
+        <router-link :to="{ name: 'SubmissionAccept' }" class="text-white nav-item flex-grow-1 text-center">
+          <li>
+            <font-awesome-icon icon="fa-solid fa-check"/>
+          </li>
+        </router-link>
       </ul>
     </div>
   </nav>
