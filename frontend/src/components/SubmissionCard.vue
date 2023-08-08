@@ -29,7 +29,8 @@ defineProps<{submission: Submission, showAccepted: boolean}>();
         </div>
 
         <div style="flex-grow: 1" class="d-flex align-items-center">
-          <img v-if="submission.image !== null" class="w-100" :src="submission.image"/>
+          <img v-if="submission.image_webp !== null" class="w-100" :src="submission.image_webp"/>
+          <img v-else-if="submission.image !== null" class="w-100" :src="submission.image"/>
         </div>
       </div>
   </div>
