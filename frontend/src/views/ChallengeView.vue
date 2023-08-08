@@ -134,6 +134,7 @@ function startUpload() {
         </div>
       </div>
       <h3>{{ challenge.points }} points</h3>
+      <img v-if="challenge.image" class="img-fluid" :src="challenge.image" alt="Challenge image" style="margin-top: 1rem;">
       <p style="margin-top: 1rem;">{{ challenge.description }}</p>
       <form v-if="store.loggedIn && !challenge.completed && userTeam !== null && challengeIsActive" class="input-group mt-3">
         <label for="image" class="w-100 mb-2" style="font-family: 'Open sans condensed';">Make a picture</label>

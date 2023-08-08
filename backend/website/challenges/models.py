@@ -31,9 +31,7 @@ def challenge_upload_image_to(instance, filename):
     """Upload challenge image to."""
     extension = Path(filename).suffix
     main_image_name = f"main-image{extension}"
-    return os.path.join(
-        os.path.join(instance.challenge.folder, "challenge"), main_image_name
-    )
+    return os.path.join(os.path.join(instance.folder, "challenge"), main_image_name)
 
 
 def submission_upload_image_to(instance, filename):
