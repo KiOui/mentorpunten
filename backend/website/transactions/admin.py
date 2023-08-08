@@ -5,12 +5,14 @@ from django.contrib.admin import register
 from import_export.admin import ExportMixin
 
 from transactions.models import Account, Transaction
+from transactions.resources import AccountResource
 
 
 @register(Account)
-class AccountAdmin(admin.ModelAdmin):
+class AccountAdmin(ExportMixin, admin.ModelAdmin):
     """Admin interface for the account model."""
 
+    resource_class = AccountResource
     list_display = ("name", "balance")
     search_fields = ("name",)
     readonly_fields = ("balance",)

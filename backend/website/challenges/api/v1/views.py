@@ -1,5 +1,6 @@
 from django.db.models import Q
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters.rest_framework import BooleanFilter
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from rest_framework import status
 from rest_framework.generics import (
     ListAPIView,
@@ -32,6 +33,23 @@ class ChallengeRetrieveAPIView(RetrieveAPIView):
     queryset = models.Challenge.objects.revealed_challenges()
 
 
+class SubmissionFilter(FilterSet):
+    """Submission FilterSet."""
+
+    class Meta:
+        """Meta class."""
+
+        model = models.Submission
+        fields = {
+            "accepted": ("exact", "isnull"),
+            "challenge": ("exact",),
+            "team": ("exact",),
+            "created_by": ("exact",),
+            "updated_by": ("exact",),
+            "tournament": ("exact",),
+        }
+
+
 class SubmissionListCreateAPIView(ListCreateAPIView):
     """Submission List Create API View."""
 
@@ -42,14 +60,7 @@ class SubmissionListCreateAPIView(ListCreateAPIView):
 
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = [
-        "challenge",
-        "team",
-        "accepted",
-        "created_by",
-        "updated_by",
-        "tournament",
-    ]
+    filterset_class = SubmissionFilter
 
     def get_queryset(self):
         """
