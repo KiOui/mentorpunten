@@ -191,4 +191,5 @@ coverage
 .DS_Store
 
 
+backend/media/challenges
 backend/website/media
