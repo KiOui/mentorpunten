@@ -59,7 +59,7 @@ function refresh() {
 
 <template>
   <div v-if="submissions.length === 0 && !submissionsLoading">
-    <div class="alert alert-warning" style="margin-top: 1rem;">
+    <div class="alert alert-warning" style="margin-top: 2rem;">
       {{ noSubmissionsWarning }}
     </div>
   </div>
