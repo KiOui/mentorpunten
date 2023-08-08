@@ -16,7 +16,6 @@ let submission = ref<Submission | null>(null);
 let submissionLoading = ref<boolean|null>(true);
 
 let nextDataExists = ref<boolean>(true);
-let limit = ref<number>(40);
 let submissionSearchFilters = new URLSearchParams([["accepted__isnull", "true"]]);
 
 function processSubmission(value: boolean) {

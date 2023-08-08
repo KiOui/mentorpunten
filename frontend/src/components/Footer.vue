@@ -10,7 +10,7 @@ const store = useCredentialsStore();
 let user = ref<User|null>(null);
 let userLoading = ref<boolean|null>(true);
 
-let user_can_change_submission = false;
+let user_can_change_submission = ref<boolean>(false);
 
 onMounted(() => {
     const userPromise = ApiService.getUsersMe().then(userData => {
@@ -22,8 +22,7 @@ onMounted(() => {
 
     userPromise.then(() => {
       if (user.value !== null) {
-        user_can_change_submission = (user.value?.user_permissions.filter(function(x) { return x[1] == 'Can change submission'}).length > 0); 
-        console.log(user_can_change_submission);
+        user_can_change_submission.value = (user.value?.user_permissions.filter(function(x) { return x[1] == 'Can change submission'}).length > 0); 
       } else {
         userLoading.value = false;
       }
