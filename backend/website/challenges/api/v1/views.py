@@ -1,5 +1,4 @@
 from django.db.models import Q
-from django_filters.rest_framework import BooleanFilter
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from rest_framework import status
 from rest_framework.generics import (

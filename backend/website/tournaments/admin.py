@@ -7,6 +7,7 @@ from import_export.admin import ImportExportModelAdmin
 from rangefilter.filters import DateRangeFilter
 
 from .models import Tournament, Team
+from .resources import TeamResource
 
 User = get_user_model()
 
@@ -97,3 +98,4 @@ class TeamAdmin(ImportExportModelAdmin):
     search_fields = ("name",)
     list_filter = ("tournament",)
     form = TeamAdminForm
+    resource_class = TeamResource
