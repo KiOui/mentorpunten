@@ -7,7 +7,6 @@ from django.contrib.auth.admin import (
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.models import Group, Permission
 from django import forms
-from import_export import resources
 from import_export.admin import ExportMixin
 
 from users.resources import UserResource
