@@ -8,4 +8,7 @@ class AnnouncementListAPIView(ListAPIView):
     """Announcement List API View."""
 
     serializer_class = AnnouncementSerializer
-    queryset = Announcement.objects.visible()
+
+    def get_queryset(self):
+        """Get queryset."""
+        return Announcement.objects.visible()
