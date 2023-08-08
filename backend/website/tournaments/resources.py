@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Count
 from import_export import resources
+from import_export.fields import Field
 
 from tournaments import models
 
@@ -8,6 +10,46 @@ User = get_user_model()
 
 class TeamResource(resources.ModelResource):
     """Team Resource."""
+
+    def __init__(self, **kwargs):
+        """Initialize Team Resource."""
+        super(TeamResource, self).__init__(**kwargs)
+        self.added_members_fullname_fields = dict()
+
+    def get_maximum_members_of_team(self, queryset) -> int:
+        """Get maximum members of team."""
+        member_count_list = queryset.annotate(
+            member_count=Count('members')
+        ).order_by('-member_count')
+        if member_count_list.count() > 0:
+            return member_count_list.first().member_count
+        else:
+            return 0
+
+    def before_export(self, queryset, *args, **kwargs):
+        """Initialize by creating a field for each member ID."""
+        maximum_member_count = self.get_maximum_members_of_team(queryset)
+
+        for i in range(1, maximum_member_count + 1):
+            attribute_id = f"member__fullname__{i}"
+            self.fields[attribute_id] = Field(
+                column_name=attribute_id, attribute=attribute_id, readonly=True
+            )
+            self.added_members_fullname_fields[attribute_id] = i - 1
+
+    def export_members_field(self, field, obj):
+        """Export the custom members fields."""
+        member_iterator = self.added_members_fullname_fields[field.attribute]
+        if obj.members.all().count() > member_iterator:
+            return obj.members.all()[member_iterator]
+        return None
+
+    def export_field(self, field, obj):
+        """Check for added member fields before exporting."""
+        if field.attribute in self.added_members_fullname_fields.keys():
+            return self.export_members_field(field, obj)
+        else:
+            return super(TeamResource, self).export_field(field, obj)
 
     def must_import_by_fullname_members(self, row):
         """Test whether import by fullname members must be run."""
