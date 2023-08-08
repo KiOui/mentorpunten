@@ -2,13 +2,14 @@ from autocompletefilter.admin import AutocompleteFilterMixin
 from autocompletefilter.filters import AutocompleteListFilter
 from django.contrib import admin, messages
 from django.utils.html import format_html
+from import_export.admin import ImportExportModelAdmin
 from rangefilter.filters import DateRangeFilter
 
 from challenges.models import Challenge, Submission
 
 
 @admin.register(Challenge)
-class ChallengeAdmin(admin.ModelAdmin):
+class ChallengeAdmin(ImportExportModelAdmin):
     """Challenge Admin."""
 
     list_display = (
