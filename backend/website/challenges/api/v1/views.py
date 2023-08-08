@@ -19,17 +19,23 @@ class ChallengeListAPIView(ListAPIView):
     """Challenge List API View."""
 
     serializer_class = serializers.ChallengeSerializer
-    queryset = models.Challenge.objects.revealed_challenges()
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["tournament"]
+
+    def get_queryset(self):
+        """Get queryset."""
+        return models.Challenge.objects.revealed_challenges()
 
 
 class ChallengeRetrieveAPIView(RetrieveAPIView):
     """Challenge Retrieve API View."""
 
     serializer_class = serializers.ChallengeSerializer
-    queryset = models.Challenge.objects.revealed_challenges()
+
+    def get_queryset(self):
+        """Get queryset."""
+        return models.Challenge.objects.revealed_challenges()
 
 
 class SubmissionFilter(FilterSet):
