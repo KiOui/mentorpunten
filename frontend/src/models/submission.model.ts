@@ -10,5 +10,7 @@ export default interface Submission {
     created: string;
     updated: string;
     image: string | null;
+    image_webp: string | null;
+    thumbnail: string | null;
     accepted: boolean | null;
 }

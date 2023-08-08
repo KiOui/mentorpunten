@@ -10,4 +10,4 @@ class AnnouncementSerializer(serializers.ModelSerializer):
         """Meta class."""
 
         model = models.Announcement
-        fields = ["content", "icon"]
+        fields = ["id", "content", "icon"]
