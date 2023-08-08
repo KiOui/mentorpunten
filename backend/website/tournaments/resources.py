@@ -18,9 +18,9 @@ class TeamResource(resources.ModelResource):
 
     def get_maximum_members_of_team(self, queryset) -> int:
         """Get maximum members of team."""
-        member_count_list = queryset.annotate(
-            member_count=Count('members')
-        ).order_by('-member_count')
+        member_count_list = queryset.annotate(member_count=Count("members")).order_by(
+            "-member_count"
+        )
         if member_count_list.count() > 0:
             return member_count_list.first().member_count
         else:
