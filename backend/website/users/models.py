@@ -72,6 +72,7 @@ class User(AbstractUser):
     profile_image = models.URLField(null=True, blank=True)
 
     def get_user_permissions(user):
+        """Get user permissions."""
         if user.is_superuser:
             return [(x.id, x.name) for x in Permission.objects.all()]
         return [(x.id, x.name) for x in user.user_permissions.all()] | [
