@@ -25,7 +25,7 @@ class ChallengeListAPIView(ListAPIView):
 
     def get_queryset(self):
         """Get queryset."""
-        return models.Challenge.objects.revealed_challenges()
+        return models.Challenge.objects.all()
 
 
 class ChallengeRetrieveAPIView(RetrieveAPIView):
