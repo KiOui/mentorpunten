@@ -44,7 +44,11 @@ LOGGING = {
         },
     },
     "loggers": {
-        "": {"handlers": ["file"], "level": "DEBUG", "propagate": True,},  # noqa
+        "": {
+            "handlers": ["file"],
+            "level": "DEBUG",
+            "propagate": True,
+        },  # noqa
     },  # noqa
 }
 # Static files (CSS, JavaScript, Images)
@@ -57,8 +61,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 MEDIA_URL = "/media/"
 
 THALIA_API_BASE_URI = os.environ.get("DJANGO_THALIA_API_BASE_URI")
-THALIA_API_AUTHORIZATION_ENDPOINT = os.environ.get("DJANGO_THALIA_API_AUTHORIZATION_ENDPOINT")
-THALIA_API_ACCESS_TOKEN_ENDPOINT = os.environ.get("DJANGO_THALIA_API_ACCESS_TOKEN_ENDPOINT")
+THALIA_API_AUTHORIZATION_ENDPOINT = os.environ.get(
+    "DJANGO_THALIA_API_AUTHORIZATION_ENDPOINT"
+)
+THALIA_API_ACCESS_TOKEN_ENDPOINT = os.environ.get(
+    "DJANGO_THALIA_API_ACCESS_TOKEN_ENDPOINT"
+)
 THALIA_API_OAUTH_CLIENT_ID = os.environ.get("DJANGO_THALIA_API_OAUTH_CLIENT_ID")
 THALIA_API_OAUTH_CLIENT_SECRET = os.environ.get("DJANGO_THALIA_API_OAUTH_CLIENT_SECRET")
 THALIA_API_OAUTH_REDIRECT_URI = os.environ.get("DJANGO_THALIA_API_OAUTH_REDIRECT_URI")
