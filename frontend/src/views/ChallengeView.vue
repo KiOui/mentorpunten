@@ -29,6 +29,9 @@ const id = toRef(props, 'id');
 const imageFile = ref<File | null>(null);
 const imageField = ref<HTMLInputElement | null>(null);
 
+const videoFile = ref<File | null>(null);
+const videoField = ref<HTMLInputElement | null>(null);
+
 let user = ref<User|null>(null);
 let userLoading = ref<boolean|null>(true);
 
@@ -95,6 +98,18 @@ function changeImageFile(event: Event): void {
   const files: FileList | null = htmlInputEvent.files;
   if (files !== null && files.length > 0) {
     imageFile.value = files[0];
+    videoFile.value = null;
+    videoField.value = null;
+  }
+}
+
+function changeVideoFile(event: Event): void {
+  const htmlInputEvent = event.target as unknown as HTMLInputElement;
+  const files: FileList | null = htmlInputEvent.files;
+  if (files !== null && files.length > 0) {
+    videoFile.value = files[0];
+    imageFile.value = null;
+    imageField.value = null;
   }
 }
 
@@ -119,10 +134,68 @@ function startUpload() {
     });
   }
 }
+
+function startDirectUpload({ fileName, fileType }: { fileName: string, fileType: string }) {
+  const formData = new FormData();
+  formData.append("file_name", fileName);
+  formData.append("file_type", fileType);
+
+  return ApiService.postFileUploadStart(formData);
+}
+
+async function directUploadDo({ data, file }: { data: any, file: File }) {
+  const formData = new FormData();
+  
+  for (const key in data.fields) {
+    formData.append(key, data.fields[key]);
+  }
+
+  formData.append("file", file);
+
+  return fetch(data.url, {
+    method: "POST",
+    body: formData,
+    
+  }).then(() => Promise.resolve({ fileId: data?.id}));
+}
+
+function directUploadFinish({ data }: any) {
+  const formData = new FormData();
+  console.log(data)
+  formData.append("file_id", data?.fileId);
+
+  return ApiService.postFileUploadFinish(formData);
+}
+
+function videoUpload() {
+
+  if (challenge.value !== null && videoFile.value !== null && userTeam.value !== null) {
+    uploadingImage.value = true;
+
+    startDirectUpload({ fileName: videoFile.value.name, fileType: videoFile.value.type }).then((data) => {
+      console.log('data1', data)
+      directUploadDo({ data, file: videoFile.value as File }).then((data) => {
+        console.log('data2', data)
+        directUploadFinish({ data }).then(() => {
+          toast.success("Video successfully submitted!");
+          submissionsList.value.refresh();
+        }).catch(() => {
+          toast.error("Video submission failed, please try again");
+        }).finally(() => {
+          videoFile.value = null;
+          if (videoField.value !== null) {
+            videoField.value.value = "";
+          }
+          uploadingImage.value = false;
+        });
+      });
+    });
+  }
+}
 </script>
 
 <template>
-  <Header :show-back-button="true"/>
+  <Header :show-back-button="true" />
   <div class="feed-container mx-auto">
     <div v-if="challenge !== null" class="custom-card">
       <div class="row">
@@ -140,7 +213,12 @@ function startUpload() {
         <label for="image" class="w-100 mb-2" style="font-family: 'Open sans condensed';">Make a picture</label>
         <input v-on:change="changeImageFile($event)" ref="imageField" type="file" class="form-control" id="image"
                capture="user" accept="image/*" aria-label="Upload">
-        <button v-if="!uploadingImage" v-on:click="startUpload()" class="btn btn-primary" type="button">Submit</button>
+
+        <label for="video" class="w-100 mb-2" style="font-family: 'Open sans condensed';">Or a video</label>
+        <input v-on:change="changeVideoFile($event)" ref="videoField" type="file" class="form-control" id="video"
+               capture="user" accept="*" aria-label="Upload">
+        
+        <button v-if="!uploadingImage" v-on:click="videoUpload()" class="btn btn-primary" type="button">Submit</button>
         <button v-else class="btn btn-primary disabled d-flex justify-content-center align-items-center" type="button">Submit <span class="loader ms-1"></span></button>
       </form>
       <div v-else-if="challenge.completed" class="alert alert-success mt-2 mb-1">

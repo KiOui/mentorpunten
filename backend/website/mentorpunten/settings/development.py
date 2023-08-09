@@ -60,3 +60,22 @@ THALIA_API_OAUTH_CLIENT_ID = "3laS0OCOxHp4V8fFwQqFetMv5QRQaVGvrbMVJGjc"
 THALIA_API_OAUTH_CLIENT_SECRET = "ExYQ69CMCKxxc0Kr0WUtPfPXBw6m0gXbzqSpNy6wtUEzfTUR6FHtSBAXPttEQVNZxw1ptKwbYcRcHpVX2zthP4obBIWRcRUrAJNlKZGvaa83io1x5XCCfN45IVy0raE5"
 THALIA_API_OAUTH_REDIRECT_URI = "http://localhost:8000/thalia/callback"
 THALIA_API_MEMBERS_URL = "/api/v2/members/me"
+
+# S3 storage
+STORAGES = {
+    "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
+    "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"}
+}
+
+
+AWS_S3_ACCESS_KEY_ID=""
+AWS_S3_SECRET_ACCESS_KEY=""
+AWS_S3_REGION_NAME="eu-west-1"
+AWS_STORAGE_BUCKET_NAME="mentorpunten"
+AWS_DEFAULT_ACL="private"
+AWS_PRESIGNED_EXPIRY=3600
+FILE_MAX_SIZE=536870912 #512 MB
+
+# Set to "s3" to upload files to s3
+FILE_UPLOAD_STORAGE="local"
+APP_DOMAIN="http://localhost:8000"

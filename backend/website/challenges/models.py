@@ -41,6 +41,12 @@ def submission_upload_image_to(instance, filename):
         get_random_filename(filename),
     )
 
+def submission_upload_video_to(instance, filename):
+    """Upload submission videos to."""
+    return os.path.join(
+        os.path.join(instance.challenge.folder, "submissions_videos"),
+        get_random_filename(filename),
+    )
 
 class ChallengeQueryset(models.QuerySet):
     """Challenge queryset."""

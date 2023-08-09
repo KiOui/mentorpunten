@@ -11,6 +11,7 @@ urlpatterns = [
     path("tournaments/", include("tournaments.api.v1.urls")),
     path("transactions/", include("transactions.api.v1.urls")),
     path("users/", include("users.api.v1.urls")),
+    path("files/", include("files.api.v1.urls", namespace="files")),
     path(
         "schema",
         get_schema_view(

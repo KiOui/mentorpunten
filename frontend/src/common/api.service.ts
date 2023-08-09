@@ -127,6 +127,14 @@ class _ApiService {
     return this.get<Paginated<Transaction[]>>(this._addParametersToResource(`/transactions/`, parameters));
   }
 
+  async postFileUploadStart(data: FormData): Promise<{ uploadId: string }> {
+    return this.post<{ uploadId: string }>("/files/upload/start/", data);
+  }
+
+  async postFileUploadFinish(data: FormData): Promise<void> {
+    return this.post<void>("/files/upload/finish/", data);
+  }
+
   async fetch<T>(resource: string, method: string, data: BodyInit|null, headers: Headers|null = null): Promise<T> {
     let apiCall = null;
     if (data !== null) {
