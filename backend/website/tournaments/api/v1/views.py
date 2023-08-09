@@ -19,7 +19,7 @@ class TournamentListAPIView(ListAPIView):
 
     def get_queryset(self):
         """Get the queryset."""
-        return models.Tournament.objects.revealed_tournaments()
+        return models.Tournament.objects.all().order_by("active_from")
 
 
 class TournamentRetrieveAPIView(RetrieveAPIView):
