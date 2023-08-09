@@ -1,4 +1,5 @@
 import type Tournament from "@/models/tournament.model";
+import type Challenge from "@/models/challenge.model";
 
 const LOGOUT_TOKEN_NAME = "logout_state";
 
@@ -91,4 +92,15 @@ function startEndTimeOfTournament(tournament: Tournament): string {
     return "";
 }
 
-export { LOGOUT_TOKEN_NAME, parseHash, getEnvVar, startEndTimeOfTournament };
+function startTimeOfChallenge(challenge: Challenge): string {
+    if (challenge.active_from) {
+        const start_date = new Date(challenge.active_from);
+        return `${start_date.toLocaleDateString("en-GB")}, ${start_date.toLocaleTimeString(
+            "en-GB",
+            { hour: "2-digit", minute: "2-digit" }
+        )}`;
+    }
+    return "";
+}
+
+export { LOGOUT_TOKEN_NAME, parseHash, getEnvVar, startEndTimeOfTournament, startTimeOfChallenge };
