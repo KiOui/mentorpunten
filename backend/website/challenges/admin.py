@@ -106,7 +106,9 @@ class SubmissionAdmin(AutocompleteFilterMixin, admin.ModelAdmin):
                 '<video controls style="max-width: 100%; max-height: 600px;"> \
                     <source src="{}"/> \
                     Your browser does not support the video tag. \
-                </video>'.format(obj.file.file.url)
+                </video>'.format(
+                    obj.file.file.url
+                )
             )
         else:
             return "No format available for this file."

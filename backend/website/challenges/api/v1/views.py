@@ -115,7 +115,9 @@ class SubmissionListCreateAPIView(ListCreateAPIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            file = File.objects.get(id=file_id, created_by=request.user, submission=None)
+            file = File.objects.get(
+                id=file_id, created_by=request.user, submission=None
+            )
         except File.DoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 

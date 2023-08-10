@@ -79,14 +79,14 @@ class File(models.Model):
             return self.file.url
 
         return f"{settings.APP_DOMAIN}{self.file.url}"
-    
+
     @property
     def compressed_url(self):
         if settings.FILE_UPLOAD_STORAGE == "s3":
             return f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/compressed/{self.file_name}"
 
         return f"{settings.APP_DOMAIN}{self.file.url}"
-    
+
     def __str__(self):
         """Convert this object to string."""
         return self.original_file_name

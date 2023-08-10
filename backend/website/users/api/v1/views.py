@@ -3,7 +3,6 @@ from django.http import Http404
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 
-from mentorpunten.api.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 from users.api.v1.serializers import UserSerializer
 
 User = get_user_model()

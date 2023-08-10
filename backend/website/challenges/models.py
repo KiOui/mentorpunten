@@ -12,11 +12,8 @@ from django.utils import timezone
 from queryable_properties.managers import QueryablePropertiesManager
 
 from files.models import File
-from mentorpunten.services import convert_image
 from tournaments.models import Tournament, Team
 from transactions.models import Transaction
-
-from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
 
@@ -33,22 +30,6 @@ def challenge_upload_image_to(instance, filename):
     extension = Path(filename).suffix
     main_image_name = f"main-image{extension}"
     return os.path.join(os.path.join(instance.folder, "challenge"), main_image_name)
-
-
-def submission_upload_image_to(instance, filename):
-    """Upload submission images to."""
-    return os.path.join(
-        os.path.join(instance.challenge.folder, "submissions"),
-        get_random_filename(filename),
-    )
-
-
-def submission_upload_video_to(instance, filename):
-    """Upload submission videos to."""
-    return os.path.join(
-        os.path.join(instance.challenge.folder, "submissions_videos"),
-        get_random_filename(filename),
-    )
 
 
 class ChallengeQueryset(models.QuerySet):
@@ -168,7 +149,9 @@ class Submission(models.Model):
         null=True,
         related_name="submissions_updated_by",
     )
-    file = models.OneToOneField(File, on_delete=models.PROTECT, related_name="submission")
+    file = models.OneToOneField(
+        File, on_delete=models.PROTECT, related_name="submission"
+    )
     accepted = models.BooleanField(null=True, blank=True, default=None)
     transaction = models.ForeignKey(
         Transaction, null=True, blank=True, on_delete=models.SET_NULL

@@ -1,11 +1,9 @@
 <script setup lang="ts"> /* eslint-disable-line vue/multi-word-component-names */
 import useApiService from '@/common/api.service';
-import { useCredentialsStore } from '@/stores/credentials.module';
 import { onMounted, ref } from 'vue';
 import type User from '@/models/user.model';
 
 const ApiService = useApiService();
-const store = useCredentialsStore();
 
 let user = ref<User|null>(null);
 let userLoading = ref<boolean|null>(true);
