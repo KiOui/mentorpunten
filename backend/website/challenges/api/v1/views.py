@@ -12,6 +12,7 @@ from rest_framework.response import Response
 
 from challenges.api.v1 import serializers
 from challenges import models
+from files.models import File
 from mentorpunten.api.v1.pagination import StandardResultsSetPagination
 
 
@@ -109,13 +110,24 @@ class SubmissionListCreateAPIView(ListCreateAPIView):
             # Tournament of Challenge and Tournament of Team do not correspond.
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
+        file_id = request.data.get("file", None)
+        if file_id is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            file = File.objects.get(
+                id=file_id, created_by=request.user, submission=None
+            )
+        except File.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
         serializer = self.get_serializer(
             data={
                 "accepted": None,
                 "team": team.id,
                 "challenge": challenge.id,
                 "tournament": challenge.tournament.id,
-                "image": request.data.get("image"),
+                "file": file.id,
                 "created_by": request.user.id,
             }
         )
@@ -152,7 +164,7 @@ class SubmissionRetrieveUpdateAPIView(RetrieveUpdateAPIView):
         if not request.user.is_authenticated:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-        if not request.user.has_perm("challenges.update_submission"):
+        if not request.user.has_perm("challenges.change_submission"):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
         return super().update(request, *args, **kwargs)

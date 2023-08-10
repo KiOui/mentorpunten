@@ -1,7 +1,6 @@
 import type Announcement from "@/models/announcement.model";
 import type User from "@/models/user.model";
 import type Submission from "@/models/submission.model";
-import type ChallengeUser from "@/models/challengeUser.model";
 import type Challenge from "@/models/challenge.model";
 import { useCredentialsStore } from "@/stores/credentials.module";
 import type Team from "@/models/team.model";
@@ -9,6 +8,8 @@ import type Paginated from "@/models/paginated.model";
 import type Tournament from "@/models/tournament.model";
 import type Transaction from "@/models/transaction.model";
 import {getEnvVar} from "@/common/general.service";
+import type TemporaryFileUpload from "@/models/temporaryfileupload.model";
+import type UploadedFile from "@/models/file.model";
 
 class _ApiService {
   authorizationEndpoint: string;
@@ -115,10 +116,6 @@ class _ApiService {
     return this.get<Team>(`/tournaments/teams/${id}/`);
   }
 
-  async getChallengesUsersMe(): Promise<ChallengeUser> {
-    return this.get<ChallengeUser>("/challenges/users/me/");
-  }
-
   async getChallenges(parameters: URLSearchParams | null = null): Promise<Challenge[]> {
     return this.get<Challenge[]>(this._addParametersToResource("/challenges/", parameters));
   }
@@ -129,6 +126,22 @@ class _ApiService {
 
   async getTransactions(parameters: URLSearchParams | null = null): Promise<Paginated<Transaction[]>> {
     return this.get<Paginated<Transaction[]>>(this._addParametersToResource(`/transactions/`, parameters));
+  }
+
+  async getTemporaryFileUploads(): Promise<Paginated<TemporaryFileUpload[]>> {
+    return this.get<Paginated<TemporaryFileUpload[]>>('/files/temporary/');
+  }
+
+  async postTemporaryFileUpload(data: FormData, headers: Headers | null = null): Promise<TemporaryFileUpload> {
+    return this.post<TemporaryFileUpload>("/files/temporary/", data, headers);
+  }
+
+  async patchTemporaryFileUpload(id: string, data: FormData, headers: Headers | null = null): Promise<TemporaryFileUpload> {
+    return this.patch<TemporaryFileUpload>(`/files/temporary/${id}/`, data, headers);
+  }
+
+  async postFile(data: FormData, headers: Headers | null = null): Promise<UploadedFile> {
+    return this.post<UploadedFile>("/files/", data, headers);
   }
 
   async fetch<T>(resource: string, method: string, data: BodyInit|null, headers: Headers|null = null): Promise<T> {

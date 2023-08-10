@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.http import Http404
 from rest_framework.generics import RetrieveAPIView
+from rest_framework.permissions import IsAuthenticated
 
-from mentorpunten.api.permissions import IsAuthenticatedOrTokenHasScopeForMethod
 from users.api.v1.serializers import UserSerializer
 
 User = get_user_model()
@@ -19,10 +19,7 @@ class MeRetrieveAPIView(RetrieveAPIView):
 
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticatedOrTokenHasScopeForMethod]
-    required_scopes_for_method = {
-        "GET": ["read"],
-    }
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         """Get the current logged-in User."""

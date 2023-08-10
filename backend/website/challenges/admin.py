@@ -62,6 +62,7 @@ class SubmissionAdmin(AutocompleteFilterMixin, admin.ModelAdmin):
         "created",
         "updated",
         "accepted",
+        "type",
     )
     fields = (
         "challenge",
@@ -69,12 +70,11 @@ class SubmissionAdmin(AutocompleteFilterMixin, admin.ModelAdmin):
         "team",
         "created",
         "updated",
-        "image",
-        "image_tag",
+        "file_tag",
         "accepted",
         "transaction",
     )
-    readonly_fields = ("image_tag", "created", "updated", "transaction")
+    readonly_fields = ("file_tag", "created", "updated", "transaction")
 
     ordering = ("-created",)
     list_filter = (
@@ -84,15 +84,36 @@ class SubmissionAdmin(AutocompleteFilterMixin, admin.ModelAdmin):
         "accepted",
     )
 
-    def image_tag(self, obj):
-        """Print image in changeform view."""
-        return format_html(
-            '<img src="{}" width="400px" style="max-width: 100%;" />'.format(
-                obj.image.url
-            )
-        )
+    def type(self, obj: Submission):
+        """Get file type."""
+        if obj.file.is_photo:
+            return "Photo"
+        elif obj.file.is_video:
+            return "Video"
+        else:
+            return "Other"
 
-    image_tag.short_description = "Image preview"
+    def file_tag(self, obj: Submission):
+        """Print image in changeform view."""
+        if obj.file.is_photo:
+            return format_html(
+                '<img src="{}" width="400px" style="max-width: 100%;" />'.format(
+                    obj.file.file.url
+                )
+            )
+        elif obj.file.is_video:
+            return format_html(
+                '<video controls style="max-width: 100%; max-height: 600px;"> \
+                    <source src="{}"/> \
+                    Your browser does not support the video tag. \
+                </video>'.format(
+                    obj.file.file.url
+                )
+            )
+        else:
+            return "No format available for this file."
+
+    file_tag.short_description = "Preview"
 
     def changeform_view(self, request, object_id=None, form_url="", extra_context=None):
         """Display warning for already accepted submissions."""

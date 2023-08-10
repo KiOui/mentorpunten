@@ -3,7 +3,7 @@
     import type Tournament from "@/models/tournament.model";
     import {startEndTimeOfTournament} from "@/common/general.service";
 
-    const props = defineProps<{tournament: Tournament}>();
+    defineProps<{tournament: Tournament}>();
 
     let current_time = Date.parse(new Date().toISOString());
     

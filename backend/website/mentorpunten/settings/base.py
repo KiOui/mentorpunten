@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "challenges",
     "oauth2_provider",
     "corsheaders",
+    "files",
 ]
 
 AUTH_USER_MODEL = "users.User"

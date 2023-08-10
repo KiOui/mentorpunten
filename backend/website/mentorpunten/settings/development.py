@@ -60,3 +60,31 @@ THALIA_API_OAUTH_CLIENT_ID = os.environ.get("THALIA_API_OAUTH_CLIENT_ID")
 THALIA_API_OAUTH_CLIENT_SECRET = os.environ.get("THALIA_API_OAUTH_CLIENT_SECRET")
 THALIA_API_OAUTH_REDIRECT_URI = "http://localhost:8000/thalia/callback"
 THALIA_API_MEMBERS_URL = "/api/v2/members/me"
+
+# S3 storage
+STORAGES = {
+    "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
+    "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+}
+
+
+# AWS Settings
+AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+
+# S3 Settings
+AWS_S3_REGION_NAME = "eu-west-1"
+AWS_STORAGE_BUCKET_NAME = "mentorpunten"
+AWS_DEFAULT_ACL = "public-read"
+AWS_PRESIGNED_EXPIRY = 3600
+FILE_MAX_SIZE = 536870912  # 512 MB
+
+# MediaConvert Settings
+AWS_MEDIACONVERT_TEMPLATE_NAME = "Compress video file"
+AWS_MEDIACONVERT_ROLE_ARN = (
+    "arn:aws:iam::723615423849:role/service-role/MediaConvert_Default_Role"
+)
+
+# Set to "s3" to upload files to s3
+FILE_UPLOAD_STORAGE = "s3"
+APP_DOMAIN = "http://localhost:8000"

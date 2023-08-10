@@ -7,6 +7,7 @@ import useApiService from "@/common/api.service";
 import {useToast} from "vue-toastification";
 import Loader from "@/components/Loader.vue";
 import Header from "@/components/Header.vue";
+import router from "@/router";
 
 const ApiService = useApiService();
 
@@ -37,7 +38,20 @@ function processSubmission(value: boolean) {
 }
 
 onMounted(() => {
-  refresh();
+  ApiService.getUsersMe().then(result => {
+    const canChangeSubmissions = result.user_permissions.map((permission) => {
+      return permission === 'challenges.change_submission';
+    }).reduce((previousValue, currentValue) => {
+      return previousValue || currentValue;
+    }, false);
+    if (!canChangeSubmissions) {
+      router.push('/');
+    } else {
+      refresh();
+    }
+  }).catch(() => {
+    toast.error("Failed to load user data, please try again.")
+  });
 });
 
 function refresh() {

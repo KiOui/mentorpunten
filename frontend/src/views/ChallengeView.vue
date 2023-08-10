@@ -10,6 +10,8 @@ import Header from "@/components/Header.vue";
 import type User from "@/models/user.model";
 import type Team from "@/models/team.model";
 import SubmissionsList from "@/components/SubmissionsList.vue";
+import type TemporaryFileUpload from "@/models/temporaryfileupload.model";
+import type UploadedFile from "@/models/file.model";
 
 const props = defineProps<{ id: number }>();
 
@@ -23,11 +25,11 @@ const ApiService = useApiService();
 let challengeLoading = ref<boolean | null>(true);
 let challenge = ref<Challenge | null>(null);
 
-let uploadingImage = ref<boolean>(false);
+let uploadingFile = ref<boolean>(false);
 const id = toRef(props, 'id');
 
-const imageFile = ref<File | null>(null);
-const imageField = ref<HTMLInputElement | null>(null);
+const file = ref<File | null>(null);
+const fileField = ref<HTMLInputElement | null>(null);
 
 let user = ref<User|null>(null);
 let userLoading = ref<boolean|null>(true);
@@ -90,39 +92,121 @@ onMounted(() => {
   });
 });
 
-function changeImageFile(event: Event): void {
+function changeFile(event: Event): void {
   const htmlInputEvent = event.target as unknown as HTMLInputElement;
   const files: FileList | null = htmlInputEvent.files;
   if (files !== null && files.length > 0) {
-    imageFile.value = files[0];
+    file.value = files[0];
   }
 }
 
-function startUpload() {
-  if (challenge.value !== null && imageFile.value !== null && userTeam.value !== null) {
-    uploadingImage.value = true;
+function createTemporaryFileUpload(fileName: string, fileType: string): Promise<TemporaryFileUpload> {
+  const formData = new FormData();
+  formData.append("original_file_name", fileName);
+  formData.append("file_type", fileType);
+
+  return ApiService.postTemporaryFileUpload(formData);
+}
+
+async function doDirectUpload(file: File, temporaryFile: TemporaryFileUpload) {
+  const formData = new FormData();
+  
+  for (const key in temporaryFile.presigned_data.fields) {
+    formData.append(key, temporaryFile.presigned_data.fields[key]);
+  }
+
+  formData.append("file", file);
+
+  return fetch(temporaryFile.presigned_data.url, {
+    method: "POST",
+    body: formData,
+  }).then((response) => {
+    return response.status === 204;
+  });
+}
+
+async function finishTemporaryFileUpload(temporaryFile: TemporaryFileUpload) {
+  const formData = new FormData();
+  formData.append("finished_at", (new Date()).toISOString());
+
+  return ApiService.patchTemporaryFileUpload(temporaryFile.id, formData);
+}
+
+function createFile(temporaryFile: TemporaryFileUpload) {
+  const formData = new FormData();
+  formData.append("temporary_file_upload", temporaryFile.id);
+
+  return ApiService.postFile(formData);
+}
+
+async function createSubmission(createdFile: UploadedFile): Promise<boolean> {
+  if (challenge.value !== null && userTeam.value !== null) {
     const formData = new FormData();
     formData.append("challenge", String(challenge.value.id));
-    formData.append("image", imageFile.value, imageFile.value.name);
+    formData.append("file", createdFile.id);
     formData.append("team", String(userTeam.value.id));
-    ApiService.postChallengesSubmissions(formData).then(() => {
-      toast.success("Image successfully submitted!");
-      submissionsList.value.refresh();
+    return ApiService.postChallengesSubmissions(formData).then(() => {
+      return true;
     }).catch(() => {
-      toast.error("Image submission failed, please try again");
-    }).finally(() => {
-      imageFile.value = null;
-      if (imageField.value !== null) {
-        imageField.value.value = "";
-      }
-      uploadingImage.value = false;
+      return false;
+    });
+  } else {
+    return false;
+  }
+}
+
+
+function videoUpload() {
+
+  if (challenge.value !== null && file.value !== null && userTeam.value !== null) {
+    uploadingFile.value = true;
+
+    createTemporaryFileUpload(file.value.name, file.value.type).then((temporaryFileUpload) => {
+      doDirectUpload(file.value as File, temporaryFileUpload).then((success) => {
+        if (success) {
+          finishTemporaryFileUpload(temporaryFileUpload).then((result) => {
+            createFile(result).then((createdFile) => {
+              createSubmission(createdFile).then((result) => {
+                if (result) {
+                  file.value = null;
+                  if (fileField.value !== null) {
+                    fileField.value.value = "";
+                  }
+                  uploadingFile.value = false;
+                  submissionsList.value.refresh();
+                  toast.success("Submission uploaded successfully!")
+                } else {
+                  toast.error("Failed to process submission, please try again.")
+                }
+              }).catch(() => {
+                toast.success("An error occurred during submission processing, please try again.")
+              });
+            }).catch(() => {
+              toast.error("File creation failed, please try again.");
+              uploadingFile.value = false;
+            });
+          }).catch(() => {
+            toast.error("Temporary file upload could not finish, please try again.");
+            uploadingFile.value = false;
+          });
+        } else {
+          toast.error("Direct upload to AWS failed, please make sure you stay connected to the Internet.");
+          uploadingFile.value = false;
+        }
+      }).catch(() => {
+        toast.error("Direct upload failed, please try again.");
+        uploadingFile.value = false;
+      });
+    }).catch(() => {
+      toast.error("Temporary file could not be created, please try again.");
+      uploadingFile.value = false;
     });
   }
 }
 </script>
 
 <template>
-  <Header :show-back-button="true"/>
+  <Header :show-back-button="true" />
   <div class="feed-container mx-auto">
     <div v-if="challenge !== null" class="custom-card">
       <div class="row">
@@ -137,10 +221,11 @@ function startUpload() {
       <img v-if="challenge.image" class="img-fluid" :src="challenge.image" alt="Challenge image" style="margin-top: 1rem;">
       <p style="margin-top: 1rem;">{{ challenge.description }}</p>
       <form v-if="store.loggedIn && !challenge.completed && userTeam !== null && challengeIsActive" class="input-group mt-3">
-        <label for="image" class="w-100 mb-2" style="font-family: 'Open sans condensed';">Make a picture</label>
-        <input v-on:change="changeImageFile($event)" ref="imageField" type="file" class="form-control" id="image"
-               capture="user" accept="image/*" aria-label="Upload">
-        <button v-if="!uploadingImage" v-on:click="startUpload()" class="btn btn-primary" type="button">Submit</button>
+        <label for="file" class="w-100 mb-2" style="font-family: 'Open sans condensed', sans-serif;">Make a picture or a video</label>
+        <input v-on:change="changeFile($event)" ref="fileField" type="file" class="form-control" id="file"
+               capture="user" accept="image/*,video/*" aria-label="Upload">
+        
+        <button v-if="!uploadingFile" v-on:click="videoUpload()" class="btn btn-primary" type="button">Submit</button>
         <button v-else class="btn btn-primary disabled d-flex justify-content-center align-items-center" type="button">Submit <span class="loader ms-1"></span></button>
       </form>
       <div v-else-if="challenge.completed" class="alert alert-success mt-2 mb-1">
