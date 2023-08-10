@@ -1,32 +1,26 @@
 from django.urls import path
 from files.api.v1.views import (
-    FileUploadStartApi,
-    FileUploadFinishApi,
-    FileCompressedApi,
-    FileUploadLocalApi,
+    TemporaryFileUploadListCreateAPIView,
+    TemporaryFileUploadRetrieveUpdateDestroyAPIView,
+    FileListCreateAPIView,
 )
 
 app_name = "files"
 
 urlpatterns = [
     path(
-        "upload/start/",
-        FileUploadStartApi.as_view(),
-        name="files_upload_start",
+        "",
+        FileListCreateAPIView.as_view(),
+        name="file_listcreate",
     ),
     path(
-        "upload/finish/",
-        FileUploadFinishApi.as_view(),
-        name="files_upload_finish",
+        "temporary/",
+        TemporaryFileUploadListCreateAPIView.as_view(),
+        name="temporary_file_upload_listcreate",
     ),
     path(
-        "compressed/",
-        FileCompressedApi.as_view(),
-        name="files_compressed",
+        "temporary/<str:pk>/",
+        TemporaryFileUploadRetrieveUpdateDestroyAPIView.as_view(),
+        name="temporary_file_upload_retrieveupdatedestroy",
     ),
-    path(
-        "upload/local/<str:file_id>/",
-        FileUploadLocalApi.as_view(),
-        name="files_upload_local",
-    )
 ]

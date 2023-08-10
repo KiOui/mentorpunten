@@ -20,7 +20,16 @@ class SubmissionsWithoutChallengeSerializer(serializers.ModelSerializer):
         """Meta class."""
 
         model = models.Submission
-        fields = ["team", "created", "updated", "image", "accepted", "transaction"]
+        fields = [
+            "team",
+            "created",
+            "updated",
+            "image",
+            "image_webp",
+            "thumbnail",
+            "accepted",
+            "transaction",
+        ]
         read_only_fields = ["created", "updated", "transaction"]
 
 

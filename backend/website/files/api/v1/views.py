@@ -1,77 +1,115 @@
-from datetime import timezone
-from django.shortcuts import get_object_or_404
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
-from rest_framework import serializers
+from files import models, services
+from files.api.v1 import serializers
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from files.models import File
-from files.services import (
-    FileUploadService
-)
+from mentorpunten.api.openapi import CustomAutoSchema
 
 
-class FileUploadStartApi(APIView):
-    class InputSerializer(serializers.Serializer):
-        file_name = serializers.CharField()
-        file_type = serializers.CharField()
+class TemporaryFileUploadListCreateAPIView(ListCreateAPIView):
+    """Temporary File Upload List Create API View."""
 
-    def post(self, request, *args, **kwargs):
-        serializer = self.InputSerializer(data=request.data)
+    serializer_class = serializers.TemporaryFileUploadSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        """Get Queryset."""
+        return models.TemporaryFileUpload.objects.filter(created_by=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        """Create a Temporary File Upload."""
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        temporary_file = services.create_temporary_file_upload_data(
+            request.user,
+            serializer.validated_data.get("original_file_name"),
+            serializer.validated_data.get("file_type"),
+        )
+        output_serializer = self.get_serializer(temporary_file, many=False)
+        headers = self.get_success_headers(output_serializer.data)
+        return Response(
+            output_serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
-        service = FileUploadService(request.user)
-        presigned_data = service.start(**serializer.validated_data)
 
-        return Response(data=presigned_data)
+class TemporaryFileUploadRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    """Temporary File Upload Retrieve Update Destroy API View."""
+
+    serializer_class = serializers.TemporaryFileUploadSerializer
+    permission_classes = [IsAuthenticated]
+
+    schema = CustomAutoSchema(
+        request_schema={
+            "type": "object",
+            "properties": {
+                "finished_at": {"type": "string", "format": "date-time"},
+            },
+        }
+    )
+
+    def get_queryset(self):
+        """Get Queryset."""
+        return models.TemporaryFileUpload.objects.filter(created_by=self.request.user)
+
+    def update(self, request, *args, **kwargs):
+        """Update method."""
+        finished_at = request.data.get("finished_at")
+        instance = self.get_object()
+        if instance.finished_at is not None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        instance.finished_at = finished_at
+        instance.save()
+        output_serializer = self.get_serializer(instance, many=False)
+        return Response(output_serializer.data, status=status.HTTP_200_OK)
 
 
-class FileUploadFinishApi(APIView):
-    class InputSerializer(serializers.Serializer):
-        file_id = serializers.CharField()
+class FileListCreateAPIView(ListCreateAPIView):
+    """File List Create API View."""
 
-    def post(self, request):
-        serializer = self.InputSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+    serializer_class = serializers.FileSerializer
+    permission_classes = [IsAuthenticated]
 
-        file_id = serializer.validated_data["file_id"]
+    schema = CustomAutoSchema(
+        request_schema={
+            "type": "object",
+            "properties": {
+                "temporary_file_upload": {"type": "string"},
+            },
+        }
+    )
 
-        file = get_object_or_404(File, id=file_id)
+    def get_queryset(self):
+        """Get Queryset."""
+        return models.File.objects.filter(created_by=self.request.user)
 
-        service = FileUploadService(request.user)
-        service.finish(file=file)
-
-        return Response({"id": file.id})
-    
-class FileCompressedApi(APIView):
-    class InputSerializer(serializers.Serializer):
-        file_name = serializers.CharField()
-
-    def post(self, request):
-        serializer = self.InputSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        file_name = serializer.validated_data["file_name"]
+    def create(self, request, *args, **kwargs):
+        """Create a Temporary File Upload."""
+        temporary_file_upload_id = request.data.get("temporary_file_upload", None)
+        if temporary_file_upload_id is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            file = File.objects.get(file_name=file_name)
-        except File.DoesNotExist:
-            return Response({"error": "File not found"}, status=404)
+            temporary_file_upload = models.TemporaryFileUpload.objects.get(
+                id=temporary_file_upload_id, created_by=request.user
+            )
+        except models.TemporaryFileUpload.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        file.compression_finished_at = timezone.now()
-        file.full_clean()
-        file.save()
+        if not temporary_file_upload.finished:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        return Response({"id": file.id})
+        if File.objects.filter(temporary_file_upload=temporary_file_upload).count() > 0:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
+        file = services.create_file_from_temporary_file_upload(temporary_file_upload)
 
-class FileUploadLocalApi(APIView):
-    def post(self, request, file_id):
-        file = get_object_or_404(File, id=file_id)
-
-        file_obj = request.FILES["file"]
-
-        service = FileUploadService(request.user)
-        file = service.upload_local(file=file, file_obj=file_obj)
-
-        return Response({"id": file.id})
+        output_serializer = self.get_serializer(file, many=False)
+        headers = self.get_success_headers(output_serializer.data)
+        return Response(
+            output_serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )

@@ -10,6 +10,7 @@ import Header from "@/components/Header.vue";
 import type User from "@/models/user.model";
 import type Team from "@/models/team.model";
 import SubmissionsList from "@/components/SubmissionsList.vue";
+import type TemporaryFileUpload from "@/models/temporaryfileupload.model";
 
 const props = defineProps<{ id: number }>();
 
@@ -135,36 +136,43 @@ function startUpload() {
   }
 }
 
-function startDirectUpload({ fileName, fileType }: { fileName: string, fileType: string }) {
+function createTemporaryFileUpload(fileName: string, fileType: string): Promise<TemporaryFileUpload> {
   const formData = new FormData();
-  formData.append("file_name", fileName);
+  formData.append("original_file_name", fileName);
   formData.append("file_type", fileType);
 
-  return ApiService.postFileUploadStart(formData);
+  return ApiService.postTemporaryFileUpload(formData);
 }
 
-async function directUploadDo({ data, file }: { data: any, file: File }) {
+async function doDirectUpload(file: File, temporaryFile: TemporaryFileUpload) {
   const formData = new FormData();
   
-  for (const key in data.fields) {
-    formData.append(key, data.fields[key]);
+  for (const key in temporaryFile.presigned_data.fields) {
+    formData.append(key, temporaryFile.presigned_data.fields[key]);
   }
 
   formData.append("file", file);
 
-  return fetch(data.url, {
+  return fetch(temporaryFile.presigned_data.url, {
     method: "POST",
     body: formData,
-    
-  }).then(() => Promise.resolve({ fileId: data?.id}));
+  }).then((response) => {
+    return response.status === 204;
+  });
 }
 
-function directUploadFinish({ data }: any) {
+async function finishTemporaryFileUpload(temporaryFile: TemporaryFileUpload) {
   const formData = new FormData();
-  console.log(data)
-  formData.append("file_id", data?.fileId);
+  formData.append("finished_at", (new Date()).toISOString());
 
-  return ApiService.postFileUploadFinish(formData);
+  return ApiService.patchTemporaryFileUpload(temporaryFile.id, formData);
+}
+
+function createFile(temporaryFile: TemporaryFileUpload) {
+  const formData = new FormData();
+  formData.append("temporary_file_upload", temporaryFile.id);
+
+  return ApiService.postFile(formData);
 }
 
 function videoUpload() {
@@ -172,23 +180,36 @@ function videoUpload() {
   if (challenge.value !== null && videoFile.value !== null && userTeam.value !== null) {
     uploadingImage.value = true;
 
-    startDirectUpload({ fileName: videoFile.value.name, fileType: videoFile.value.type }).then((data) => {
-      console.log('data1', data)
-      directUploadDo({ data, file: videoFile.value as File }).then((data) => {
-        console.log('data2', data)
-        directUploadFinish({ data }).then(() => {
-          toast.success("Video successfully submitted!");
-          submissionsList.value.refresh();
-        }).catch(() => {
-          toast.error("Video submission failed, please try again");
-        }).finally(() => {
-          videoFile.value = null;
-          if (videoField.value !== null) {
-            videoField.value.value = "";
-          }
+    createTemporaryFileUpload(videoFile.value.name, videoFile.value.type).then((temporaryFileUpload) => {
+      doDirectUpload(videoFile.value as File, temporaryFileUpload).then((success) => {
+        if (success) {
+          finishTemporaryFileUpload(temporaryFileUpload).then((result) => {
+            createFile(result).then(() => {
+              videoFile.value = null;
+              if (videoField.value !== null) {
+                videoField.value.value = "";
+              }
+              uploadingImage.value = false;
+              toast.success("Video uploaded successfully!")
+            }).catch(() => {
+              toast.error("File creation failed, please try again.");
+              uploadingImage.value = false;
+            });
+          }).catch(() => {
+            toast.error("Temporary file upload could not finish, please try again.");
+            uploadingImage.value = false;
+          });
+        } else {
+          toast.error("Direct upload to AWS failed, please make sure you stay connected to the Internet.");
           uploadingImage.value = false;
-        });
+        }
+      }).catch(() => {
+        toast.error("Direct upload failed, please try again.");
+        uploadingImage.value = false;
       });
+    }).catch(() => {
+      toast.error("Temporary file could not be created, please try again.");
+      uploadingImage.value = false;
     });
   }
 }

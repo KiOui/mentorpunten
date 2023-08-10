@@ -9,6 +9,7 @@ import type Paginated from "@/models/paginated.model";
 import type Tournament from "@/models/tournament.model";
 import type Transaction from "@/models/transaction.model";
 import {getEnvVar} from "@/common/general.service";
+import type TemporaryFileUpload from "@/models/temporaryfileupload.model";
 
 class _ApiService {
   authorizationEndpoint: string;
@@ -131,12 +132,20 @@ class _ApiService {
     return this.get<Paginated<Transaction[]>>(this._addParametersToResource(`/transactions/`, parameters));
   }
 
-  async postFileUploadStart(data: FormData): Promise<{ uploadId: string }> {
-    return this.post<{ uploadId: string }>("/files/upload/start/", data);
+  async getTemporaryFileUploads(): Promise<Paginated<TemporaryFileUpload[]>> {
+    return this.get<Paginated<TemporaryFileUpload[]>>('/files/temporary/');
   }
 
-  async postFileUploadFinish(data: FormData): Promise<void> {
-    return this.post<void>("/files/upload/finish/", data);
+  async postTemporaryFileUpload(data: FormData, headers: Headers | null = null): Promise<TemporaryFileUpload> {
+    return this.post<TemporaryFileUpload>("/files/temporary/", data, headers);
+  }
+
+  async patchTemporaryFileUpload(id: string, data: FormData, headers: Headers | null = null): Promise<TemporaryFileUpload> {
+    return this.patch<TemporaryFileUpload>(`/files/temporary/${id}/`, data, headers);
+  }
+
+  async postFile(data: FormData, headers: Headers | null = null): Promise<File> {
+    return this.post<File>("/files/", data, headers);
   }
 
   async fetch<T>(resource: string, method: string, data: BodyInit|null, headers: Headers|null = null): Promise<T> {
