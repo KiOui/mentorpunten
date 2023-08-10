@@ -10,7 +10,7 @@ import files.aws as aws
 from users.models import User
 
 
-class FileDirectUploadService:
+class FileUploadService:
     def __init__(self, user: User):
         self.user = user
 
@@ -49,9 +49,13 @@ class FileDirectUploadService:
     @transaction.atomic
     def finish(self, *, file: File) -> File:
         file.upload_finished_at = timezone.now()
+
+        # Just a guess for when the compression will finish, there should be an endpoint for this later
+        file.compression_finished_at = timezone.now() + timezone.timedelta(minutes=2)
         file.full_clean()
         file.save()
 
+        aws.mediaconvert_compress_file(s3_url=file.url)
         return file
 
     @transaction.atomic
