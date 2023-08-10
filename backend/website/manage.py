@@ -6,10 +6,9 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    try:
+    if os.environ.get("DJANGO_PRODUCTION"):
         import mentorpunten.settings.production  # noqa
-    except ModuleNotFoundError:
-        # Use the development settings if the production settings are not available (so we're on a dev machine)
+    else:
         os.environ.setdefault(
             "DJANGO_SETTINGS_MODULE", "mentorpunten.settings.development"
         )

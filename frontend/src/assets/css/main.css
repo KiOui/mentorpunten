@@ -188,3 +188,9 @@ footer .navbar {
 .announcement-content button {
   background-size: .6rem;
 }
+
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}

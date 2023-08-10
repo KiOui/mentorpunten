@@ -13,9 +13,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faUser, faImages, faTrophy, faChartLine, faRightToBracket, faArrowLeft, faAngleRight, faCheck, faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faImages, faTrophy, faChartLine, faRightToBracket, faArrowLeft, faAngleRight, faCheck, faArrowRight, faX } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faUser, faImages, faTrophy, faChartLine, faRightToBracket, faArrowLeft, faAngleRight, faCheck, faArrowRight);
+library.add(faUser, faImages, faTrophy, faChartLine, faRightToBracket, faArrowLeft, faAngleRight, faCheck, faArrowRight, faX);
 
 const app = createApp(App);
 

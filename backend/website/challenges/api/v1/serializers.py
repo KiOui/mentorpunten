@@ -91,6 +91,7 @@ class SubmissionSerializer(WritableModelSerializer):
 
         model = models.Submission
         fields = [
+            "id",
             "challenge",
             "team",
             "tournament",
@@ -105,6 +106,7 @@ class SubmissionSerializer(WritableModelSerializer):
             "transaction",
         ]
         read_only_fields = [
+            "id",
             "created",
             "updated",
             "transaction",
