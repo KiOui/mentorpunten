@@ -1,6 +1,6 @@
 import type User from "@/models/user.model";
 
-export default interface File {
+export default interface UploadedFile {
     id: string;
     file: string;
     original_file_name: string;

@@ -11,6 +11,7 @@ from django.db.models import Q
 from django.utils import timezone
 from queryable_properties.managers import QueryablePropertiesManager
 
+from files.models import File
 from mentorpunten.services import convert_image
 from tournaments.models import Tournament, Team
 from transactions.models import Transaction
@@ -167,43 +168,11 @@ class Submission(models.Model):
         null=True,
         related_name="submissions_updated_by",
     )
-    image = models.ImageField(
-        verbose_name=_("image"), upload_to=submission_upload_image_to
-    )
-    thumbnail = models.ImageField(
-        verbose_name=_("thumbnail"), upload_to=submission_upload_image_to
-    )
-    image_webp = models.ImageField(
-        verbose_name=_("image webp"), upload_to=submission_upload_image_to
-    )
+    file = models.OneToOneField(File, on_delete=models.PROTECT, related_name="submission")
     accepted = models.BooleanField(null=True, blank=True, default=None)
     transaction = models.ForeignKey(
         Transaction, null=True, blank=True, on_delete=models.SET_NULL
     )
-
-    def __init__(self, *args, **kwargs):
-        """Set old image variable."""
-        super(Submission, self).__init__(*args, **kwargs)
-        if kwargs.get("image", None) is not None:
-            self._image = None
-        else:
-            self._image = self.image
-
-    def save(self, *args, **kwargs):
-        """Convert images to webp on save."""
-        if self.image != self._image:
-            # Image has been updated
-            self.image = convert_image(
-                self.image, "jpeg", to_name=get_random_filename(self.image.name)
-            )
-            self.thumbnail = convert_image(
-                self.image,
-                "jpeg",
-                resize_to=(600, 600),
-                to_name="thumb_" + Path(self.image.name).stem + ".jpeg",
-            )
-            self.image_webp = convert_image(self.image, "webp")
-        super().save(*args, **kwargs)
 
     def __str__(self):
         """Convert this object to string."""

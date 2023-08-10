@@ -3,6 +3,7 @@ from rest_framework.fields import SerializerMethodField
 
 from challenges import models
 from challenges.models import Submission
+from files.api.v1.serializers import FileSerializer
 from mentorpunten.api.serializers import WritableModelSerializer
 from tournaments.api.v1.serializers import TeamSerializer, TournamentSerializer
 from transactions.api.v1.serializers import TransactionSerializer
@@ -15,6 +16,7 @@ class SubmissionsWithoutChallengeSerializer(serializers.ModelSerializer):
 
     team = TeamSerializer(many=False)
     transaction = TransactionSerializer(many=False, read_only=True)
+    file = FileSerializer(many=False, read_only=True)
 
     class Meta:
         """Meta class."""
@@ -24,9 +26,7 @@ class SubmissionsWithoutChallengeSerializer(serializers.ModelSerializer):
             "team",
             "created",
             "updated",
-            "image",
-            "image_webp",
-            "thumbnail",
+            "file",
             "accepted",
             "transaction",
         ]
@@ -94,6 +94,7 @@ class SubmissionSerializer(WritableModelSerializer):
     transaction = TransactionSerializer(many=False, read_only=True)
     created_by = UserSerializer(many=False)
     updated_by = UserSerializer(many=False)
+    file = FileSerializer(many=False)
 
     class Meta:
         """Meta class."""
@@ -108,9 +109,7 @@ class SubmissionSerializer(WritableModelSerializer):
             "created_by",
             "updated",
             "updated_by",
-            "image",
-            "image_webp",
-            "thumbnail",
+            "file",
             "accepted",
             "transaction",
         ]
@@ -119,6 +118,4 @@ class SubmissionSerializer(WritableModelSerializer):
             "created",
             "updated",
             "transaction",
-            "image_webp",
-            "thumbnail",
         ]

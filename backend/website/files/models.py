@@ -63,6 +63,16 @@ class File(models.Model):
     )
 
     @property
+    def is_video(self):
+        """Check if this file is a video."""
+        return self.file_type.startswith("video")
+
+    @property
+    def is_photo(self):
+        """Check if this file is a photo."""
+        return self.file_type.startswith("image")
+
+    @property
     def url(self):
         """Get URL of the File."""
         if settings.FILE_UPLOAD_STORAGE == "s3":

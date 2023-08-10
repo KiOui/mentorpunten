@@ -29,8 +29,11 @@ defineProps<{submission: Submission, showAccepted: boolean}>();
         </div>
 
         <div style="flex-grow: 1" class="d-flex align-items-center">
-          <img v-if="submission.image_webp !== null" class="w-100" :src="submission.image_webp"/>
-          <img v-else-if="submission.image !== null" class="w-100" :src="submission.image"/>
+          <img v-if="submission.file.file_type.startsWith('image')" class="w-100" :src="submission.file.file"/>
+          <video v-else-if="submission.file.file_type.startsWith('video')" controls class="mw-100">
+            <source :src="submission.file.file"/>
+            Your browser does not support the video tag.
+          </video>
         </div>
       </div>
   </div>
