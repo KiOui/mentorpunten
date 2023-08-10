@@ -228,29 +228,29 @@ function videoUpload() {
         <button v-if="!uploadingFile" v-on:click="videoUpload()" class="btn btn-primary" type="button">Submit</button>
         <button v-else class="btn btn-primary disabled d-flex justify-content-center align-items-center" type="button">Submit <span class="loader ms-1"></span></button>
       </form>
-      <div v-else-if="challenge.completed" class="alert alert-success mt-2 mb-1">
+      <div v-else-if="challenge.completed" class="alert alert-success mt-2 mb-1 mx-1">
         You have already completed this challenge, no submissions are possible anymore.
       </div>
-      <div v-else-if="!challengeIsActive" class="alert alert-warning mt-2 mb-1">
+      <div v-else-if="!challengeIsActive" class="alert alert-warning mt-2 mb-1 mx-1">
         This challenge is not active.
       </div>
-      <div v-else-if="userTeam === null" class="alert alert-info mt-2 mb-1">
+      <div v-else-if="userTeam === null" class="alert alert-info mt-2 mb-1 mx-1">
         You are not in a team for this tournament so you can not submit pictures.
       </div>
     </div>
     <Loader v-else-if="challengeLoading === true" size="60px" background-color="#000000"/>
     <div v-else class="container mt-5">
-      <div class="alert alert-warning">
+      <div class="alert alert-warning mx-1">
         Failed to load challenge, please try again.
       </div>
     </div>
     <div v-if="store.loggedIn" class="custom-card" style="margin-top: 1rem; margin-bottom: -1rem;">
       <h1>Submissions</h1>
     </div>
-    <div v-if="challengeLoading === null" class="alert alert-warning">
+    <div v-if="challengeLoading === null" class="alert alert-warning mx-1">
       Failed loading challenge data, please try again.
     </div>
-    <div v-else-if="userTeamLoading === null" class="alert alert-warning">
+    <div v-else-if="userTeamLoading === null" class="alert alert-warning mx-1">
       Failed loading team data, please try again.
     </div>
     <template v-else-if="challenge !== null && userTeam !== null">

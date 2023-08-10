@@ -58,20 +58,20 @@ onMounted(() => {
   <Header :show-back-button="true"/>
   <div class="feed-container mx-auto">
     <Loader v-if="tournamentLoading === true" size="60px" background-color="#000000"/>
-    <div v-else-if="tournamentLoading === null" class="alert alert-warning">
+    <div v-else-if="tournamentLoading === null" class="alert alert-warning mx-1">
       An error occurred during loading of tournament data, please try again.
     </div>
     <div v-else-if="!tournamentLoading && tournament !== null" class="custom-card">
       <h1>{{ tournament.name }}</h1>
     </div>
     <Loader v-if="userLoading === true || teamLoading === true" size="60px" background-color="#000000"/>
-    <div v-else-if="userLoading === null" class="alert alert-warning">
+    <div v-else-if="userLoading === null" class="alert alert-warning mx-1">
       An error occurred during loading of user data, please try again.
     </div>
-    <div v-else-if="teamLoading === null" class="alert alert-warning">
+    <div v-else-if="teamLoading === null" class="alert alert-warning mx-1">
       An error occurred during loading of team data, please try again.
     </div>
-    <div v-else-if="!teamLoading && team === null" class="alert alert-info">
+    <div v-else-if="!teamLoading && team === null" class="alert alert-info mx-1">
       You are not registered for a team in this tournament.
     </div>
     <SubmissionsList v-else-if="!userLoading && user !== null && !teamLoading && team !== null" :show-accepted="true" :submission-search-filters="[['team', String(team.id)], ['tournament', String(props.id)]]" no-submissions-warning="No submissions found for this tournament."/>

@@ -78,7 +78,7 @@ const tournamentRanking = computed(() => {
   <Header :show-back-button="true"/>
   <div class="feed-container mx-auto">
     <Loader v-if="teamLoading === true" size="60px" background-color="#000000"/>
-    <div v-else-if="teamLoading === null" class="alert alert-warning">
+    <div v-else-if="teamLoading === null" class="alert alert-warning mx-1">
       There was an error loading this team, please try again.
     </div>
     <template v-else-if="!teamLoading && team !== null">
@@ -89,8 +89,8 @@ const tournamentRanking = computed(() => {
 
       <div class="custom-card">
         <h1 class="text-center">Tournament Rankings</h1>
-        <Loader v-if="teamsLoading === true || teams === null || team === null" size="60px" background-color="#000000"/>
-        <div v-else-if="teamsLoading === null || tournamentRanking === null" class="alert alert-warning">
+        <Loader v-if="teamsLoading === true || teams === null" size="60px" background-color="#000000"/>
+        <div v-else-if="teamsLoading === null || tournamentRanking === null" class="alert alert-warning mx-1">
           There was an error loading the tournament ranking, please try again.
         </div>
         <div v-else class="d-flex justify-content-between">
@@ -111,7 +111,7 @@ const tournamentRanking = computed(() => {
       <div class="custom-card">
         <h2>Latest Transactions</h2>
         <Loader v-if="latestTransactionsLoading === true" size="60px" background-color="#000000"/>
-        <div v-else-if="latestTransactionsLoading === null" class="alert alert-warning">
+        <div v-else-if="latestTransactionsLoading === null" class="alert alert-warning mx-1">
           An error occurred during loading of the latest transactions, please try again.
         </div>
         <template v-else>

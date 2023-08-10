@@ -71,30 +71,31 @@ function refresh() {
 
 <template>
     <Header :show-back-button="false"/>
-    <div v-if="submission === null && !submissionLoading">
-        <div class="alert alert-warning" style="margin-top: 2rem;">
-            There are no new submissions to review!
+    <div class="feed-container mx-auto my-5">
+      <div v-if="submission === null && !submissionLoading">
+        <div class="alert alert-warning mx-1" style="margin-top: 2rem;">
+          There are no new submissions to review!
         </div>
-    </div>
-    <!-- <SubmissionAcceptCard v-else-if="submission !== null" v-bind:submission="submission" v-bind:show-accepted="true" v-bind:key="submission.id" v-on:click="refresh" /> -->
-    <div v-else-if="submission !== null">
+      </div>
+      <div v-else-if="submission !== null">
         <SubmissionCard :submission="submission" :show-accepted="true"/>
         <div class="submission-card justify-content-between d-flex flex-row justify-content-center" style="margin-top: 0rem;">
-            <div class="flex-grow-1 justify-content-center d-flex">
-                <button class="btn btn-accept" v-on:click="processSubmission(true)">
-                    <font-awesome-icon icon="fa-solid fa-check"/>
-                </button>
-            </div>
-            <div class="flex-grow-1 justify-content-center d-flex">
-                <button class="btn btn-reject" v-on:click="processSubmission(false)">
-                    <font-awesome-icon icon="fa-solid fa-x"/>
-                </button>
-            </div>
+          <div class="flex-grow-1 justify-content-center d-flex">
+            <button class="btn btn-accept" v-on:click="processSubmission(true)">
+              <font-awesome-icon icon="fa-solid fa-check"/>
+            </button>
+          </div>
+          <div class="flex-grow-1 justify-content-center d-flex">
+            <button class="btn btn-reject" v-on:click="processSubmission(false)">
+              <font-awesome-icon icon="fa-solid fa-x"/>
+            </button>
+          </div>
         </div>
-    </div>
-    <Loader v-if="submissionLoading" size="60px" background-color="#000000"/>
-    <div v-else-if="!submissionLoading && !nextDataExists && submission !== null" class="alert alert-info text-center" style="margin-top: 1rem;">
+      </div>
+      <Loader v-if="submissionLoading" size="60px" background-color="#000000"/>
+      <div v-else-if="!submissionLoading && !nextDataExists && submission !== null" class="alert alert-info text-center mx-1" style="margin-top: 1rem;">
         That's it for now! Check back later!
+      </div>
     </div>
 </template>
 

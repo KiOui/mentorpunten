@@ -26,10 +26,10 @@
   <Header :show-back-button="true"/>
   <div class="feed-container mx-auto">
     <Loader v-if="challengesLoading === true" size="60px" background-color="#000000"/>
-    <div v-else-if="challengesLoading === null" class="alert alert-warning">
+    <div v-else-if="challengesLoading === null" class="alert alert-warning mx-1">
       Failed to load challenges, please try again.
     </div>
-    <div v-else-if="challenges?.length === 0" class="alert alert-warning">
+    <div v-else-if="challenges?.length === 0" class="alert alert-warning mx-1">
       There are no challenges for this tournament yet.
     </div>
     <ChallengeCard v-else v-for="challenge in challenges" v-bind:challenge="challenge" v-bind:key="challenge.id" />

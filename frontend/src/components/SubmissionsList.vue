@@ -59,7 +59,7 @@ function refresh() {
 
 <template>
   <div v-if="submissions.length === 0 && !submissionsLoading">
-    <div class="alert alert-warning" style="margin-top: 2rem;">
+    <div class="alert alert-warning mx-1" style="margin-top: 2rem;">
       {{ noSubmissionsWarning }}
     </div>
   </div>
@@ -68,7 +68,7 @@ function refresh() {
   <div v-else-if="!submissionsLoading && nextDataExists" class="w-100 d-flex justify-content-center" style="margin-top: 1rem;">
     <button v-on:click="addNewData" class="btn btn-primary text-center">Load more</button>
   </div>
-  <div v-else-if="!submissionsLoading && !nextDataExists && submissions.length > 0" class="alert alert-info text-center" style="margin-top: 1rem;">
+  <div v-else-if="!submissionsLoading && !nextDataExists && submissions.length > 0" class="alert alert-info text-center mx-1" style="margin-top: 1rem;">
     That's it for now! Check back later!
   </div>
 </template>
