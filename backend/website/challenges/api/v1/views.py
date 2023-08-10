@@ -164,7 +164,7 @@ class SubmissionRetrieveUpdateAPIView(RetrieveUpdateAPIView):
         if not request.user.is_authenticated:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-        if not request.user.has_perm("challenges.update_submission"):
+        if not request.user.has_perm("challenges.change_submission"):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
         return super().update(request, *args, **kwargs)

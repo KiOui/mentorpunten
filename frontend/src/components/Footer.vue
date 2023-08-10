@@ -1,6 +1,6 @@
 <script setup lang="ts"> /* eslint-disable-line vue/multi-word-component-names */
 import useApiService from '@/common/api.service';
-import { onMounted, ref } from 'vue';
+import {computed, onMounted, ref} from 'vue';
 import type User from '@/models/user.model';
 
 const ApiService = useApiService();
@@ -8,26 +8,27 @@ const ApiService = useApiService();
 let user = ref<User|null>(null);
 let userLoading = ref<boolean|null>(true);
 
-let user_can_change_submission = ref<boolean>(false);
-
 onMounted(() => {
-    const userPromise = ApiService.getUsersMe().then(userData => {
+    ApiService.getUsersMe().then(userData => {
       user.value = userData;
       userLoading.value = false;
     }).catch(() => {
       userLoading.value = null;
     });
-
-    userPromise.then(() => {
-      if (user.value !== null) {
-        user_can_change_submission.value = (user.value?.user_permissions.filter(function(x) { return x[1] == 'Can change submission'}).length > 0); 
-      } else {
-        userLoading.value = false;
-      }
-    });
-    
   }
-)
+);
+
+const userCanChangeSubmission = computed(() => {
+  if (user.value === null) {
+    return false;
+  } else {
+    return user.value.user_permissions.map((permission) => {
+      return permission === 'challenges.change_submission';
+    }).reduce((previousValue, currentValue) => {
+      return previousValue || currentValue;
+    }, false);
+  }
+});
 </script>
 
 <template>
@@ -49,7 +50,7 @@ onMounted(() => {
             <font-awesome-icon icon="fa-solid fa-chart-line"/>
           </li>
         </router-link>
-        <router-link v-if="user_can_change_submission" :to="{ name: 'SubmissionAccept' }" class="text-white nav-item flex-grow-1 text-center">
+        <router-link v-if="userCanChangeSubmission" :to="{ name: 'SubmissionAccept' }" class="text-white nav-item flex-grow-1 text-center">
           <li>
             <font-awesome-icon icon="fa-solid fa-check"/>
           </li>
