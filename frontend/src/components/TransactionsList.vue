@@ -52,7 +52,7 @@ function addNewData() {
     <h1>transactions</h1>
     <TransactionCard v-for="transaction in transactions" v-bind:transaction="transaction" v-bind:key="transaction.id" />
     <div v-if="transactions.length === 0 && !transactionsLoading">
-      <div class="alert alert-warning">
+      <div class="alert alert-warning mx-1">
         No transactions found for this team.
       </div>
     </div>
@@ -61,7 +61,7 @@ function addNewData() {
   <div v-else-if="!transactionsLoading && nextDataExists" class="w-100 d-flex justify-content-center" style="margin-top: 1rem;">
     <button v-on:click="addNewData" class="btn btn-primary text-center">Load more</button>
   </div>
-  <div v-else-if="!transactionsLoading && !nextDataExists" class="alert alert-info text-center" style="margin-top: 1rem;">
+  <div v-else-if="!transactionsLoading && !nextDataExists" class="alert alert-info text-center mx-1" style="margin-top: 1rem;">
     That's it for now! Check back later!
   </div>
 </template>

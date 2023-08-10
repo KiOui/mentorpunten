@@ -7,7 +7,7 @@ defineProps<{submission: Submission, showAccepted: boolean}>();
 
 <template>
   <div class="overflow-hidden w-100 bg-white" style="margin-top: 1rem;">
-      <div class="d-flex flex-column h-100">
+      <div class="d-flex flex-column">
         <div class="row">
           <div class="col-8 submission-heading">
               <router-link :to="{ name: 'Team', params: { id: submission.team.id } }" style="text-decoration: none;">
@@ -28,9 +28,9 @@ defineProps<{submission: Submission, showAccepted: boolean}>();
           </div>
         </div>
 
-        <div style="flex-grow: 1" class="d-flex align-items-center">
-          <img v-if="submission.file.file_type.startsWith('image')" class="w-100" :src="submission.file.file"/>
-          <video v-else-if="submission.file.file_type.startsWith('video')" controls class="mw-100">
+        <div class="d-flex align-items-center justify-content-center image-video-container">
+          <img v-if="submission.file.file_type.startsWith('image')" class="image" :src="submission.file.file"/>
+          <video v-else-if="submission.file.file_type.startsWith('video')" controls class="video">
             <source :src="submission.file.file"/>
             Your browser does not support the video tag.
           </video>
@@ -40,5 +40,11 @@ defineProps<{submission: Submission, showAccepted: boolean}>();
 </template>
 
 <style scoped>
+.image {
+  width: 100%;
+}
 
+.video {
+  width: 100%;
+}
 </style>

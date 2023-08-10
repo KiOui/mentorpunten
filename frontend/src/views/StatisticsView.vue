@@ -95,7 +95,7 @@
   <Header :show-back-button="false"/>
   <div class="feed-container mx-auto">
     <Loader v-if="tournamentsLoading === true" size="60px" background-color="#000000"/>
-    <div v-else-if="tournamentsLoading === null" class="alert alert-warning">
+    <div v-else-if="tournamentsLoading === null" class="alert alert-warning mx-1">
       Failed to load tournaments, please try again.
     </div>
     <StatisticsCard

@@ -28,7 +28,7 @@ onMounted(() => {
   <Header :show-back-button="true"/>
   <div class="feed-container mx-auto">
     <Loader v-if="teamLoading === true" size="60px" background-color="#000000"/>
-    <div v-else-if="teamLoading === null" class="alert alert-warning">
+    <div v-else-if="teamLoading === null" class="alert alert-warning mx-1">
       There was an error loading this team, please try again.
     </div>
     <TransactionsList v-else-if="!teamLoading && team !== null" v-bind:transaction-search-filters="[['account', String(team.account.id)]]"/>

@@ -61,7 +61,7 @@ let user = ref<User|null>(null);
   <Header :show-back-button="false"/>
   <div class="feed-container mx-auto">
     <Loader v-if="userLoading === true" size="60px" background-color="#000000"/>
-    <div v-else-if="userLoading === null" class="alert alert-warning">
+    <div v-else-if="userLoading === null" class="alert alert-warning mx-1">
       Failed to load user data, please try again.
     </div>
     <template v-else-if="user !== null">
@@ -74,10 +74,10 @@ let user = ref<User|null>(null);
         <h1 class="text-center">{{ user.display_name }}</h1>
       </div>
       <Loader v-if="teamsLoading === true" size="60px" background-color="#000000"/>
-      <div v-else-if="teamsLoading === null" class="alert alert-warning">
+      <div v-else-if="teamsLoading === null" class="alert alert-warning mx-1">
         Failed to load team data, please try again.
       </div>
-      <div v-else-if="!teamsLoading && teams !== null && teams.length === 0" class="alert alert-info">
+      <div v-else-if="!teamsLoading && teams !== null && teams.length === 0" class="alert alert-info mx-1">
         You are not in any team yet, contact an administrator to join a team.
       </div>
       <div v-else-if="!teamsLoading && teams !== null" v-for="team in teams" class="custom-card" v-bind:key="team.id">

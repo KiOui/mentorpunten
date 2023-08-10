@@ -52,10 +52,10 @@ const firstTeam: ComputedRef<Team | null> = computed(() => {
       <h1>{{ tournament.name }}</h1>
       <h4>{{ startEndTimeOfTournament(tournament) }}</h4>
     </div>
-    <div v-else-if="teamsLoading === null" class="alert alert-warning">
+    <div v-else-if="teamsLoading === null" class="alert alert-warning mx-1">
       Failed to load tournaments, please try again.
     </div>
-    <div v-if="teams?.length === 0" class="alert alert-warning">
+    <div v-if="teams?.length === 0" class="alert alert-warning mx-1">
       There are currently no teams in this tournament.
     </div>
     <div v-else>
@@ -73,10 +73,9 @@ const firstTeam: ComputedRef<Team | null> = computed(() => {
 <style>
 .first-of-tournament {
   color: var(--primary);
-  font-family: 'Gill Sans MT Condensed';
+  font-family: 'Gill Sans MT Condensed', sans-serif;
   text-transform: uppercase;
-  margin: 0;
-  margin-top: 1rem;
+  margin: 1rem 0 0;
   background-color: white;
 }
 
