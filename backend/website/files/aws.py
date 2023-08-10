@@ -19,7 +19,6 @@ class AWSCredentials:
         max_size: int,
     ):
         """Initialize AWS Credentials."""
-
         self.access_key_id = access_key_id
         self.secret_access_key = secret_access_key
         self.region_name = region_name
@@ -54,6 +53,7 @@ def s3_get_client():
 
 
 def mediaconvert_get_client():
+    """Get mediaconvert client."""
     credentials = s3_get_credentials()
     return boto3.client(
         service_name="mediaconvert",
@@ -88,6 +88,7 @@ def s3_generate_presigned_post(file_path: str, file_type: str) -> Dict[str, Any]
 
 
 def mediaconvert_compress_file(*, s3_url: str):
+    """Compress mediaconvert file."""
     client = mediaconvert_get_client()
 
     response = client.create_job(

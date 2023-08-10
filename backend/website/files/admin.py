@@ -36,4 +36,6 @@ class FileAdmin(admin.ModelAdmin):
 
 @admin.register(TemporaryFileUpload)
 class TemporaryFileUploadAdmin(admin.ModelAdmin):
+    """Temporary File Upload Admin."""
+
     list_display = ("file_name",)

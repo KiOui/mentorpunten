@@ -18,6 +18,7 @@ def get_random_filename(current_filename):
 
 
 def file_upload_to(instance, filename):
+    """Upload file to."""
     return os.path.join("files", get_random_filename(filename))
 
 
@@ -82,6 +83,7 @@ class File(models.Model):
 
     @property
     def compressed_url(self):
+        """Get compressed URL."""
         if settings.FILE_UPLOAD_STORAGE == "s3":
             return f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/compressed/{self.file_name}"
 
