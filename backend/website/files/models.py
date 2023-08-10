@@ -1,3 +1,4 @@
+from datetime import timezone
 from django.db import models
 from django.conf import settings
 
@@ -16,10 +17,15 @@ class File(models.Model):
     file_type = models.CharField(max_length=255)
 
     upload_finished_at = models.DateTimeField(blank=True, null=True)
+    compression_finished_at = models.DateTimeField(blank=True, null=True)
 
     @property
     def is_valid(self):
         return bool(self.upload_finished_at)
+    
+    @property
+    def is_compressed(self):
+        return bool(self.compression_finished_at < timezone.now())
 
     @property
     def url(self):
