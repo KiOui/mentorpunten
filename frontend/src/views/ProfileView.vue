@@ -90,6 +90,11 @@ let user = ref<User|null>(null);
     <div class="d-flex justify-content-center" style="margin-top: 1rem;">
       <button v-on:click="logout" class="btn btn-primary">Logout</button>
     </div>
+    <div class="d-flex justify-content-center" style="margin-top: 1rem;">
+      <p class="source-code">
+        <a href="https://github.com/KiOui/mentorpunten">Check out the source code on GitHub</a>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -101,11 +106,16 @@ let user = ref<User|null>(null);
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 100%;
-  color:#d9d9d9;
+  color: #d9d9d9;
   background-color: #d9d9d9;
 }
 
 .alert {
   margin-top: 1rem;
+}
+
+.source-code a {
+  color: #555555;
+  font-size: 10pt;
 }
 </style>
