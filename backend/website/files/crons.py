@@ -10,7 +10,7 @@ class RequestCompressionCronJob(CronJobBase):
     """Request compressed files."""
 
     RUN_EVERY_MINS = 1
-    code = "files.compressed"
+    code = "files.request_compression"
     schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
 
     def request_compressed_file(self, file: models.File):
