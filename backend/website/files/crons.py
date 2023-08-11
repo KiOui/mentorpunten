@@ -18,7 +18,8 @@ class RequestCompressionCronJob(CronJobBase):
         try:
             mediaconvert_compress_file(models.get_file_location(file.file_name))
             return True
-        except Exception:
+        except Exception as e:
+            print("Exception occurred:\n{}".format(e))
             return False
 
     def do(self):
