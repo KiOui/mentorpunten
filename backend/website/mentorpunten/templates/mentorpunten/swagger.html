@@ -6,7 +6,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="{% static "mentorpunten/css/swagger-ui.css" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static "mentorpunten/css/swagger-ui-tosti-styling.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "mentorpunten/css/swagger-ui-mentorpunten-styling.css" %}"/>
 </head>
 <body>
 <div id="swagger-ui"></div>
@@ -41,7 +41,7 @@
         });
 
         let img = document.getElementsByClassName('topbar-wrapper')[0].getElementsByTagName('a')[0].getElementsByTagName('img')[0];
-        img.src = '{% static 'tosti/svg/TOSTI-logo.svg' %}';
+        img.remove();
     }
 </script>
 </body>
