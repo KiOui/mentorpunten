@@ -30,7 +30,7 @@ defineProps<{submission: Submission, showAccepted: boolean}>();
 
         <div class="d-flex align-items-center justify-content-center image-video-container">
           <img v-if="submission.file.file_type.startsWith('image')" class="image" :src="submission.file.file"/>
-          <video v-else-if="submission.file.file_type.startsWith('video')" controls class="video">
+          <video v-else-if="submission.file.file_type.startsWith('video')" controls class="video" preload="metadata">
             <source :src="submission.file.file"/>
             Your browser does not support the video tag.
           </video>

@@ -44,6 +44,7 @@ class FileSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "file",
+            "compressed_file",
             "original_file_name",
             "file_name",
             "file_type",
@@ -53,6 +54,7 @@ class FileSerializer(serializers.ModelSerializer):
         read_only_fields = (
             "id",
             "file",
+            "compressed_file",
             "original_file_name",
             "file_name",
             "file_type",

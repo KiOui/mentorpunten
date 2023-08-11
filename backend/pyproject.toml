@@ -30,6 +30,7 @@ uwsgi = "^2.0.22"
 psycopg2-binary = "^2.9.6"
 django-storages = "^1.13.2"
 boto3 = "^1.28.21"
+django-cron = "^0.6.0"
 
 [tool.poetry.group.dev.dependencies]
 pydocstyle = "^6.3.0"
