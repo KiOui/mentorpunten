@@ -10,12 +10,12 @@ User = get_user_model()
 
 def get_file_location(filename):
     """Get location of a normal file."""
-    return f"files/${filename}"
+    return f"files/{filename}"
 
 
 def get_compressed_location(filename):
     """Get location of compressed file."""
-    return f"compressed/${filename}"
+    return f"compressed/{filename}"
 
 
 def get_random_filename(current_filename):
