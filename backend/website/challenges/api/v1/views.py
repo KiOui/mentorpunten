@@ -36,7 +36,7 @@ class ChallengeRetrieveAPIView(RetrieveAPIView):
 
     def get_queryset(self):
         """Get queryset."""
-        return models.Challenge.objects.revealed_challenges()
+        return models.Challenge.objects.filter(disabled=False)
 
 
 class SubmissionFilter(FilterSet):

@@ -29,7 +29,7 @@ class TournamentRetrieveAPIView(RetrieveAPIView):
 
     def get_queryset(self):
         """Get the queryset."""
-        return models.Tournament.objects.revealed_tournaments()
+        return models.Tournament.objects.all()
 
 
 class TeamListAPIView(ListAPIView):
@@ -46,7 +46,7 @@ class TeamListAPIView(ListAPIView):
 
     def get_queryset(self):
         """Get the queryset."""
-        return models.Team.objects.active_teams()
+        return models.Team.objects.all()
 
 
 class TeamRetrieveAPIView(RetrieveAPIView):
@@ -56,4 +56,4 @@ class TeamRetrieveAPIView(RetrieveAPIView):
 
     def get_queryset(self):
         """Get the queryset."""
-        return models.Team.objects.active_teams()
+        return models.Team.objects.all()
