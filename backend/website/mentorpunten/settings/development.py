@@ -77,6 +77,7 @@ AWS_MEDIACONVERT_TEMPLATE_NAME = "Compress video file"
 AWS_MEDIACONVERT_ROLE_ARN = (
     "arn:aws:iam::723615423849:role/service-role/MediaConvert_Default_Role"
 )
+AWS_MEDIACONVERT_ENDPOINT_URL = "https://2k4nj1qdb.mediaconvert.eu-west-1.amazonaws.com"
 
 # Set to "s3" to upload files to s3
 FILE_UPLOAD_STORAGE = "s3"

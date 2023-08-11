@@ -17,6 +17,7 @@ class AWSCredentials:
         default_acl: str,
         presigned_expiry: int,
         max_size: int,
+        mediaconvert_endpoint_url: str,
     ):
         """Initialize AWS Credentials."""
         self.access_key_id = access_key_id
@@ -26,6 +27,7 @@ class AWSCredentials:
         self.default_acl = default_acl
         self.presigned_expiry = presigned_expiry
         self.max_size = max_size
+        self.mediaconvert_endpoint_url = mediaconvert_endpoint_url
 
 
 @lru_cache
@@ -39,6 +41,7 @@ def s3_get_credentials() -> AWSCredentials:
         settings.AWS_DEFAULT_ACL,
         settings.AWS_PRESIGNED_EXPIRY,
         settings.FILE_MAX_SIZE,
+        settings.AWS_MEDIACONVERT_ENDPOINT_URL,
     )
 
 
@@ -60,7 +63,7 @@ def mediaconvert_get_client():
         aws_access_key_id=credentials.access_key_id,
         aws_secret_access_key=credentials.secret_access_key,
         region_name=credentials.region_name,
-        endpoint_url="https://2k4nj1qdb.mediaconvert.eu-west-1.amazonaws.com",
+        endpoint_url=credentials.mediaconvert_endpoint_url,
     )
 
 
@@ -87,7 +90,7 @@ def s3_generate_presigned_post(file_path: str, file_type: str) -> Dict[str, Any]
     return presigned_data
 
 
-def mediaconvert_compress_file(*, s3_url: str):
+def mediaconvert_compress_file(s3_url: str):
     """Compress mediaconvert file."""
     client = mediaconvert_get_client()
 

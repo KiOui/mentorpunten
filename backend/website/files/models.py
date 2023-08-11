@@ -108,3 +108,12 @@ class File(models.Model):
     def __str__(self):
         """Convert this object to string."""
         return self.original_file_name
+
+
+class CompressionRequested(models.Model):
+    """Compression Requested class."""
+
+    file = models.OneToOneField(
+        File, on_delete=models.CASCADE, related_name="compression_requested"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
