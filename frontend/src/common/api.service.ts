@@ -9,7 +9,7 @@ import type Tournament from "@/models/tournament.model";
 import type Transaction from "@/models/transaction.model";
 import {getEnvVar} from "@/common/general.service";
 import type TemporaryFileUpload from "@/models/temporaryfileupload.model";
-import type UploadedFile from "@/models/file.model";
+import type UploadedFile from "@/models/uploadedfile.model";
 
 class _ApiService {
   authorizationEndpoint: string;

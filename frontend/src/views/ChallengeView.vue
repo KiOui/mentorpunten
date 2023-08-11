@@ -11,7 +11,7 @@ import type User from "@/models/user.model";
 import type Team from "@/models/team.model";
 import SubmissionsList from "@/components/SubmissionsList.vue";
 import type TemporaryFileUpload from "@/models/temporaryfileupload.model";
-import type UploadedFile from "@/models/file.model";
+import type UploadedFile from "@/models/uploadedfile.model";
 
 const props = defineProps<{ id: number }>();
 
