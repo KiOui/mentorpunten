@@ -68,7 +68,8 @@ let user = ref<User|null>(null);
       <div class="custom-card">
         <div class="d-flex flex-column">
           <div class="d-flex justify-content-center mt-3">
-            <img :src="user.profile_image" class="profile-image" alt="Profile image" style="color:#d9d9d9; background-color: #d9d9d9;"/>
+            <div class="profile-image-container" v-bind:style="{'background-image': `url(${user.profile_image})`}">
+            </div>
           </div>
         </div>
         <h1 class="text-center">{{ user.display_name }}</h1>
@@ -93,16 +94,18 @@ let user = ref<User|null>(null);
 </template>
 
 <style scoped>
-  .profile-image {
-    height: 150px;
-    width: 150px;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    border-radius: 100%;
-  }
+.profile-image-container {
+  height: 150px;
+  width: 150px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 100%;
+  color:#d9d9d9;
+  background-color: #d9d9d9;
+}
 
-  .alert {
-    margin-top: 1rem;
-  }
+.alert {
+  margin-top: 1rem;
+}
 </style>
