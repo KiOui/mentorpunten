@@ -1,4 +1,3 @@
-import os
 import uuid
 from pathlib import Path
 
@@ -6,8 +5,17 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.conf import settings
 
-
 User = get_user_model()
+
+
+def get_file_location(filename):
+    """Get location of a normal file."""
+    return f"files/${filename}"
+
+
+def get_compressed_location(filename):
+    """Get location of compressed file."""
+    return f"compressed/${filename}"
 
 
 def get_random_filename(current_filename):
@@ -19,7 +27,12 @@ def get_random_filename(current_filename):
 
 def file_upload_to(instance, filename):
     """Upload file to."""
-    return os.path.join("files", get_random_filename(filename))
+    return get_file_location(get_random_filename(filename))
+
+
+def compressed_upload_to(instance, filename):
+    """Upload compressed to."""
+    return get_compressed_location(get_random_filename(filename))
 
 
 class TemporaryFileUpload(models.Model):
@@ -48,6 +61,9 @@ class File(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     file = models.FileField(upload_to=file_upload_to)
+    compressed_file = models.FileField(
+        upload_to=compressed_upload_to, null=True, blank=True
+    )
 
     original_file_name = models.CharField(max_length=300)
 

@@ -18,7 +18,7 @@ def create_temporary_file_upload_data(user: User, file_name: str, file_type: str
     """Create Temporary File Upload Data."""
     random_filename = get_random_filename(file_name)
     presigned_data = aws.s3_generate_presigned_post(
-        f"files/${random_filename}", file_type
+        models.get_file_location(random_filename), file_type
     )
     return models.TemporaryFileUpload.objects.create(
         original_file_name=file_name,
@@ -41,7 +41,7 @@ def create_file_from_temporary_file_upload(
         temporary_file_upload=temporary_file_upload,
     )
     file.file = file.file.field.attr_class(
-        file, file.file.field, f"files/${temporary_file_upload.file_name}"
+        file, file.file.field, models.get_file_location(temporary_file_upload.file_name)
     )
     file.full_clean()
     file.save()

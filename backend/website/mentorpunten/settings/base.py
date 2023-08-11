@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     "rangefilter",
+    "mentorpunten.django_cron_app_config.CustomDjangoCronAppConfig",
     "announcements",
     "users",
     "thalia",
@@ -157,3 +158,9 @@ MESSAGE_TAGS = {
 
 # Sites app
 SITE_ID = 1
+
+CRON_CLASSES = [
+    "files.crons.CompressedFileCronJob",
+]
+
+DJANGO_CRON_DELETE_LOGS_OLDER_THAN = 14

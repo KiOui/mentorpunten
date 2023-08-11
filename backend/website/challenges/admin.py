@@ -98,7 +98,9 @@ class SubmissionAdmin(AutocompleteFilterMixin, admin.ModelAdmin):
         if obj.file.is_photo:
             return format_html(
                 '<img src="{}" width="400px" style="max-width: 100%;" />'.format(
-                    obj.file.file.url
+                    obj.file.compressed_file.url
+                    if obj.file.compressed_file is not None
+                    else obj.file.file.url
                 )
             )
         elif obj.file.is_video:
@@ -107,7 +109,9 @@ class SubmissionAdmin(AutocompleteFilterMixin, admin.ModelAdmin):
                     <source src="{}"/> \
                     Your browser does not support the video tag. \
                 </video>'.format(
-                    obj.file.file.url
+                    obj.file.compressed_file.url
+                    if obj.file.compressed_file is not None
+                    else obj.file.file.url
                 )
             )
         else:
