@@ -40,6 +40,7 @@ function processSubmission(value: boolean) {
         toast.error("Failed to process submission, please try again.")
     }).finally(() => {
         refresh();
+        toast.success("Submission processed successfully")
     })
 }
 

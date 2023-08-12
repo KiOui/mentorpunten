@@ -78,6 +78,9 @@ class SubmissionListCreateAPIView(ListCreateAPIView):
 
         The displayed queryset depends on whether the user is authenticated.
         """
+        if self.request.user.has_perm("challenges.view_submission"):
+            return self.queryset
+
         challenges_where_team_has_accepted_submission = models.Challenge.objects.filter(
             submissions__team__in=Team.objects.filter(members__in=[self.request.user]),
             submissions__accepted=True,
@@ -173,6 +176,9 @@ class SubmissionRetrieveUpdateAPIView(RetrieveUpdateAPIView):
 
         The displayed queryset depends on whether the user is authenticated.
         """
+        if self.request.user.has_perm("challenges.view_submission"):
+            return self.queryset
+
         challenges_where_team_has_accepted_submission = models.Challenge.objects.filter(
             submissions__team__in=Team.objects.filter(members__in=[self.request.user]),
             submissions__accepted=True,
