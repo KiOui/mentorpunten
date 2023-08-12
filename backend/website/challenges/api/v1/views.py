@@ -8,12 +8,14 @@ from rest_framework.generics import (
     RetrieveUpdateAPIView,
 )
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from challenges.api.v1 import serializers
 from challenges import models
 from files.models import File
 from mentorpunten.api.v1.pagination import StandardResultsSetPagination
+from tournaments.models import Team
 
 
 class ChallengeListAPIView(ListAPIView):
@@ -62,6 +64,8 @@ class SubmissionListCreateAPIView(ListCreateAPIView):
     serializer_class = serializers.SubmissionSerializer
     queryset = models.Submission.objects.all()
 
+    permission_classes = [IsAuthenticated]
+
     parser_classes = [MultiPartParser, FormParser]
 
     pagination_class = StandardResultsSetPagination
@@ -74,12 +78,27 @@ class SubmissionListCreateAPIView(ListCreateAPIView):
 
         The displayed queryset depends on whether the user is authenticated.
         """
-        if self.request.user.is_authenticated:
-            return self.queryset.filter(
-                Q(accepted=True) | Q(team__members__in=[self.request.user])
-            ).distinct()
-        else:
-            return self.queryset.filter(accepted=True)
+        challenges_where_team_has_accepted_submission = models.Challenge.objects.filter(
+            submissions__team__in=Team.objects.filter(members__in=[self.request.user]),
+            submissions__accepted=True,
+        ).distinct()
+        return self.queryset.filter(
+            (
+                Q(accepted=True)
+                & (
+                    Q(
+                        challenge__submission_visibility=models.Challenge.SUBMISSIONS_ALWAYS_VISIBLE
+                    )
+                    | (
+                        Q(
+                            challenge__submission_visibility=models.Challenge.SUBMISSIONS_VISIBLE_ON_ACCEPTED_SUBMISSION
+                        )
+                        & Q(challenge__in=challenges_where_team_has_accepted_submission)
+                    )
+                )
+            )
+            | Q(team__members__in=[self.request.user])
+        ).distinct()
 
     def create(self, request, *args, **kwargs):
         """Create a submission."""
@@ -146,18 +165,35 @@ class SubmissionRetrieveUpdateAPIView(RetrieveUpdateAPIView):
     serializer_class = serializers.SubmissionSerializer
     queryset = models.Submission.objects.all()
 
+    permission_classes = [IsAuthenticated]
+
     def get_queryset(self):
         """
         Get queryset of submissions.
 
         The displayed queryset depends on whether the user is authenticated.
         """
-        if self.request.user.is_authenticated:
-            return self.queryset.filter(
-                Q(accepted=True) | Q(team__members__in=[self.request.user])
+        challenges_where_team_has_accepted_submission = models.Challenge.objects.filter(
+            submissions__team__in=Team.objects.filter(members__in=[self.request.user]),
+            submissions__accepted=True,
+        ).distinct()
+        return self.queryset.filter(
+            (
+                Q(accepted=True)
+                & (
+                    Q(
+                        challenge__submission_visibility=models.Challenge.SUBMISSIONS_ALWAYS_VISIBLE
+                    )
+                    | (
+                        Q(
+                            challenge__submission_visibility=models.Challenge.SUBMISSIONS_VISIBLE_ON_ACCEPTED_SUBMISSION
+                        )
+                        & Q(challenge__in=challenges_where_team_has_accepted_submission)
+                    )
+                )
             )
-        else:
-            return self.queryset.filter(accepted=True)
+            | Q(team__members__in=[self.request.user])
+        ).distinct()
 
     def update(self, request, *args, **kwargs):
         """Update a submission."""

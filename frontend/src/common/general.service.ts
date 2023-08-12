@@ -2,6 +2,8 @@ import type Tournament from "@/models/tournament.model";
 import type Challenge from "@/models/challenge.model";
 
 const LOGOUT_TOKEN_NAME = "logout_state";
+const SUBMISSIONS_ALWAYS_VISIBLE = 1;
+const SUBMISSIONS_VISIBLE_ON_ACCEPTED_SUBMISSION = 2;
 
 function parseHash(hashString: string): {
     accessToken: string,
@@ -103,4 +105,4 @@ function startTimeOfChallenge(challenge: Challenge): string {
     return "";
 }
 
-export { LOGOUT_TOKEN_NAME, parseHash, getEnvVar, startEndTimeOfTournament, startTimeOfChallenge };
+export { LOGOUT_TOKEN_NAME, SUBMISSIONS_ALWAYS_VISIBLE, SUBMISSIONS_VISIBLE_ON_ACCEPTED_SUBMISSION, parseHash, getEnvVar, startEndTimeOfTournament, startTimeOfChallenge };

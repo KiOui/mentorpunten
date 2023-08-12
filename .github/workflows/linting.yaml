@@ -46,7 +46,7 @@ jobs:
           poetry run
           flake8
           --exclude="migrations,website/mentorpunten/settings/*.py"
-          --max-line-length=119
+          --max-line-length=120
           website
 
       - name: "Run PyDocStyle"

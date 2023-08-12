@@ -12,6 +12,7 @@ import type Team from "@/models/team.model";
 import SubmissionsList from "@/components/SubmissionsList.vue";
 import type TemporaryFileUpload from "@/models/temporaryfileupload.model";
 import type UploadedFile from "@/models/uploadedfile.model";
+import {SUBMISSIONS_VISIBLE_ON_ACCEPTED_SUBMISSION} from "@/common/general.service";
 
 const props = defineProps<{ id: number }>();
 
@@ -69,12 +70,18 @@ onMounted(() => {
     challengeLoading.value = null;
   });
 
-  const userPromise = ApiService.getUsersMe().then(result => {
-    user.value = result;
+  let userPromise = Promise.resolve();
+
+  if (store.loggedIn) {
+    userPromise = ApiService.getUsersMe().then(result => {
+      user.value = result;
+      userLoading.value = false;
+    }).catch(() => {
+      userLoading.value = null;
+    });
+  } else {
     userLoading.value = false;
-  }).catch(() => {
-    userLoading.value = null;
-  });
+  }
 
   Promise.all([userPromise, challengePromise]).then(() => {
     if (userLoading.value === false && user.value !== null && challengeLoading.value === false && challenge.value !== null) {
@@ -236,6 +243,9 @@ function videoUpload() {
       </div>
       <div v-else-if="userTeam === null" class="alert alert-info mt-2 mb-1 mx-1">
         You are not in a team for this tournament so you can not submit pictures.
+      </div>
+      <div v-if="challenge.submission_visibility === SUBMISSIONS_VISIBLE_ON_ACCEPTED_SUBMISSION && !challenge.completed" class="alert alert-info">
+        Submissions of other teams for this challenge become visible only when your team has an accepted submission for this challenge.
       </div>
     </div>
     <Loader v-else-if="challengeLoading === true" size="60px" background-color="#000000"/>

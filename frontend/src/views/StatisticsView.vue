@@ -7,8 +7,10 @@
   import type Team from "@/models/team.model";
   import Header from "@/components/Header.vue";
   import type User from "@/models/user.model";
+  import {useCredentialsStore} from "@/stores/credentials.module";
 
   const ApiService = useApiService();
+  const CredentialsStore = useCredentialsStore();
 
   const tournaments = ref<Tournament[] | null>(null);
   const tournamentsLoading = ref<boolean | null>(true);
@@ -34,12 +36,16 @@
       teamsLoading.value = null;
     });
 
-    ApiService.getUsersMe().then(result => {
-      user.value = result;
+    if (CredentialsStore.loggedIn) {
+      ApiService.getUsersMe().then(result => {
+        user.value = result;
+        userLoading.value = false;
+      }).catch(() => {
+        userLoading.value = null;
+      });
+    } else {
       userLoading.value = false;
-    }).catch(() => {
-      userLoading.value = null;
-    });
+    }
   });
 
   const sortedTeamsPerTournament = computed(() => {

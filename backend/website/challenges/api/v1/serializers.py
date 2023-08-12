@@ -70,6 +70,7 @@ class ChallengeSerializer(serializers.ModelSerializer):
             "active_until",
             "points",
             "completed",
+            "submission_visibility",
         ]
         read_only_fields = [
             "id",
@@ -83,6 +84,7 @@ class ChallengeSerializer(serializers.ModelSerializer):
             "active_until",
             "points",
             "completed",
+            "submission_visibility",
         ]
 
 

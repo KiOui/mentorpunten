@@ -43,3 +43,5 @@ class TransactionAdmin(AutocompleteFilterMixin, ExportMixin, admin.ModelAdmin):
         if not change:
             obj.processor = request.user
             super().save_model(request, obj, form, change)
+        else:
+            super().save_model(request, obj, form, change)
