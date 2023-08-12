@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import SubmissionCard from "@/components/SubmissionCard.vue";
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import type Submission from "@/models/submission.model";
 import useApiService from "@/common/api.service";
 import {useToast} from "vue-toastification";
@@ -13,13 +13,19 @@ const ApiService = useApiService();
 
 const toast = useToast();
 
-let submission = ref<Submission | null>(null);
-let submissionLoading = ref<boolean|null>(true);
+const submission = ref<Submission | null>(null);
+const submissionsForSameChallengeAndTeam = ref<Submission[]>([]);
+const submissionLoading = ref<boolean|null>(true);
 
-let nextDataExists = ref<boolean>(true);
-let submissionSearchFilters = new URLSearchParams([["accepted__isnull", "true"]]);
+const submissionSearchFilters = new URLSearchParams([["accepted__isnull", "true"]]);
 
 function processSubmission(value: boolean) {
+    if (value && hasAcceptedSubmissionForSameChallengeAndTeam.value) {
+      if (!confirm("This team already has an accepted submission for this challenge, are you sure you want to grant them points for this submission as well?")) {
+        return;
+      }
+    }
+
     const formData = new FormData();
     formData.append("accepted", String(value));
     if (submission.value === null) {
@@ -58,44 +64,67 @@ function refresh() {
     submissionLoading.value = true;
     submission.value = null;
     ApiService.getChallengesSubmissions(submissionSearchFilters).then(result => {
-    if (result.results.length > 0) {
-        submission.value = result.results[0];
-    }
-    submissionLoading.value = false;
+      if (result.results.length > 0) {
+          submission.value = result.results[0];
+          const sameTeamChallengeSubmissions = new URLSearchParams([["team", String(submission.value.team.id)], ["accepted", "true"], ["challenge", String(submission.value.challenge.id)]])
+          ApiService.getChallengesSubmissions(sameTeamChallengeSubmissions).then(result => {
+            submissionsForSameChallengeAndTeam.value = result.results;
+            submissionLoading.value = false;
+          }).catch(() => {
+            submissionLoading.value = null;
+          });
+      } else {
+        submissionLoading.value = false;
+      }
     }).catch(() => {
-    toast.error("Failed to load submissions data, please try again.");
-    submissionLoading.value = null;
+      toast.error("Failed to load submissions data, please try again.");
+      submissionLoading.value = null;
     });
 }
+
+const hasAcceptedSubmissionForSameChallengeAndTeam = computed(() => {
+  return submissionsForSameChallengeAndTeam.value.filter((currentSubmission) => {
+    if (submission.value === null)  {
+      return false;
+    }
+
+    return currentSubmission.id !== submission.value.id;
+  }).length > 0;
+});
 </script>
 
 <template>
     <Header :show-back-button="false"/>
     <div class="feed-container mx-auto my-5">
-      <div v-if="submission === null && !submissionLoading">
-        <div class="alert alert-warning mx-1" style="margin-top: 2rem;">
+      <Loader v-if="submissionLoading" size="60px" background-color="#000000"/>
+      <div v-else-if="submissionLoading === null" class="alert alert-warning mx-1">
+        Failed to load submission, please try again.
+      </div>
+      <template v-else>
+        <div v-if="submission === null" class="alert alert-warning mx-1">
           There are no new submissions to review!
         </div>
-      </div>
-      <div v-else-if="submission !== null">
-        <SubmissionCard :submission="submission" :show-accepted="true"/>
-        <div class="submission-card justify-content-between d-flex flex-row justify-content-center" style="margin-top: 0rem;">
-          <div class="flex-grow-1 justify-content-center d-flex">
-            <button class="btn btn-accept" v-on:click="processSubmission(true)">
-              <font-awesome-icon icon="fa-solid fa-check"/>
-            </button>
+        <template v-else>
+          <SubmissionCard :submission="submission" :show-accepted="true"/>
+          <div class="submission-card" style="margin-top: 0;">
+            <div v-if="hasAcceptedSubmissionForSameChallengeAndTeam" class="alert alert-warning">
+              This team already has an accepted submission for this challenge
+            </div>
+            <div class="justify-content-between d-flex flex-row">
+              <div class="flex-grow-1 justify-content-center d-flex">
+                <button class="btn btn-accept" v-on:click="processSubmission(true)">
+                  <font-awesome-icon icon="fa-solid fa-check"/>
+                </button>
+              </div>
+              <div class="flex-grow-1 justify-content-center d-flex">
+                <button class="btn btn-reject" v-on:click="processSubmission(false)">
+                  <font-awesome-icon icon="fa-solid fa-x"/>
+                </button>
+              </div>
+            </div>
           </div>
-          <div class="flex-grow-1 justify-content-center d-flex">
-            <button class="btn btn-reject" v-on:click="processSubmission(false)">
-              <font-awesome-icon icon="fa-solid fa-x"/>
-            </button>
-          </div>
-        </div>
-      </div>
-      <Loader v-if="submissionLoading" size="60px" background-color="#000000"/>
-      <div v-else-if="!submissionLoading && !nextDataExists && submission !== null" class="alert alert-info text-center mx-1" style="margin-top: 1rem;">
-        That's it for now! Check back later!
-      </div>
+        </template>
+      </template>
     </div>
 </template>
 
@@ -105,11 +134,8 @@ function refresh() {
     border: none;
     background-color: white;
     color: black;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    margin-top: 1rem;
+  padding: 0.5rem 1.5rem;
+  margin-top: 1rem;
 
 }
 
@@ -118,9 +144,9 @@ function refresh() {
     background-color: var(--success) !important;
     border-color: var(--success) !important;
     text-transform: uppercase;
-    font-family: 'Gill sans MT condensed' !important;
+    font-family: 'Gill sans MT condensed', sans-serif !important;
     font-size: 1.2rem !important;
-    padding: 0rem 0.75rem !important;
+    padding: 0 0.75rem !important;
 }
 
 .btn-reject {
@@ -128,8 +154,8 @@ function refresh() {
     background-color: var(--danger) !important;
     border-color: var(--danger) !important;
     text-transform: uppercase;
-    font-family: 'Gill sans MT condensed' !important;
+    font-family: 'Gill sans MT condensed', sans-serif !important;
     font-size: 1.2rem !important;
-    padding: 0rem 0.75rem !important;
+    padding: 0 0.75rem !important;
 }
 </style>
