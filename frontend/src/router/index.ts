@@ -11,6 +11,8 @@ import ProfileSubmissionsView from "@/views/ProfileSubmissionsView.vue";
 import TournamentStatisticsView from "@/views/TournamentStatisticsView.vue";
 import LogoutView from "@/views/LogoutView.vue";
 import SubmissionAcceptView from "@/views/SubmissionAcceptView.vue";
+import {useCredentialsStore} from "@/stores/credentials.module";
+import useApiService from "@/common/api.service";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -85,7 +87,22 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'Profile',
-      component: ProfileView
+      component: ProfileView,
+      beforeEnter: (to, from, next) => {
+        const CredentialsStore = useCredentialsStore();
+        const ApiService = useApiService();
+        if (CredentialsStore.loggedIn) {
+          next();
+        } else {
+          CredentialsStore.newRandomState();
+          CredentialsStore.storeState();
+          window.location.href = ApiService.getAuthorizeRedirectURL(
+              CredentialsStore.stateKey,
+              null,
+              false
+          );
+        }
+      }
     },
     {
       path: '/profile/tournament/:id/submissions',
@@ -104,6 +121,21 @@ const router = createRouter({
         return {
           "id": id
         };
+      },
+      beforeEnter: (to, from, next) => {
+        const CredentialsStore = useCredentialsStore();
+        const ApiService = useApiService();
+        if (CredentialsStore.loggedIn) {
+          next();
+        } else {
+          CredentialsStore.newRandomState();
+          CredentialsStore.storeState();
+          window.location.href = ApiService.getAuthorizeRedirectURL(
+              CredentialsStore.stateKey,
+              null,
+              false
+          );
+        }
       }
     },
     {
@@ -148,11 +180,26 @@ const router = createRouter({
       path: '/acceptsubmissions',
       name: 'SubmissionAccept',
       component: SubmissionAcceptView,
+      beforeEnter: (to, from, next) => {
+        const CredentialsStore = useCredentialsStore();
+        const ApiService = useApiService();
+        if (CredentialsStore.loggedIn) {
+          next();
+        } else {
+          CredentialsStore.newRandomState();
+          CredentialsStore.storeState();
+          window.location.href = ApiService.getAuthorizeRedirectURL(
+              CredentialsStore.stateKey,
+              null,
+              false
+          );
+        }
+      }
     },
     {
       path: '/',
       name: 'Index',
-      component: FeedView
+      component: FeedView,
     },
     {
       path: '/logout',

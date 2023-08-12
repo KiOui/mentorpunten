@@ -8,6 +8,7 @@ from rest_framework.generics import (
     RetrieveUpdateAPIView,
 )
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from challenges.api.v1 import serializers
@@ -61,6 +62,8 @@ class SubmissionListCreateAPIView(ListCreateAPIView):
 
     serializer_class = serializers.SubmissionSerializer
     queryset = models.Submission.objects.all()
+
+    permission_classes = [IsAuthenticated]
 
     parser_classes = [MultiPartParser, FormParser]
 
@@ -145,6 +148,8 @@ class SubmissionRetrieveUpdateAPIView(RetrieveUpdateAPIView):
 
     serializer_class = serializers.SubmissionSerializer
     queryset = models.Submission.objects.all()
+
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         """

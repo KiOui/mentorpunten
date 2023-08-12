@@ -2,21 +2,26 @@
 import useApiService from '@/common/api.service';
 import {computed, onMounted, ref} from 'vue';
 import type User from '@/models/user.model';
+import {useCredentialsStore} from "@/stores/credentials.module";
 
 const ApiService = useApiService();
+const CredentialsStore = useCredentialsStore();
 
 let user = ref<User|null>(null);
 let userLoading = ref<boolean|null>(true);
 
 onMounted(() => {
+  if (CredentialsStore.loggedIn) {
     ApiService.getUsersMe().then(userData => {
       user.value = userData;
       userLoading.value = false;
     }).catch(() => {
       userLoading.value = null;
     });
+  } else {
+    userLoading.value = false;
   }
-);
+});
 
 const userCanChangeSubmission = computed(() => {
   if (user.value === null) {

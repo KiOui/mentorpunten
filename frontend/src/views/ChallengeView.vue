@@ -69,12 +69,18 @@ onMounted(() => {
     challengeLoading.value = null;
   });
 
-  const userPromise = ApiService.getUsersMe().then(result => {
-    user.value = result;
+  let userPromise = Promise.resolve();
+
+  if (store.loggedIn) {
+    userPromise = ApiService.getUsersMe().then(result => {
+      user.value = result;
+      userLoading.value = false;
+    }).catch(() => {
+      userLoading.value = null;
+    });
+  } else {
     userLoading.value = false;
-  }).catch(() => {
-    userLoading.value = null;
-  });
+  }
 
   Promise.all([userPromise, challengePromise]).then(() => {
     if (userLoading.value === false && user.value !== null && challengeLoading.value === false && challenge.value !== null) {
