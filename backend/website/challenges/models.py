@@ -71,6 +71,17 @@ class ChallengeManager(QueryablePropertiesManager):
 class Challenge(models.Model):
     """Challenge."""
 
+    SUBMISSIONS_ALWAYS_VISIBLE = 1
+    SUBMISSIONS_VISIBLE_ON_ACCEPTED_SUBMISSION = 2
+
+    SUBMISSION_VISIBILITY_CHOICES = [
+        (SUBMISSIONS_ALWAYS_VISIBLE, "Submissions are always visible"),
+        (
+            SUBMISSIONS_VISIBLE_ON_ACCEPTED_SUBMISSION,
+            "Submissions are visible when a team posted an accepted submission in the challenge",
+        ),
+    ]
+
     name = models.CharField(max_length=80, unique=True)
     tournament = models.ForeignKey(Tournament, on_delete=models.PROTECT)
     slug = models.SlugField(unique=True, max_length=100)
@@ -90,6 +101,9 @@ class Challenge(models.Model):
         blank=True,
     )
     points = models.PositiveIntegerField()
+    submission_visibility = models.PositiveIntegerField(
+        choices=SUBMISSION_VISIBILITY_CHOICES, default=SUBMISSIONS_ALWAYS_VISIBLE
+    )
 
     objects = ChallengeManager()
 

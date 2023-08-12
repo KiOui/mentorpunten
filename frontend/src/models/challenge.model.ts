@@ -12,4 +12,5 @@ export default interface Challenge {
     points: number;
     completed: boolean | null;
     tournament: Tournament;
+    submission_visibility: number;
 }
