@@ -43,7 +43,7 @@ onMounted(() => {
 
   teamLoadingPromise.then(() => {
     if (team.value !== null) {
-      ApiService.getTransactions(new URLSearchParams([["limit", "3"], ["account", `${team.value.account.id}`]])).then(result => {
+      ApiService.getTransactions(new URLSearchParams([["limit", "3"], ["account", `${team.value.points_account.id}`]])).then(result => {
         latestTransactions.value = result.results;
         latestTransactionsLoading.value = false;
       }).catch(() => {
@@ -60,8 +60,8 @@ const tournamentRanking = computed(() => {
     return null;
   }
   const sortedTeamsList = Array.from(teams.value);
-  sortedTeamsList.sort((teamA, teamB) => {
-    return teamA.account.balance - teamB.account.balance;
+  sortedTeamsList.sort((teamA: Team, teamB: Team) => {
+    return teamB.points_account.balance - teamA.points_account.balance;
   });
   for (let i = 0; i < sortedTeamsList.length; i++) {
     const currentPosition = i + 1;
@@ -84,7 +84,7 @@ const tournamentRanking = computed(() => {
     <template v-else-if="!teamLoading && team !== null">
       <div class="custom-card text-center">
         <h1> {{ team.name }}</h1>
-        <h4> total points: {{ team.account.balance }}</h4>
+        <h4> total points: {{ team.points_account.balance }}</h4>
       </div>
 
       <div class="custom-card">

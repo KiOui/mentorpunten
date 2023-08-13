@@ -10,4 +10,5 @@ urlpatterns = [
     ),
     path("teams/", views.TeamListAPIView.as_view(), name="team_list"),
     path("teams/<int:pk>/", views.TeamRetrieveAPIView.as_view(), name="team_retrieve"),
+    path("items/", views.ItemCreateAPIView.as_view(), name="item_create"),
 ]

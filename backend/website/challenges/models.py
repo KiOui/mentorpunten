@@ -167,8 +167,19 @@ class Submission(models.Model):
         File, on_delete=models.PROTECT, related_name="submission"
     )
     accepted = models.BooleanField(null=True, blank=True, default=None)
-    transaction = models.ForeignKey(
-        Transaction, null=True, blank=True, on_delete=models.SET_NULL
+    points_transaction = models.ForeignKey(
+        Transaction,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="points_submission",
+    )
+    coins_transaction = models.ForeignKey(
+        Transaction,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="coins_submission",
     )
 
     def __str__(self):

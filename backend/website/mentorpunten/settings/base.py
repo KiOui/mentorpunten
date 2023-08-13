@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "users",
     "thalia",
     "transactions",
+    "store",
     "tournaments",
     "challenges",
     "oauth2_provider",

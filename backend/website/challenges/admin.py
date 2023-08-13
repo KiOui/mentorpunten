@@ -72,9 +72,16 @@ class SubmissionAdmin(AutocompleteFilterMixin, admin.ModelAdmin):
         "updated",
         "file_tag",
         "accepted",
-        "transaction",
+        "points_transaction",
+        "coins_transaction",
     )
-    readonly_fields = ("file_tag", "created", "updated", "transaction")
+    readonly_fields = (
+        "file_tag",
+        "created",
+        "updated",
+        "points_transaction",
+        "coins_transaction",
+    )
 
     ordering = ("-created",)
     list_filter = (

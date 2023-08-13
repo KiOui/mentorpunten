@@ -9,7 +9,7 @@ User = get_user_model()
 
 
 @receiver(pre_save, sender=Submission)
-def create_transaction_on_accept(sender, instance: Submission, **kwargs):
+def create_transactions_on_accept(sender, instance: Submission, **kwargs):
     """Create a Transaction for the amount of points of the challenge when a submission gets accepted."""
     if instance.transaction is not None:
         # Submissions with a Transaction don't get a new Transaction.
@@ -29,8 +29,13 @@ def create_transaction_on_accept(sender, instance: Submission, **kwargs):
     if obj is None or (obj.accepted is None or obj.accepted is False):
         # Submission is being created with accepted == True (obj is None) OR Submission is being edited and the
         # accepted value is being set to True now.
-        instance.transaction = Transaction.objects.create(
-            account=instance.team.account,
+        instance.points_transaction = Transaction.objects.create(
+            account=instance.team.points_account,
+            amount=instance.challenge.points,
+            description=f"Completed challenge {instance.challenge.name}",
+        )
+        instance.coins_transaction = Transaction.objects.create(
+            account=instance.team.coins_account,
             amount=instance.challenge.points,
             description=f"Completed challenge {instance.challenge.name}",
         )

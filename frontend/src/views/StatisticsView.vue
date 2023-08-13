@@ -66,7 +66,7 @@
     for (let i = 0; i < keys.length; i++) {
       const currentKey = Number(keys[i]);
       sortedTeams[currentKey] = sortedTeams[currentKey].sort((teamA: Team, teamB: Team) => {
-        return teamB.account.balance - teamA.account.balance;
+        return teamB.points_account.balance - teamA.points_account.balance;
       });
     }
 

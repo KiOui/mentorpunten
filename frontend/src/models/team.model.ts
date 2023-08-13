@@ -5,7 +5,8 @@ import type Tournament from "@/models/tournament.model";
 export default interface Team {
     id: number,
     name: string;
-    account: Account;
+    points_account: Account;
+    coins_account: Account;
     members: User[];
     tournament: Tournament;
 }

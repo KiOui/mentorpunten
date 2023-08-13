@@ -124,12 +124,12 @@ class _ApiService {
     return this.get<Challenge>(`/challenges/${id}/`);
   }
 
-  async getTransactions(parameters: URLSearchParams | null = null): Promise<Paginated<Transaction[]>> {
-    return this.get<Paginated<Transaction[]>>(this._addParametersToResource(`/transactions/`, parameters));
+  async getTransactions(parameters: URLSearchParams | null = null): Promise<Paginated<Transaction>> {
+    return this.get<Paginated<Transaction>>(this._addParametersToResource(`/transactions/`, parameters));
   }
 
-  async getTemporaryFileUploads(): Promise<Paginated<TemporaryFileUpload[]>> {
-    return this.get<Paginated<TemporaryFileUpload[]>>('/files/temporary/');
+  async getTemporaryFileUploads(): Promise<Paginated<TemporaryFileUpload>> {
+    return this.get<Paginated<TemporaryFileUpload>>('/files/temporary/');
   }
 
   async postTemporaryFileUpload(data: FormData, headers: Headers | null = null): Promise<TemporaryFileUpload> {
