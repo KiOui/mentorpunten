@@ -146,7 +146,9 @@ class Item(models.Model):
         Transaction, on_delete=models.SET_NULL, null=True, blank=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
-    property_of = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="items")
+    property_of = models.ForeignKey(
+        Team, on_delete=models.CASCADE, related_name="items"
+    )
     used = models.BooleanField(default=False)
     used_at = models.DateTimeField(null=True, blank=True)
 
