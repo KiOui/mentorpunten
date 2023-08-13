@@ -86,7 +86,7 @@ class ItemCreateAPIView(CreateAPIView):
     """Item Create API View."""
 
     serializer_class = serializers.ItemSerializer
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         """Create an Item."""
@@ -139,7 +139,7 @@ class ItemUpdateAPIView(UpdateAPIView):
     """Item Update API View."""
 
     serializer_class = serializers.ItemSerializer
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
         """Update an Item."""
@@ -150,6 +150,9 @@ class ItemUpdateAPIView(UpdateAPIView):
             partial = kwargs.pop("partial", False)
             instance = self.get_object()
             used = request.data.get("used", None)
+            if request.user not in instance.team.members.all():
+                return Response(status=status.HTTP_403_FORBIDDEN)
+
             if used is None:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
 

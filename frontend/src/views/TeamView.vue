@@ -6,6 +6,7 @@ import Loader from "@/components/Loader.vue";
 import type Transaction from "@/models/transaction.model";
 import TransactionCard from "@/components/TransactionCard.vue";
 import Header from "@/components/Header.vue";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 const props = defineProps<{id: number}>();
 
@@ -53,6 +54,14 @@ onMounted(() => {
       latestTransactionsLoading.value = false;
     }
   });
+});
+
+const latestItems = computed(() => {
+  if (team.value === null) {
+    return null;
+  }
+
+  return team.value.items.slice(0, 3);
 });
 
 const tournamentRanking = computed(() => {
@@ -106,6 +115,32 @@ const tournamentRanking = computed(() => {
             {{ member.display_name }}
           </li>
         </ul>
+      </div>
+
+      <div v-if="team.coins_account !== null" class="custom-card">
+        <h2>Coins</h2>
+        <p>Current balance: <font-awesome-icon icon="fa-solid fa-coins" style="color: var(--primary);"/> {{ team.coins_account.balance }} coins</p>
+      </div>
+
+      <div v-if="latestItems !== null" class="custom-card">
+        <h2>Items</h2>
+        <div v-if="latestItems.length === 0" class="alert alert-warning">
+          This team has not bought any items yet.
+        </div>
+        <div v-else v-for="item in latestItems" v-bind:key="item.id" class="row mb-1">
+          <p class="col-8">
+            {{ item.name }}
+          </p>
+          <div class="col-4 d-flex justify-content-end align-items-center">
+            <div v-if="item.used" class="badge bg-danger">Used</div>
+            <div v-else class="badge bg-success">Not used</div>
+          </div>
+        </div>
+        <div class="w-100 d-flex justify-content-center" style="margin-top: 1rem;">
+          <router-link :to="{ name: 'Transactions', params: { id: team.id } }">
+            <button v-if="latestTransactions.length > 0" class="btn btn-primary">Show all items</button>
+          </router-link>
+        </div>
       </div>
 
       <div class="custom-card">

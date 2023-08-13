@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from store.api.v1.serializers import StoreSerializer
 from tournaments import models
 from transactions.api.v1.serializers import AccountSerializer
 from users.api.v1.serializers import UserSerializer
@@ -8,8 +7,6 @@ from users.api.v1.serializers import UserSerializer
 
 class TournamentSerializer(serializers.ModelSerializer):
     """Tournament Serializer."""
-
-    store = StoreSerializer(many=False)
 
     class Meta:
         """Meta class."""
