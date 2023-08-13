@@ -58,7 +58,7 @@ class CompressedFileCronJob(CronJobBase):
     def do(self):
         """Check for compressed files in Amazon AWS."""
         files_to_check = models.File.objects.filter(
-            compressed_file=None, compression_requested__isnull=False
+            compressed_file='', compression_requested__isnull=False
         )
         aws_client = s3_get_client()
         for file in files_to_check:
