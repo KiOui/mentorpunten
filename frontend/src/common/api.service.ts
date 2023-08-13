@@ -10,6 +10,7 @@ import type Transaction from "@/models/transaction.model";
 import {getEnvVar} from "@/common/general.service";
 import type TemporaryFileUpload from "@/models/temporaryfileupload.model";
 import type UploadedFile from "@/models/uploadedfile.model";
+import type Store from "@/models/store.model";
 
 class _ApiService {
   authorizationEndpoint: string;
@@ -144,6 +145,9 @@ class _ApiService {
     return this.post<UploadedFile>("/files/", data, headers);
   }
 
+  async getStore(id: number): Promise<Store> {
+    return this.get<Store>(`/stores/${id}/`);
+  }
   async fetch<T>(resource: string, method: string, data: BodyInit|null, headers: Headers|null = null): Promise<T> {
     let apiCall = null;
     if (data !== null) {

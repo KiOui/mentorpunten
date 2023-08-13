@@ -7,7 +7,8 @@ export default interface Submission {
     id: number,
     challenge: Challenge;
     team: Team;
-    transaction: Transaction | null;
+    points_transaction: Transaction | null;
+    coins_transaction: Transaction | null;
     created: string;
     updated: string;
     file: UploadedFile;

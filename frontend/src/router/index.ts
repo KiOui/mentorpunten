@@ -13,6 +13,9 @@ import LogoutView from "@/views/LogoutView.vue";
 import SubmissionAcceptView from "@/views/SubmissionAcceptView.vue";
 import {useCredentialsStore} from "@/stores/credentials.module";
 import useApiService from "@/common/api.service";
+import StoreListView from "@/views/StoreListView.vue";
+import StoreView from "@/views/StoreView.vue";
+import ItemView from "@/views/ItemView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -194,6 +197,49 @@ const router = createRouter({
               false
           );
         }
+      }
+    },
+    {
+      path: '/stores',
+      name: 'StoreList',
+      component: StoreListView,
+    },
+    {
+      path: '/stores/:id',
+      name: 'Store',
+      component: StoreView,
+      props: (route) => {
+        if (Array.isArray(route.params.id)) {
+          router.push("/");
+          return;
+        }
+        const id= Number.parseInt(route.params.id, 10);
+        if (Number.isNaN(id)) {
+          router.push("/");
+          return;
+        }
+        return {
+          "id": id
+        };
+      }
+    },
+    {
+      path: '/items/:id',
+      name: 'Item',
+      component: ItemView,
+      props: (route) => {
+        if (Array.isArray(route.params.id)) {
+          router.push("/");
+          return;
+        }
+        const id= Number.parseInt(route.params.id, 10);
+        if (Number.isNaN(id)) {
+          router.push("/");
+          return;
+        }
+        return {
+          "id": id
+        };
       }
     },
     {

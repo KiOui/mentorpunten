@@ -6,7 +6,7 @@ export default interface Team {
     id: number,
     name: string;
     points_account: Account;
-    coins_account: Account;
+    coins_account: Account | null;
     members: User[];
     tournament: Tournament;
 }

@@ -25,4 +25,4 @@ class StoreRetrieveAPIView(RetrieveAPIView):
 
     def get_queryset(self):
         """Get the queryset."""
-        return models.Tournament.objects.all()
+        return models.Store.objects.all()

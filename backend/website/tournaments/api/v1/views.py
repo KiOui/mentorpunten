@@ -1,5 +1,5 @@
 from rest_framework import filters, status
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
@@ -16,12 +16,25 @@ from store.models import Item as StoreItem
 from transactions.models import Transaction
 
 
+class TournamentFilter(FilterSet):
+    """Tournament FilterSet."""
+
+    class Meta:
+        """Meta class."""
+
+        model = models.Tournament
+        fields = {
+            "store": ("exact", "isnull"),
+        }
+
+
 class TournamentListAPIView(ListAPIView):
     """Tournament List API View."""
 
     serializer_class = serializers.TournamentSerializer
 
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    filterset_class = TournamentFilter
     search_fields = (
         "name",
         "slug",
