@@ -16,6 +16,7 @@ import useApiService from "@/common/api.service";
 import StoreListView from "@/views/StoreListView.vue";
 import StoreView from "@/views/StoreView.vue";
 import TeamItemsView from "@/views/TeamItemsView.vue";
+import AddTransactionView from "@/views/AddTransactionView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -241,6 +242,11 @@ const router = createRouter({
           "id": id
         };
       }
+    },
+    {
+      path: '/addtransaction',
+      name: 'AddTransaction',
+      component: AddTransactionView,
     },
     {
       path: '/',

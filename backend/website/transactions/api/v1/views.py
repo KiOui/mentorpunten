@@ -46,7 +46,9 @@ class TransactionListCreateAPIView(ListCreateAPIView):
         if not request.user.has_perm("transactions.add_transaction"):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-        super(TransactionListCreateAPIView, self).create(request, *args, **kwargs)
+        return super(TransactionListCreateAPIView, self).create(
+            request, *args, **kwargs
+        )
 
 
 class TransactionRetrieveAPIView(RetrieveAPIView):

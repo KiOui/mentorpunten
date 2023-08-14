@@ -61,7 +61,9 @@ const firstTeam: ComputedRef<Team | null> = computed(() => {
     <div v-else>
       <div class="d-flex justify-content-between align-items-start first-of-tournament">
         <template v-if="firstTeam !== null">
-          <h1>#1 {{ firstTeam.name }}</h1>
+          <router-link :to="{ name: 'Team', params: { id: firstTeam.id }}" style="text-decoration: none; color: var(--primary); padding: 0;" class="col-8">
+            <h1>#1 {{ firstTeam.name }}</h1>
+          </router-link>
           <h1>{{ firstTeam.points_account.balance }} points</h1>
         </template>
       </div>
