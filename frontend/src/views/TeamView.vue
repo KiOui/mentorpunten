@@ -6,7 +6,6 @@ import Loader from "@/components/Loader.vue";
 import type Transaction from "@/models/transaction.model";
 import TransactionCard from "@/components/TransactionCard.vue";
 import Header from "@/components/Header.vue";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import type BoughtItem from "@/models/boughtitem.model";
 import type User from "@/models/user.model";
 import {useCredentialsStore} from "@/stores/credentials.module";
@@ -137,6 +136,7 @@ const tournamentRanking = computed(() => {
       <div class="custom-card text-center">
         <h1> {{ team.name }}</h1>
         <h4> total points: {{ team.points_account.balance }}</h4>
+        <h4> total coins: {{ team.coins_account?.balance }}</h4>
       </div>
 
       <div class="custom-card">
@@ -160,13 +160,13 @@ const tournamentRanking = computed(() => {
         </ul>
       </div>
 
-      <div v-if="team.coins_account !== null" class="custom-card">
-        <h2>Coins</h2>
-        <p>Current balance: <font-awesome-icon icon="fa-solid fa-coins" style="color: var(--primary);"/> {{ team.coins_account.balance }} coins</p>
-      </div>
-
       <div v-if="latestItems !== null" class="custom-card">
-        <h2>Items</h2>
+        <div class="row">
+          <h2 class="col-8">Items</h2>
+          <router-link :to="{ name: 'Store', params: { id: team.tournament.store } }" class="col-4" style="text-decoration: none; color: black; text-align: end;">
+            <h2>Go to store</h2>
+          </router-link>
+        </div>
         <div v-if="latestItems.length === 0" class="alert alert-warning">
           This team has not bought any items yet.
         </div>
@@ -187,7 +187,12 @@ const tournamentRanking = computed(() => {
       </div>
 
       <div class="custom-card">
-        <h2>Latest Transactions</h2>
+        <div class="row">
+          <h2 class="col-8">Latest Transactions</h2>
+          <router-link :to="{ name: 'AddTransaction' }" class="col-4" style="text-decoration: none; color: black; text-align: end;">
+            <h2>Add transaction</h2>
+          </router-link>
+        </div>
         <Loader v-if="latestTransactionsLoading === true" size="60px" background-color="#000000"/>
         <div v-else-if="latestTransactionsLoading === null" class="alert alert-warning mx-1">
           An error occurred during loading of the latest transactions, please try again.

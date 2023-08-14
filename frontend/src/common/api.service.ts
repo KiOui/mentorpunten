@@ -131,6 +131,10 @@ class _ApiService {
     return this.get<Paginated<Transaction>>(this._addParametersToResource(`/transactions/`, parameters));
   }
 
+  async postTransaction(data: FormData, headers: Headers | null = null): Promise<Transaction> {
+    return this.post<Transaction>("/transactions/", data, headers);
+  }
+
   async getTemporaryFileUploads(): Promise<Paginated<TemporaryFileUpload>> {
     return this.get<Paginated<TemporaryFileUpload>>('/files/temporary/');
   }
