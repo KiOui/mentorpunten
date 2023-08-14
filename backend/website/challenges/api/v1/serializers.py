@@ -37,10 +37,19 @@ class ChallengeSerializer(serializers.ModelSerializer):
     """Challenge serializer."""
 
     completed = SerializerMethodField()
+    description = SerializerMethodField()
     tournament = TournamentSerializer(many=False, read_only=True)
 
+    @extend_schema_field(serializers.CharField)
+    def get_description(self, instance: models.Challenge):
+        """Get description."""
+        if instance.revealed:
+            return instance.description
+        else:
+            return ""
+
     @extend_schema_field(serializers.BooleanField)
-    def get_completed(self, instance):
+    def get_completed(self, instance: models.Challenge):
         """Get completed value of serializer."""
         request = self.context.get("request", None)
         if (

@@ -135,6 +135,7 @@ class Item(models.Model):
 
     name = models.CharField(max_length=100)
     price = models.PositiveIntegerField()
+    description = models.TextField()
     item = models.ForeignKey(
         StoreItem,
         on_delete=models.SET_NULL,

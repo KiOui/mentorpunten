@@ -10,10 +10,10 @@
   <router-link :to="{ name: 'Store', params: { id: tournament.id }}" style="text-decoration: none;">
     <div class="custom-card">
       <div class="row">
-        <div class="col-8">
+        <div class="col-md-8">
           <h1>{{ tournament.name }}</h1>
         </div>
-        <div class="col-4 d-flex justify-content-end align-items-center">
+        <div class="col-md-4 d-flex justify-content-md-end align-items-center mb-md-auto mb-2">
           <div class="badge" style="background-color: var(--primary);">Item store</div>
         </div>
       </div>

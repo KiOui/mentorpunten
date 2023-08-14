@@ -7,13 +7,23 @@ import type Transaction from "@/models/transaction.model";
 import TransactionCard from "@/components/TransactionCard.vue";
 import Header from "@/components/Header.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import type BoughtItem from "@/models/boughtitem.model";
+import type User from "@/models/user.model";
+import {useCredentialsStore} from "@/stores/credentials.module";
 
 const props = defineProps<{id: number}>();
 
 const ApiService = useApiService();
+const CredentialsStore = useCredentialsStore();
+
+const user = ref<User | null>(null);
+const userLoading = ref<boolean | null>(true);
 
 const team = ref<Team | null>(null);
 const teamLoading = ref<boolean | null>(true);
+
+const items = ref<BoughtItem[] | null>(null);
+const itemsLoading = ref<boolean | null>(true);
 
 const teams = ref<Team[] | null>(null);
 const teamsLoading = ref<boolean | null>(true);
@@ -22,6 +32,16 @@ const latestTransactions = ref<Transaction[]>([]);
 const latestTransactionsLoading = ref<boolean | null>(true);
 
 onMounted(() => {
+  let userLoadingPromise = Promise.resolve();
+  if (CredentialsStore.loggedIn) {
+    userLoadingPromise = ApiService.getUsersMe().then((result) => {
+      user.value = result;
+      userLoading.value = false;
+    }).catch(() => {
+      userLoading.value = null;
+    });
+  }
+
   const teamLoadingPromise = ApiService.getChallengesTeam(props.id).then(result => {
     team.value = result;
     teamLoading.value = false;
@@ -54,14 +74,37 @@ onMounted(() => {
       latestTransactionsLoading.value = false;
     }
   });
+
+  Promise.all([teamLoadingPromise, userLoadingPromise]).then(() => {
+    if (user.value !== null && team.value !== null) {
+      const userIsMemberOfTeam = team.value.members.map((member) => {
+        return user.value !== null && member.id === user.value.id;
+      }).reduce((previousValue, currentValue) => {
+        return previousValue || currentValue;
+      }, false);
+      if (userIsMemberOfTeam) {
+        const urlSearchParameters = new URLSearchParams([["team", String(team.value.id)]]);
+        ApiService.getBoughtItems(urlSearchParameters).then((result) => {
+          items.value = result;
+          itemsLoading.value = false;
+        }).catch(() => {
+          itemsLoading.value = null;
+        });
+      } else {
+        itemsLoading.value = false;
+      }
+    } else {
+      itemsLoading.value = false;
+    }
+  });
 });
 
 const latestItems = computed(() => {
-  if (team.value === null) {
+  if (items.value === null) {
     return null;
   }
 
-  return team.value.items.slice(0, 3);
+  return items.value.slice(0, 3);
 });
 
 const tournamentRanking = computed(() => {
@@ -137,8 +180,8 @@ const tournamentRanking = computed(() => {
           </div>
         </div>
         <div class="w-100 d-flex justify-content-center" style="margin-top: 1rem;">
-          <router-link :to="{ name: 'Transactions', params: { id: team.id } }">
-            <button v-if="latestTransactions.length > 0" class="btn btn-primary">Show all items</button>
+          <router-link :to="{ name: 'TeamItems', params: { id: team.id } }">
+            <button v-if="latestItems.length > 0" class="btn btn-primary">Show all items</button>
           </router-link>
         </div>
       </div>

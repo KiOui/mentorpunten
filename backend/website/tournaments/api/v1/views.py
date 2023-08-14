@@ -3,8 +3,8 @@ from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
-    CreateAPIView,
     UpdateAPIView,
+    ListCreateAPIView,
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -82,11 +82,26 @@ class TeamRetrieveAPIView(RetrieveAPIView):
         return models.Team.objects.all()
 
 
-class ItemCreateAPIView(CreateAPIView):
-    """Item Create API View."""
+class ItemListCreateAPIView(ListCreateAPIView):
+    """Item List Create API View."""
 
     serializer_class = serializers.ItemSerializer
     permission_classes = [IsAuthenticated]
+    queryset = models.Item.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = (
+        "item",
+        "property_of",
+        "used",
+    )
+
+    def get_queryset(self):
+        """Get Queryset."""
+        if self.request.user.has_perm("tournaments.view_items"):
+            return self.queryset
+        else:
+            # Only show items that are bought by a user's teams.
+            return self.queryset.filter(property_of__members__in=[self.request.user])
 
     def create(self, request, *args, **kwargs):
         """Create an Item."""
@@ -122,6 +137,7 @@ class ItemCreateAPIView(CreateAPIView):
         item_bought = models.Item.objects.create(
             name=item.name,
             price=item.price,
+            description=item.description,
             item=item,
             transaction=transaction,
             property_of=property_of,
@@ -140,6 +156,15 @@ class ItemUpdateAPIView(UpdateAPIView):
 
     serializer_class = serializers.ItemSerializer
     permission_classes = [IsAuthenticated]
+    queryset = models.Item.objects.all()
+
+    def get_queryset(self):
+        """Get Queryset."""
+        if self.request.user.has_perm("tournaments.view_items"):
+            return self.queryset
+        else:
+            # Only show items that are bought by a user's teams.
+            return self.queryset.filter(property_of__members__in=[self.request.user])
 
     def update(self, request, *args, **kwargs):
         """Update an Item."""

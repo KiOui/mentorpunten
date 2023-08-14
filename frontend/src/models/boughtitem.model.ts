@@ -6,6 +6,7 @@ export default interface BoughtItem {
     id: number;
     name: string;
     price: number;
+    description: string;
     item: Item | null;
     transaction: Transaction | null;
     property_of: Team;

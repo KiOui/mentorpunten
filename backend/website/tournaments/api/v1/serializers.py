@@ -26,6 +26,7 @@ class ItemSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "price",
+            "description",
             "item",
             "transaction",
             "created_at",
@@ -37,6 +38,7 @@ class ItemSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "price",
+            "description",
             "transaction",
             "created_at",
             "used_at",
@@ -50,7 +52,6 @@ class TeamSerializer(serializers.ModelSerializer):
     coins_account = AccountSerializer(many=False)
     members = UserSerializer(many=True)
     tournament = TournamentSerializer(many=False)
-    items = ItemSerializer(many=True)
 
     class Meta:
         """Meta class."""
@@ -63,5 +64,4 @@ class TeamSerializer(serializers.ModelSerializer):
             "points_account",
             "coins_account",
             "members",
-            "items",
         )
