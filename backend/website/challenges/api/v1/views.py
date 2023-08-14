@@ -1,6 +1,6 @@
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
-from rest_framework import status
+from rest_framework import status, filters
 from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
@@ -23,8 +23,15 @@ class ChallengeListAPIView(ListAPIView):
 
     serializer_class = serializers.ChallengeSerializer
 
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ["tournament"]
+    ordering_fields = [
+        "name",
+        "active_from",
+        "active_until",
+        "created_at",
+        "points",
+    ]
 
     def get_queryset(self):
         """Get queryset."""

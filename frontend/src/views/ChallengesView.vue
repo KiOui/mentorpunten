@@ -13,8 +13,14 @@
   const challengesLoading = ref<boolean | null>(true);
 
   onMounted(() => {
-    ApiService.getChallenges(new URLSearchParams([["tournament", String(props.id)]])).then(result => {
-      challenges.value = result;
+    ApiService.getChallenges(new URLSearchParams([["tournament", String(props.id)], ["ordering", "active_from,active_until,name"]])).then(result => {
+      challenges.value = result.filter(function(challenge) {
+      if (challenge.active_until !== null){
+        return !(Date.parse(String(challenge.active_until)) < Date.parse(new Date().toISOString()));
+      } else {
+        return true;
+      }
+    });
       challengesLoading.value = false;
     }).catch(() => {
       challengesLoading.value = null;
