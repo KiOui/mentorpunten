@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Header from "@/components/Header.vue";
-import {computed, onMounted, ref} from "vue";
+import {onMounted, ref} from "vue";
 import useApiService from "@/common/api.service";
 import type Team from "@/models/team.model";
 import type Tournament from "@/models/tournament.model";
@@ -83,13 +83,13 @@ function submitTransaction(event: Event) {
         <select id="tournament" name="tournament" v-on:change="findTeams($event)">
             <optgroup>
                 <option value="" disabled selected class="custom-option">Select tournament</option>
-                <option v-for="tournament in tournaments" :value="tournament.id" class="custom-option">{{ tournament.name }}</option>
+                <option v-for="tournament in tournaments" :value="tournament.id" class="custom-option" v-bind:key="tournament.id">{{ tournament.name }}</option>
             </optgroup>
         </select>
         <select id="team" name="team">
             <optgroup>
                 <option value="" disabled selected class="custom-option">Select team</option>
-                <option v-for="team in teams" :value="team.id" class="custom-option">{{ team.name }}</option>
+                <option v-for="team in teams" :value="team.id" class="custom-option" v-bind:key="team.id">{{ team.name }}</option>
             </optgroup>
         </select>
         <input type="number" id="amount" name="amount" placeholder="amount">

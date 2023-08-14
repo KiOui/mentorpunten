@@ -6,7 +6,6 @@ import Loader from "@/components/Loader.vue";
 import type Transaction from "@/models/transaction.model";
 import TransactionCard from "@/components/TransactionCard.vue";
 import Header from "@/components/Header.vue";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import type BoughtItem from "@/models/boughtitem.model";
 import type User from "@/models/user.model";
 import {useCredentialsStore} from "@/stores/credentials.module";
