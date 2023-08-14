@@ -16,7 +16,7 @@ class RequestCompressionCronJob(CronJobBase):
     def request_compressed_file(self, file: models.File):
         """Request compression of File."""
         try:
-            mediaconvert_compress_file(models.get_file_location(file.file_name))
+            mediaconvert_compress_file(file.url)
             return True
         except Exception as e:
             print("Exception occurred:\n{}".format(e))
@@ -58,7 +58,7 @@ class CompressedFileCronJob(CronJobBase):
     def do(self):
         """Check for compressed files in Amazon AWS."""
         files_to_check = models.File.objects.filter(
-            compressed_file=None, compression_requested__isnull=False
+            compressed_file="", compression_requested__isnull=False
         )
         aws_client = s3_get_client()
         for file in files_to_check:
