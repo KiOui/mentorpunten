@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Header from "@/components/Header.vue";
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref, toRaw} from "vue";
 import useApiService from "@/common/api.service";
 import type Store from "@/models/store.model";
 import Loader from "@/components/Loader.vue";
@@ -8,6 +8,7 @@ import ItemCard from "@/components/ItemCard.vue";
 import type Tournament from "@/models/tournament.model";
 import type User from "@/models/user.model";
 import type Team from "@/models/team.model";
+import type Item from "@/models/item.model";
 
 const props = defineProps<{ id: number }>();
 
@@ -75,6 +76,17 @@ function refresh() {
     teamLoading.value = false;
   }
 }
+
+const storeItems = computed(() => {
+  if (store.value !== null) {
+    const itemsCopy: Item[] = structuredClone(toRaw(store.value.items));
+    itemsCopy.sort((a: Item, b: Item) => {
+      return a.price - b.price;
+    });
+    return itemsCopy;
+  }
+  return [];
+});
 </script>
 
 <template>
@@ -104,14 +116,14 @@ function refresh() {
               <p>
                 <font-awesome-icon icon="fa-solid fa-coins" style="color: var(--primary);"/> {{ team.coins_account.balance }} coins
               </p>
-              <router-link :to="{ name: 'Team', params: { id: team.id }}" class="link">View Bought Items</router-link>
+              <router-link :to="{ name: 'Team', params: { id: team.id }}" class="link" style="text-decoration: none;">View Bought Items</router-link>
             </template>
           </div>
         </div>
-        <div v-if="store.items.length === 0" class="alert alert-warning mx-1">
+        <div v-if="storeItems.length === 0" class="alert alert-warning mx-1">
           No items found in this store.
         </div>
-        <ItemCard v-else v-for="item in store.items" v-on:ItemCard-afterBuyItem="refresh()" v-bind:item="item" v-bind:team="team" v-bind:key="item.id"/>
+        <ItemCard v-else v-for="item in storeItems" v-on:ItemCard-afterBuyItem="refresh()" v-bind:item="item" v-bind:team="team" v-bind:key="item.id"/>
       </template>
     </template>
   </div>

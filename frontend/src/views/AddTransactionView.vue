@@ -17,8 +17,23 @@ const user = ref<User | null>(null);
 const toast = useToast();
 
 const form = ref<HTMLFormElement | null>(null);
+const canAddTransaction = ref<boolean | null>(false);
 
 onMounted (() => {
+    ApiService.getUsersMe().then(result => {
+    canAddTransaction.value = result.user_permissions.map((permission) => {
+      return permission === 'transactions.add_transaction';
+    }).reduce((previousValue, currentValue) => {
+      return previousValue || currentValue;
+    }, false);
+  }).catch(() => {
+    toast.error("Failed to load user data, please try again.")
+  });
+
+    if(canAddTransaction.value === false){
+        window.location.href = "/";
+    }
+
     ApiService.getTournaments().then(result => {
         tournaments.value = result;
     }).catch(() => {
@@ -52,7 +67,6 @@ function loadButton(event: Event): void {
 
 function submitTransaction(event: Event) {
     event.preventDefault();
-    console.log(user.value);
     if (user.value === null){
         return;
     } else {
@@ -77,7 +91,7 @@ function submitTransaction(event: Event) {
 
 <template>
 <Header :show-back-button="true"/>
-<div class="custom-card feed-container mx-auto">
+<div v-if="canAddTransaction" class="custom-card feed-container mx-auto">
     <h1>add transaction</h1>
     <form class="row custom-form" id="transaction" v-on:submit="submitTransaction($event)" ref="form">
         <select id="tournament" name="tournament" v-on:change="findTeams($event)">

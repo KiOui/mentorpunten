@@ -52,7 +52,7 @@ onMounted(() => {
       <h1>Logging you out...</h1>
       <p>
         You will be redirected shortly, if redirection fails, please click
-        <router-link :to="{ name: 'Index' }">here</router-link>
+        <router-link :to="{ name: 'Index' }" style="text-decoration: none;">here</router-link>
       </p>
       <div class="d-flex justify-content-center align-items-center">
         <Loader size="60px" background-color="#000000"></Loader>
