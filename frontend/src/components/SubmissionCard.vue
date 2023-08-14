@@ -23,8 +23,8 @@ defineProps<{submission: Submission, showAccepted: boolean}>();
               </template>
           </div>
           <div class="col-4 text-end my-auto" style="padding-right: 1.5rem;">
-            <span v-if="submission.transaction !== null && submission.transaction.amount < 0" class="badge bg-danger fs-6">- {{ submission.transaction.amount * -1 }} points</span>
-            <span v-if="submission.transaction !== null && submission.transaction.amount > 0" class="badge bg-success fs-6">+ {{ submission.transaction.amount }} points</span>
+            <span v-if="submission.points_transaction !== null && submission.points_transaction.amount < 0" class="badge bg-danger fs-6">- {{ submission.points_transaction.amount * -1 }} points</span>
+            <span v-if="submission.points_transaction !== null && submission.points_transaction.amount > 0" class="badge bg-success fs-6">+ {{ submission.points_transaction.amount }} points</span>
           </div>
         </div>
 

@@ -31,6 +31,6 @@ onMounted(() => {
     <div v-else-if="teamLoading === null" class="alert alert-warning mx-1">
       There was an error loading this team, please try again.
     </div>
-    <TransactionsList v-else-if="!teamLoading && team !== null" v-bind:transaction-search-filters="[['account', String(team.account.id)]]"/>
+    <TransactionsList v-else-if="!teamLoading && team !== null" v-bind:transaction-search-filters="[['account', String(team.points_account.id)]]"/>
   </div>
 </template>

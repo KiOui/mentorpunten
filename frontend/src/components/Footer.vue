@@ -23,6 +23,22 @@ onMounted(() => {
   }
 });
 
+CredentialsStore.$onAction(({name, after}) => {
+  if (name === "login") {
+    after(() => {
+      if (CredentialsStore.loggedIn) {
+        userLoading.value = true;
+        ApiService.getUsersMe().then(userData => {
+          user.value = userData;
+          userLoading.value = false;
+        }).catch(() => {
+          userLoading.value = null;
+        });
+      }
+    });
+  }
+});
+
 const userCanChangeSubmission = computed(() => {
   if (user.value === null) {
     return false;
@@ -53,6 +69,11 @@ const userCanChangeSubmission = computed(() => {
         <router-link :to="{ name: 'Statistics' }" class="text-white nav-item flex-grow-1 text-center">
           <li>
             <font-awesome-icon icon="fa-solid fa-chart-line"/>
+          </li>
+        </router-link>
+        <router-link :to="{ name: 'StoreList' }" class="text-white nav-item flex-grow-1 text-center">
+          <li>
+            <font-awesome-icon icon="fa-solid fa-store"/>
           </li>
         </router-link>
         <router-link v-if="userCanChangeSubmission" :to="{ name: 'SubmissionAccept' }" class="text-white nav-item flex-grow-1 text-center">

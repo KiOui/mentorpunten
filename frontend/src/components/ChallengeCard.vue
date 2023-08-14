@@ -19,11 +19,11 @@
     <router-link v-else :to="{ name: 'Challenge', params: { id: challenge.id }}" style="text-decoration: none;">
         <div class="custom-card">
           <div v-if="challenge.submission_visibility === SUBMISSIONS_VISIBLE_ON_ACCEPTED_SUBMISSION && !challenge.completed" class="row">
-            <div class="col-8">
+            <div class="col-md-8">
               <h1 v-if="challenge.completed" class="text-success">{{ challenge.name }}</h1>
               <h1 v-else>{{ challenge.name }}</h1>
             </div>
-            <div class="col-4 text-end my-auto">
+            <div class="col-md-4 text-md-end my-auto mb-md-auto mb-2">
               <div class="badge bg-danger">
                 Submissions hidden
               </div>

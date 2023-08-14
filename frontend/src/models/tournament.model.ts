@@ -4,4 +4,5 @@ export default interface Tournament {
     slug: string;
     active_from: string;
     active_until: string;
+    store: number | null;
 }

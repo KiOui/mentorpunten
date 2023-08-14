@@ -12,13 +12,44 @@ class TournamentSerializer(serializers.ModelSerializer):
         """Meta class."""
 
         model = models.Tournament
-        fields = ("id", "name", "slug", "active_from", "active_until")
+        fields = ("id", "name", "slug", "active_from", "active_until", "store")
+
+
+class ItemSerializer(serializers.ModelSerializer):
+    """Item Serializer."""
+
+    class Meta:
+        """Meta class."""
+
+        model = models.Item
+        fields = (
+            "id",
+            "name",
+            "price",
+            "description",
+            "item",
+            "transaction",
+            "created_at",
+            "property_of",
+            "used",
+            "used_at",
+        )
+        read_only_fields = (
+            "id",
+            "name",
+            "price",
+            "description",
+            "transaction",
+            "created_at",
+            "used_at",
+        )
 
 
 class TeamSerializer(serializers.ModelSerializer):
     """Team serializer."""
 
-    account = AccountSerializer(many=False)
+    points_account = AccountSerializer(many=False)
+    coins_account = AccountSerializer(many=False)
     members = UserSerializer(many=True)
     tournament = TournamentSerializer(many=False)
 
@@ -26,4 +57,11 @@ class TeamSerializer(serializers.ModelSerializer):
         """Meta class."""
 
         model = models.Team
-        fields = ("id", "name", "tournament", "account", "members")
+        fields = (
+            "id",
+            "name",
+            "tournament",
+            "points_account",
+            "coins_account",
+            "members",
+        )

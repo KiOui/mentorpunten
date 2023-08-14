@@ -128,6 +128,20 @@ class Challenge(models.Model):
         else:
             return True
 
+    @property
+    def revealed(self):
+        """Get whether a Challenge has been revealed."""
+        if self.disabled:
+            return False
+
+        timezone = pytz.timezone(settings.TIME_ZONE)
+        current_time = timezone.localize(datetime.now())
+
+        if self.active_from is not None and self.active_from > current_time:
+            return False
+        else:
+            return True
+
     def __str__(self):
         """Convert this object to string."""
         return self.name
@@ -167,8 +181,19 @@ class Submission(models.Model):
         File, on_delete=models.PROTECT, related_name="submission"
     )
     accepted = models.BooleanField(null=True, blank=True, default=None)
-    transaction = models.ForeignKey(
-        Transaction, null=True, blank=True, on_delete=models.SET_NULL
+    points_transaction = models.ForeignKey(
+        Transaction,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="points_submission",
+    )
+    coins_transaction = models.ForeignKey(
+        Transaction,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="coins_submission",
     )
 
     def __str__(self):

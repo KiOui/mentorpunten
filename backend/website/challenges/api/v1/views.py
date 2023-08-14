@@ -105,9 +105,6 @@ class SubmissionListCreateAPIView(ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         """Create a submission."""
-        if not request.user.is_authenticated:
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
         team_id = request.data.get("team", None)
         possible_teams = models.Team.objects.filter(
             id=team_id, members__in=[request.user]
