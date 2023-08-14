@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Header from "@/components/Header.vue";
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import useApiService from "@/common/api.service";
 import type Store from "@/models/store.model";
 import Loader from "@/components/Loader.vue";
@@ -75,6 +75,15 @@ function refresh() {
     teamLoading.value = false;
   }
 }
+
+const storeItems = computed(() => {
+  if (store.value !== null) {
+    return store.value.items.sort((a, b) => {
+      return a.price - b.price;
+    });
+  }
+  return [];
+});
 </script>
 
 <template>
@@ -108,10 +117,10 @@ function refresh() {
             </template>
           </div>
         </div>
-        <div v-if="store.items.length === 0" class="alert alert-warning mx-1">
+        <div v-if="storeItems.length === 0" class="alert alert-warning mx-1">
           No items found in this store.
         </div>
-        <ItemCard v-else v-for="item in store.items" v-on:ItemCard-afterBuyItem="refresh()" v-bind:item="item" v-bind:team="team" v-bind:key="item.id"/>
+        <ItemCard v-else v-for="item in storeItems" v-on:ItemCard-afterBuyItem="refresh()" v-bind:item="item" v-bind:team="team" v-bind:key="item.id"/>
       </template>
     </template>
   </div>
