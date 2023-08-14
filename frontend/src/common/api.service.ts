@@ -10,6 +10,9 @@ import type Transaction from "@/models/transaction.model";
 import {getEnvVar} from "@/common/general.service";
 import type TemporaryFileUpload from "@/models/temporaryfileupload.model";
 import type UploadedFile from "@/models/uploadedfile.model";
+import type Store from "@/models/store.model";
+import type Item from "@/models/item.model";
+import type BoughtItem from "@/models/boughtitem.model";
 
 class _ApiService {
   authorizationEndpoint: string;
@@ -124,12 +127,12 @@ class _ApiService {
     return this.get<Challenge>(`/challenges/${id}/`);
   }
 
-  async getTransactions(parameters: URLSearchParams | null = null): Promise<Paginated<Transaction[]>> {
-    return this.get<Paginated<Transaction[]>>(this._addParametersToResource(`/transactions/`, parameters));
+  async getTransactions(parameters: URLSearchParams | null = null): Promise<Paginated<Transaction>> {
+    return this.get<Paginated<Transaction>>(this._addParametersToResource(`/transactions/`, parameters));
   }
 
-  async getTemporaryFileUploads(): Promise<Paginated<TemporaryFileUpload[]>> {
-    return this.get<Paginated<TemporaryFileUpload[]>>('/files/temporary/');
+  async getTemporaryFileUploads(): Promise<Paginated<TemporaryFileUpload>> {
+    return this.get<Paginated<TemporaryFileUpload>>('/files/temporary/');
   }
 
   async postTemporaryFileUpload(data: FormData, headers: Headers | null = null): Promise<TemporaryFileUpload> {
@@ -144,6 +147,21 @@ class _ApiService {
     return this.post<UploadedFile>("/files/", data, headers);
   }
 
+  async getStore(id: number): Promise<Store> {
+    return this.get<Store>(`/stores/${id}/`);
+  }
+
+  async getBoughtItems(parameters: URLSearchParams | null = null): Promise<BoughtItem[]> {
+    return this.get<BoughtItem[]>(this._addParametersToResource("/tournaments/items/", parameters));
+  }
+
+  async patchBoughtItem(id: number, data: FormData, headers: Headers | null = null): Promise<BoughtItem> {
+    return this.patch<BoughtItem>(`/tournaments/items/${id}/`, data, headers);
+  }
+
+  async postItem(data: FormData, headers: Headers | null = null): Promise<Item> {
+    return this.post<Item>("/tournaments/items/", data, headers);
+  }
   async fetch<T>(resource: string, method: string, data: BodyInit|null, headers: Headers|null = null): Promise<T> {
     let apiCall = null;
     if (data !== null) {

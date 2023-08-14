@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from import_export.admin import ImportExportModelAdmin
 from rangefilter.filters import DateRangeFilter
 
-from .models import Tournament, Team
+from .models import Tournament, Team, Item
 from .resources import TeamResource
 
 User = get_user_model()
@@ -82,13 +82,48 @@ class TeamAdminForm(forms.ModelForm):
         exclude = []
 
 
+@admin.register(Item)
+class ItemAdmin(admin.ModelAdmin):
+    """Item Admin."""
+
+    list_display = ["name", "price", "item", "property_of", "used"]
+    search_fields = ("name",)
+    list_filter = (
+        "property_of",
+        "item",
+        "used",
+    )
+
+
+class ItemInline(admin.TabularInline):
+    """Inline of items."""
+
+    model = Item
+    fields = (
+        "name",
+        "price",
+        "item",
+        "transaction",
+        "created_at",
+        "used",
+        "used_at",
+    )
+    readonly_fields = (
+        "transaction",
+        "created_at",
+        "used_at",
+    )
+    extra = 0
+    ordering = ("created_at",)
+
+
 @admin.register(Team)
 class TeamAdmin(ImportExportModelAdmin):
     """Team Admin."""
 
     def balance(self, instance: Team):
         """Get balance."""
-        return instance.account.balance
+        return instance.points_account.balance
 
     def member_count(self, instance: Team):
         """Get member count."""
@@ -99,3 +134,5 @@ class TeamAdmin(ImportExportModelAdmin):
     list_filter = ("tournament",)
     form = TeamAdminForm
     resource_class = TeamResource
+
+    inlines = [ItemInline]

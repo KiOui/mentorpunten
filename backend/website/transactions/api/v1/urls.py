@@ -1,12 +1,12 @@
 from django.urls import path
 from transactions.api.v1.views import (
     AccountRetrieveAPIView,
-    TransactionListAPIView,
+    TransactionListCreateAPIView,
     TransactionRetrieveAPIView,
 )
 
 urlpatterns = [
-    path("", TransactionListAPIView.as_view(), name="transaction_listcreate"),
+    path("", TransactionListCreateAPIView.as_view(), name="transaction_listcreate"),
     path(
         "<int:pk>/", TransactionRetrieveAPIView.as_view(), name="transaction_retrieve"
     ),

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from mentorpunten.api.serializers import WritableModelSerializer
 from transactions import models
 
 
@@ -13,10 +14,10 @@ class AccountSerializer(serializers.ModelSerializer):
         fields = ["id", "created_at", "balance"]
 
 
-class TransactionSerializer(serializers.ModelSerializer):
+class TransactionSerializer(WritableModelSerializer):
     """Transaction Serializer."""
 
-    account = AccountSerializer(many=False)
+    account = AccountSerializer(many=False, read_only=False)
 
     class Meta:
         """Meta class."""
@@ -31,3 +32,8 @@ class TransactionSerializer(serializers.ModelSerializer):
             "processor",
             "balance_after",
         ]
+        read_only_fields = (
+            "id",
+            "timestamp",
+            "balance_after",
+        )

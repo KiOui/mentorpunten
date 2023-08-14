@@ -27,7 +27,7 @@ onMounted(() => {
 
   ApiService.getChallengesTeams(new URLSearchParams([["tournament", String(props.id)]]))
     .then(result => {
-      teams.value = result.sort((a, b) => b.account.balance - a.account.balance);
+      teams.value = result.sort((a, b) => b.points_account.balance - a.points_account.balance);
       teamsLoading.value = false;
     }).catch(() => {
       teamsLoading.value = null;
@@ -62,7 +62,7 @@ const firstTeam: ComputedRef<Team | null> = computed(() => {
       <div class="d-flex justify-content-between align-items-start first-of-tournament">
         <template v-if="firstTeam !== null">
           <h1>#1 {{ firstTeam.name }}</h1>
-          <h1>{{ firstTeam.account.balance }} points</h1>
+          <h1>{{ firstTeam.points_account.balance }} points</h1>
         </template>
       </div>
       <TournamentStatisticsList v-if="teams !== null" v-bind:teams="teams.slice(1, teams.length)" />

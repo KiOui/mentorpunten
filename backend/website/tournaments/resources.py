@@ -138,12 +138,14 @@ class TeamResource(resources.ModelResource):
             "name",
             "tournament",
             "members",
-            "account",
+            "points_account",
+            "coins_account,",
         ]
         export_order = [
             "id",
             "name",
             "tournament",
             "members",
-            "account",
+            "points_account",
+            "coins_account",
         ]

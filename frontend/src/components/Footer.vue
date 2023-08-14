@@ -55,6 +55,11 @@ const userCanChangeSubmission = computed(() => {
             <font-awesome-icon icon="fa-solid fa-chart-line"/>
           </li>
         </router-link>
+        <router-link :to="{ name: 'StoreList' }" class="text-white nav-item flex-grow-1 text-center">
+          <li>
+            <font-awesome-icon icon="fa-solid fa-store"/>
+          </li>
+        </router-link>
         <router-link v-if="userCanChangeSubmission" :to="{ name: 'SubmissionAccept' }" class="text-white nav-item flex-grow-1 text-center">
           <li>
             <font-awesome-icon icon="fa-solid fa-check"/>

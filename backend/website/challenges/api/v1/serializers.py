@@ -37,10 +37,19 @@ class ChallengeSerializer(serializers.ModelSerializer):
     """Challenge serializer."""
 
     completed = SerializerMethodField()
+    description = SerializerMethodField()
     tournament = TournamentSerializer(many=False, read_only=True)
 
+    @extend_schema_field(serializers.CharField)
+    def get_description(self, instance: models.Challenge):
+        """Get description."""
+        if instance.revealed:
+            return instance.description
+        else:
+            return ""
+
     @extend_schema_field(serializers.BooleanField)
-    def get_completed(self, instance):
+    def get_completed(self, instance: models.Challenge):
         """Get completed value of serializer."""
         request = self.context.get("request", None)
         if (
@@ -93,7 +102,8 @@ class SubmissionSerializer(WritableModelSerializer):
 
     challenge = ChallengeSerializer(many=False)
     team = TeamSerializer(many=False)
-    transaction = TransactionSerializer(many=False, read_only=True)
+    points_transaction = TransactionSerializer(many=False, read_only=True)
+    coins_transaction = TransactionSerializer(many=False, read_only=True)
     created_by = UserSerializer(many=False)
     updated_by = UserSerializer(many=False)
     file = FileSerializer(many=False)
@@ -113,11 +123,13 @@ class SubmissionSerializer(WritableModelSerializer):
             "updated_by",
             "file",
             "accepted",
-            "transaction",
+            "points_transaction",
+            "coins_transaction",
         ]
         read_only_fields = [
             "id",
             "created",
             "updated",
-            "transaction",
+            "points_transaction",
+            "coins_transaction",
         ]
