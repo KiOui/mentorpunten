@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Header from "@/components/Header.vue";
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, ref, toRaw} from "vue";
 import useApiService from "@/common/api.service";
 import type Store from "@/models/store.model";
 import Loader from "@/components/Loader.vue";
@@ -8,6 +8,7 @@ import ItemCard from "@/components/ItemCard.vue";
 import type Tournament from "@/models/tournament.model";
 import type User from "@/models/user.model";
 import type Team from "@/models/team.model";
+import type Item from "@/models/item.model";
 
 const props = defineProps<{ id: number }>();
 
@@ -78,9 +79,11 @@ function refresh() {
 
 const storeItems = computed(() => {
   if (store.value !== null) {
-    return store.value.items.sort((a, b) => {
+    const itemsCopy: Item[] = structuredClone(toRaw(store.value.items));
+    itemsCopy.sort((a: Item, b: Item) => {
       return a.price - b.price;
     });
+    return itemsCopy;
   }
   return [];
 });

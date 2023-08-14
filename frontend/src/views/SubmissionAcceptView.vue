@@ -7,7 +7,6 @@ import useApiService from "@/common/api.service";
 import {useToast} from "vue-toastification";
 import Loader from "@/components/Loader.vue";
 import Header from "@/components/Header.vue";
-import router from "@/router";
 
 const ApiService = useApiService();
 

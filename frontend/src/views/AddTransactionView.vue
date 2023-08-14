@@ -6,7 +6,6 @@ import type Team from "@/models/team.model";
 import type Tournament from "@/models/tournament.model";
 import User from "@/models/user.model";
 import {useToast} from "vue-toastification";
-import router from "@/router";
 
 const tournaments = ref<Tournament[] | null>(null);
 const teams = ref<Team[] | null>(null);
