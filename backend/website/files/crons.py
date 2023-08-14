@@ -13,13 +13,27 @@ class RequestCompressionCronJob(CronJobBase):
     code = "files.request_compression"
     schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
 
-    def request_compressed_file(self, file: models.File):
-        """Request compression of File."""
+    def request_compressed_video(self, file: models.File):
+        """Request compression of a Video file."""
         try:
             mediaconvert_compress_file(file.url)
             return True
         except Exception as e:
             print("Exception occurred:\n{}".format(e))
+            return False
+
+    def request_compressed_photo(self, file: models.File):
+        """Request compression of a Photo file."""
+        # TODO: Implement
+        return False
+
+    def request_compressed_file(self, file: models.File):
+        """Request compression of File."""
+        if file.is_video:
+            return self.request_compressed_video(file)
+        elif file.is_photo:
+            return self.request_compressed_photo(file)
+        else:
             return False
 
     def do(self):
@@ -28,10 +42,11 @@ class RequestCompressionCronJob(CronJobBase):
             compressed_file="", compression_requested__isnull=True
         )
         for file in files_to_check:
-            if self.request_compressed_file(file):
-                models.CompressionRequested.objects.create(file=file)
-            else:
-                print("Compression request failed for {}".format(file))
+            if file.is_photo or file.is_video:
+                if self.request_compressed_file(file):
+                    models.CompressionRequested.objects.create(file=file)
+                else:
+                    print("Compression request failed for {}".format(file))
 
 
 class CompressedFileCronJob(CronJobBase):
