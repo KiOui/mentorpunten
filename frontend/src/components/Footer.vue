@@ -23,8 +23,7 @@ onMounted(() => {
   }
 });
 
-CredentialsStore.$onAction((params) => {
-  const {name, after} = params;
+CredentialsStore.$onAction(({name, after}) => {
   if (name === "login") {
     after(() => {
       if (CredentialsStore.loggedIn) {
