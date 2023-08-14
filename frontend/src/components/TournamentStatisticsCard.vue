@@ -16,4 +16,5 @@ defineProps<{team: Team, index: number}>();
 </template>
 
 <style scoped>
+
 </style>

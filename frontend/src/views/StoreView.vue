@@ -104,7 +104,7 @@ function refresh() {
               <p>
                 <font-awesome-icon icon="fa-solid fa-coins" style="color: var(--primary);"/> {{ team.coins_account.balance }} coins
               </p>
-              <router-link :to="{ name: 'Team', params: { id: team.id }}" class="link">View Bought Items</router-link>
+              <router-link :to="{ name: 'Team', params: { id: team.id }}" class="link" style="text-decoration: none;">View Bought Items</router-link>
             </template>
           </div>
         </div>

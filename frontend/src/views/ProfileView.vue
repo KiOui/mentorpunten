@@ -93,7 +93,7 @@ let user = ref<User|null>(null);
             <font-awesome-icon icon="fa-solid fa-coins" style="color: var(--primary);" class="me-1"/><p>{{ team.coins_account.balance }} coins</p>
           </div>
         </div>
-        <router-link :to="{ name: 'ProfileSubmissions', params: { id: team.tournament.id }}" class="link">View Submissions</router-link>
+        <router-link :to="{ name: 'ProfileSubmissions', params: { id: team.tournament.id }}" class="link" style="text-decoration: none;">View Submissions</router-link>
       </div>
     </template>
     <div class="d-flex justify-content-center" style="margin-top: 1rem;">

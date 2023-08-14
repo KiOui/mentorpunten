@@ -52,7 +52,7 @@ onMounted(() => {
       return previousValue || currentValue;
     }, false);
     if (!canChangeSubmissions) {
-      router.push('/');
+      window.location.href = "/";
     } else {
       refresh();
     }
@@ -96,7 +96,7 @@ const hasAcceptedSubmissionForSameChallengeAndTeam = computed(() => {
 
 <template>
     <Header :show-back-button="false"/>
-    <div class="feed-container mx-auto my-5">
+    <div class="feed-container mx-auto">
       <Loader v-if="submissionLoading" size="60px" background-color="#000000"/>
       <div v-else-if="submissionLoading === null" class="alert alert-warning mx-1">
         Failed to load submission, please try again.
