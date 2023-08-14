@@ -15,7 +15,8 @@ def get_file_location(filename):
 
 def get_compressed_location(filename):
     """Get location of compressed file."""
-    return f"compressed/{filename}"
+    filename_without_extension = Path(filename).stem
+    return f"compressed/{filename_without_extension}.mp4"
 
 
 def get_random_filename(current_filename):
