@@ -23,6 +23,23 @@ onMounted(() => {
   }
 });
 
+CredentialsStore.$onAction((params) => {
+  const {name, after} = params;
+  if (name === "login") {
+    after(() => {
+      if (CredentialsStore.loggedIn) {
+        userLoading.value = true;
+        ApiService.getUsersMe().then(userData => {
+          user.value = userData;
+          userLoading.value = false;
+        }).catch(() => {
+          userLoading.value = null;
+        });
+      }
+    });
+  }
+});
+
 const userCanChangeSubmission = computed(() => {
   if (user.value === null) {
     return false;
