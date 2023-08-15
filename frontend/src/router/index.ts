@@ -17,6 +17,7 @@ import StoreListView from "@/views/StoreListView.vue";
 import StoreView from "@/views/StoreView.vue";
 import TeamItemsView from "@/views/TeamItemsView.vue";
 import AddTransactionView from "@/views/AddTransactionView.vue";
+import FAQView from "@/views/FAQView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -247,6 +248,11 @@ const router = createRouter({
       path: '/addtransaction',
       name: 'AddTransaction',
       component: AddTransactionView,
+    },
+    {
+      path: '/faq',
+      name: 'FAQ',
+      component: FAQView,
     },
     {
       path: '/',
