@@ -19,6 +19,12 @@ def get_compressed_location(filename):
     return f"compressed/{filename_without_extension}.mp4"
 
 
+def get_thumbnail_location(filename):
+    """Get location of thumbnail file."""
+    filename_without_extension = Path(filename).stem
+    return f"thumbnails/{filename_without_extension}.0000000.jpg"
+
+
 def get_random_filename(current_filename):
     """Get a random filename by overwriting the filename with a random string."""
     extension = Path(current_filename).suffix
@@ -34,6 +40,11 @@ def file_upload_to(instance, filename):
 def compressed_upload_to(instance, filename):
     """Upload compressed to."""
     return get_compressed_location(get_random_filename(filename))
+
+
+def thumbnail_upload_to(instance, filename):
+    """Upload compressed to."""
+    return get_thumbnail_location(get_random_filename(filename))
 
 
 class TemporaryFileUpload(models.Model):
@@ -65,6 +76,7 @@ class File(models.Model):
     compressed_file = models.FileField(
         upload_to=compressed_upload_to, null=True, blank=True
     )
+    thumbnail = models.FileField(upload_to=thumbnail_upload_to, null=True, blank=True)
 
     original_file_name = models.CharField(max_length=300)
 
@@ -116,5 +128,14 @@ class CompressionRequested(models.Model):
 
     file = models.OneToOneField(
         File, on_delete=models.CASCADE, related_name="compression_requested"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class ThumbnailRequested(models.Model):
+    """Thumbnail Requested class."""
+
+    file = models.OneToOneField(
+        File, on_delete=models.CASCADE, related_name="thumbnail_requested"
     )
     created_at = models.DateTimeField(auto_now_add=True)
