@@ -34,7 +34,12 @@ defineProps<{submission: Submission, showAccepted: boolean}>();
             <img v-else class="image" :src="submission.file.file"/>
           </template>
           <template v-else-if="submission.file.file_type.startsWith('video')">
-            <video controls class="video" preload="metadata">
+            <video v-if="submission.file.thumbnail === null" controls class="video" preload="metadata">
+              <source v-if="submission.file.compressed_file !== null" v-bind:src="`${submission.file.compressed_file}`"/>
+              <source v-else v-bind:src="`${submission.file.file}`"/>
+              Your browser does not support the video tag.
+            </video>
+            <video v-else controls class="video" :poster="submission.file.thumbnail" preload="metadata">
               <source v-if="submission.file.compressed_file !== null" v-bind:src="`${submission.file.compressed_file}`"/>
               <source v-else v-bind:src="`${submission.file.file}`"/>
               Your browser does not support the video tag.
