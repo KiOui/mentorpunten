@@ -4,6 +4,7 @@ export default interface UploadedFile {
     id: string;
     file: string;
     compressed_file: string | null;
+    thumbnail: string | null;
     original_file_name: string;
     file_name: string;
     file_type: string;
