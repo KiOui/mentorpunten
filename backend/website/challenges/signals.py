@@ -25,7 +25,7 @@ def create_transactions_on_accept(sender, instance: Submission, **kwargs):
     if obj is None or (obj.accepted is None or obj.accepted is False):
         # Submission is being created with accepted == True (obj is None) OR Submission is being edited and the
         # accepted value is being set to True now.
-        if instance.points_transaction is not None:
+        if instance.points_transaction is None:
             instance.points_transaction = Transaction.objects.create(
                 account=instance.team.points_account,
                 amount=instance.challenge.points,
@@ -33,7 +33,7 @@ def create_transactions_on_accept(sender, instance: Submission, **kwargs):
             )
 
         if (
-            instance.coins_transaction is not None
+            instance.coins_transaction is None
             and instance.team.coins_account is not None
         ):
             instance.coins_transaction = Transaction.objects.create(

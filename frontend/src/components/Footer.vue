@@ -56,27 +56,27 @@ const userCanChangeSubmission = computed(() => {
   <nav class="navbar fixed-bottom">
     <div class="feed-container mx-auto w-100">
       <ul class="navbar-nav w-100 d-flex justify-content-center flex-row">
-        <router-link :to="{ name: 'Index' }" class="text-white nav-item flex-grow-1 text-center">
+        <router-link :to="{ name: 'Index' }" class="text-white nav-item flex-grow-1 text-center" style="text-decoration: none;">
           <li>
             <font-awesome-icon icon="fa-solid fa-images"/>
           </li>
         </router-link>
-        <router-link :to="{ name: 'Tournaments' }" class="text-white nav-item flex-grow-1 text-center">
+        <router-link :to="{ name: 'Tournaments' }" class="text-white nav-item flex-grow-1 text-center" style="text-decoration: none;">
           <li>
               <font-awesome-icon icon="fa-solid fa-trophy"/>
           </li>
         </router-link>
-        <router-link :to="{ name: 'Statistics' }" class="text-white nav-item flex-grow-1 text-center">
+        <router-link :to="{ name: 'Statistics' }" class="text-white nav-item flex-grow-1 text-center" style="text-decoration: none;">
           <li>
             <font-awesome-icon icon="fa-solid fa-chart-line"/>
           </li>
         </router-link>
-        <router-link :to="{ name: 'StoreList' }" class="text-white nav-item flex-grow-1 text-center">
+        <router-link :to="{ name: 'StoreList' }" class="text-white nav-item flex-grow-1 text-center" style="text-decoration: none;">
           <li>
             <font-awesome-icon icon="fa-solid fa-store"/>
           </li>
         </router-link>
-        <router-link v-if="userCanChangeSubmission" :to="{ name: 'SubmissionAccept' }" class="text-white nav-item flex-grow-1 text-center">
+        <router-link v-if="userCanChangeSubmission" :to="{ name: 'SubmissionAccept' }" class="text-white nav-item flex-grow-1 text-center" style="text-decoration: none;">
           <li>
             <font-awesome-icon icon="fa-solid fa-check"/>
           </li>

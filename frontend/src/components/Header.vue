@@ -44,7 +44,7 @@ function goBack() {
         <h1 class="text-center">MENTORPUNTEN</h1>
       </div>
       <div class="col-1 d-flex align-items-center">
-        <router-link :to="{ name: 'Profile' }" v-if="CredentialsStore.loggedIn" class="text-white">
+        <router-link :to="{ name: 'Profile' }" v-if="CredentialsStore.loggedIn" class="text-white" style="text-decoration: none;">
           <font-awesome-icon icon="fa-solid fa-user"/>
         </router-link>
         <a v-else @click="startLogin">

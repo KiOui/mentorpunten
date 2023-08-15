@@ -123,6 +123,18 @@ const tournamentRanking = computed(() => {
   }
   return null;
 });
+
+const userCanAddTransaction = computed(() => {
+  if (user.value === null) {
+    return false;
+  } else {
+    return user.value.user_permissions.map((permission) => {
+      return permission === 'transactions.add_transaction';
+    }).reduce((previousValue, currentValue) => {
+      return previousValue || currentValue;
+    }, false);
+  }
+});
 </script>
 
 <template>
@@ -180,7 +192,7 @@ const tournamentRanking = computed(() => {
           </div>
         </div>
         <div class="w-100 d-flex justify-content-center" style="margin-top: 1rem;">
-          <router-link :to="{ name: 'TeamItems', params: { id: team.id } }">
+          <router-link :to="{ name: 'TeamItems', params: { id: team.id } }" style="text-decoration: none;">
             <button v-if="latestItems.length > 0" class="btn btn-primary">Show all items</button>
           </router-link>
         </div>
@@ -189,7 +201,7 @@ const tournamentRanking = computed(() => {
       <div class="custom-card">
         <div class="row">
           <h2 class="col-8">Latest Transactions</h2>
-          <router-link :to="{ name: 'AddTransaction' }" class="col-4" style="text-decoration: none; color: black; text-align: end;">
+          <router-link v-if="userCanAddTransaction" :to="{ name: 'AddTransaction' }" class="col-4" style="text-decoration: none; color: black; text-align: end;">
             <h2>Add transaction</h2>
           </router-link>
         </div>
@@ -200,7 +212,7 @@ const tournamentRanking = computed(() => {
         <template v-else>
           <TransactionCard v-for="transaction in latestTransactions" v-bind:key="transaction.id" v-bind:transaction="transaction"/>
           <div class="w-100 d-flex justify-content-center" style="margin-top: 1rem;">
-            <router-link :to="{ name: 'Transactions', params: { id: team.id } }">
+            <router-link :to="{ name: 'Transactions', params: { id: team.id } }" style="text-decoration: none;">
               <button v-if="latestTransactions.length > 0" class="btn btn-primary">Show all transactions</button>
             </router-link>
           </div>
