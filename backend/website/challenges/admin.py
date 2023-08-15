@@ -39,6 +39,23 @@ class ChallengeAdmin(ImportExportModelAdmin):
         ),
     )
     prepopulated_fields = {"slug": ("name",)}
+    actions = ["disable_challenges", "enable_challenges"]
+
+    def disable_challenges(self, request, queryset):
+        """Accept reservations."""
+        self._change_disabled(queryset, True)
+
+    disable_challenges.short_description = "Disable selected challenges"
+
+    def enable_challenges(self, request, queryset):
+        """Accept reservations."""
+        self._change_disabled(queryset, False)
+
+    enable_challenges.short_description = "Enable selected challenges"
+
+    def _change_disabled(self, queryset, value):
+        """Change disabled on queryset."""
+        queryset.update(disabled=value)
 
     def number_of_submissions(self, obj: Challenge):
         """Get the number of submissions."""

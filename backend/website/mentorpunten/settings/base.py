@@ -123,12 +123,6 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "mentorpunten.api.openapi.CustomAutoSchema",
 }
 
-# S3 storage
-STORAGES = {
-    "default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
-    "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
-}
-
 # CORS
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r"^/(?:api|user/oauth)/.*"
