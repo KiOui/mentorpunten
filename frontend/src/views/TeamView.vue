@@ -148,7 +148,7 @@ const userCanAddTransaction = computed(() => {
       <div class="custom-card text-center">
         <h1> {{ team.name }}</h1>
         <h4> total points: {{ team.points_account.balance }}</h4>
-        <h4> total coins: {{ team.coins_account?.balance }}</h4>
+        <h4 v-if="team.coins_account !== null"> total coins: {{ team.coins_account.balance }}</h4>
       </div>
 
       <div class="custom-card">
