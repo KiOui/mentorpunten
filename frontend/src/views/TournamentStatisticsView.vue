@@ -25,15 +25,13 @@ onMounted(() => {
     tournamentLoading.value = null;
   });
 
-  ApiService.getChallengesTeams(new URLSearchParams([["tournament", String(props.id)]]))
+  ApiService.getChallengesTeams(new URLSearchParams([["tournament", String(props.id)],["ordering", "points_account__transactions"]]))
     .then(result => {
       teams.value = result.sort((a, b) => b.points_account.balance - a.points_account.balance);
       teamsLoading.value = false;
     }).catch(() => {
       teamsLoading.value = null;
     });
-  
-  console.log(teams.value);
 });
 
 const firstTeam: ComputedRef<Team | null> = computed(() => {
