@@ -110,8 +110,8 @@ class Transaction(models.Model):
         # We could simply always overwrite the values of balance_after and previous_transaction
         # However, we want to make sure that the values are correct and throw an error if they are not consistent
         if (
-            self._balance_after
-            and balance_after
+            self._balance_after is not None
+            and balance_after is not None
             and self._balance_after != balance_after
         ):
             # Check if balance after is correct, if it was already provided
@@ -120,7 +120,9 @@ class Transaction(models.Model):
             )
         else:
             # Calculate balance after, if it was not provided
-            self._balance_after = balance_after or self.amount
+            self._balance_after = (
+                balance_after if balance_after is not None else self.amount
+            )
 
         if (
             self._previous_transaction
