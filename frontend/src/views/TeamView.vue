@@ -148,7 +148,7 @@ const userCanAddTransaction = computed(() => {
       <div class="custom-card text-center">
         <h1> {{ team.name }}</h1>
         <h4> total points: {{ team.points_account.balance }}</h4>
-        <h4> total coins: {{ team.coins_account?.balance }}</h4>
+        <h4 v-if="team.coins_account !== null"> total coins: {{ team.coins_account.balance }}</h4>
       </div>
 
       <div class="custom-card">
@@ -175,7 +175,7 @@ const userCanAddTransaction = computed(() => {
       <div v-if="latestItems !== null" class="custom-card">
         <div class="row">
           <h2 class="col-8">Items</h2>
-          <router-link :to="{ name: 'Store', params: { id: team.tournament.store } }" class="col-4" style="text-decoration: none; color: black; text-align: end;">
+          <router-link v-if="team.tournament.store !== null" :to="{ name: 'Store', params: { id: team.tournament.store } }" class="col-4" style="text-decoration: none; color: black; text-align: end;">
             <h2>Go to store</h2>
           </router-link>
         </div>
