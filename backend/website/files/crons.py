@@ -125,4 +125,4 @@ class ThumbnailFileCronJob(CronJobBase):
                     models.get_thumbnail_location(file.file_name),
                 )
                 file.save()
-                print("Compressed file saved for {}".format(file))
+                print("Thumbnail file saved for {}".format(file))
