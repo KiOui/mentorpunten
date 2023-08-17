@@ -30,8 +30,8 @@ defineProps<{submission: Submission, showAccepted: boolean}>();
 
         <div class="d-flex align-items-center justify-content-center image-video-container">
           <template v-if="submission.file.file_type.startsWith('image')">
-            <img v-if="submission.file.compressed_file !== null" class="image" :src="submission.file.compressed_file"/>
-            <img v-else class="image" :src="submission.file.file"/>
+            <img v-if="submission.file.compressed_file !== null" class="image" :src="submission.file.compressed_file" loading="lazy"/>
+            <img v-else class="image" :src="submission.file.file" loading="lazy"/>
           </template>
           <template v-else-if="submission.file.file_type.startsWith('video')">
             <video v-if="submission.file.thumbnail === null" controls class="video" preload="metadata">
