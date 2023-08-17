@@ -16,7 +16,7 @@ const toast = useToast();
 let submissions = ref<Submission[]>([]);
 let submissionsLoading = ref<boolean|null>(true);
 let nextDataExists = ref<boolean>(true);
-let limit = ref<number>(40);
+let limit = ref<number>(10);
 
 onMounted(() => {
   addNewData();
