@@ -1,4 +1,3 @@
-import base64
 import logging
 from datetime import timedelta
 
@@ -30,16 +29,14 @@ class ChallengsSignalsTests(TestCase):
             active_until=timezone.now() + timedelta(days=7),
         )
 
-        cls.points_account = Account.objects.create(
-            name="Test Team (Points Account)"
-        )
+        cls.points_account = Account.objects.create(name="Test Team (Points Account)")
 
         cls.test_user = User.objects.get(pk=1)
 
         cls.test_team = Team.objects.create(
             name="Test Team",
             tournament=cls.test_tournament,
-            points_account=cls.points_account
+            points_account=cls.points_account,
         )
 
         cls.test_team.members.add(cls.test_user)
@@ -57,7 +54,7 @@ class ChallengsSignalsTests(TestCase):
             original_file_name="test file",
             file_name="something else",
             file_type="undefined",
-            created_by=User.objects.get(pk=1)
+            created_by=User.objects.get(pk=1),
         )
 
     def test_add_points_on_submission_accept(self):
@@ -98,4 +95,3 @@ class ChallengsSignalsTests(TestCase):
         submission.save()
         self.assertEquals(self.test_team.coins_account.balance, 5)
         self.assertEquals(self.test_team.points_account.balance, 5)
-
