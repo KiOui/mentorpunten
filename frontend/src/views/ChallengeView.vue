@@ -230,7 +230,7 @@ function videoUpload() {
       <form v-if="store.loggedIn && !challenge.completed && userTeam !== null && challengeIsActive" class="input-group mt-3">
         <label for="file" class="w-100 mb-2" style="font-family: 'Open sans condensed', sans-serif;">Make a picture or a video</label>
         <input v-on:change="changeFile($event)" ref="fileField" type="file" class="form-control" id="file"
-               capture="user" accept="image/*,video/*" aria-label="Upload">
+               accept="image/*,video/*" aria-label="Upload">
         
         <button v-if="!uploadingFile" v-on:click="videoUpload()" class="btn btn-primary" type="button">Submit</button>
         <button v-else class="btn btn-primary disabled d-flex justify-content-center align-items-center" type="button">Submit <span class="loader ms-1"></span></button>

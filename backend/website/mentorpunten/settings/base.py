@@ -157,6 +157,7 @@ SITE_ID = 1
 CRON_CLASSES = [
     "files.crons.CompressedFileCronJob",
     "files.crons.RequestCompressionCronJob",
+    "files.crons.ThumbnailFileCronJob",
 ]
 
 DJANGO_CRON_DELETE_LOGS_OLDER_THAN = 14

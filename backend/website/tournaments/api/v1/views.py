@@ -60,12 +60,17 @@ class TeamListAPIView(ListAPIView):
 
     serializer_class = serializers.TeamSerializer
 
-    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    filter_backends = [
+        filters.SearchFilter,
+        DjangoFilterBackend,
+        filters.OrderingFilter,
+    ]
     filterset_fields = (
         "tournament",
         "members",
     )
     search_fields = ("name",)
+    ordering_fields = ["name", "points_account__transactions"]
 
     def get_queryset(self):
         """Get the queryset."""
