@@ -178,9 +178,9 @@ class ItemUpdateAPIView(UpdateAPIView):
         else:
             # Only update the 'used' property of an Item.
             partial = kwargs.pop("partial", False)
-            instance = self.get_object()
+            instance: models.Item = self.get_object()
             used = request.data.get("used", None)
-            if request.user not in instance.team.members.all():
+            if request.user not in instance.property_of.members.all():
                 return Response(status=status.HTTP_403_FORBIDDEN)
 
             if used is None:
