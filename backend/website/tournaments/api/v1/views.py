@@ -1,3 +1,4 @@
+from django.db.models import OuterRef, Subquery
 from rest_framework import filters, status
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from rest_framework.generics import (
@@ -70,11 +71,16 @@ class TeamListAPIView(ListAPIView):
         "members",
     )
     search_fields = ("name",)
-    ordering_fields = ["name", "points_account__transactions"]
+    ordering_fields = ["name", "latest_transaction"]
 
     def get_queryset(self):
         """Get the queryset."""
-        return models.Team.objects.all()
+        subquery = Subquery(
+            Transaction.objects.filter(account=OuterRef("points_account"))
+            .order_by("-timestamp")
+            .values("timestamp")[:1]
+        )
+        return models.Team.objects.all().annotate(latest_transaction=subquery)
 
 
 class TeamRetrieveAPIView(RetrieveAPIView):
