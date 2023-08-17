@@ -1,6 +1,7 @@
 from functools import lru_cache
 from typing import Any, Dict
 
+from botocore.client import BaseClient
 from django.conf import settings
 import boto3
 
@@ -45,11 +46,21 @@ def s3_get_credentials() -> AWSCredentials:
     )
 
 
-def s3_get_client():
+def s3_get_client() -> BaseClient:
     """Get AWS Client."""
     credentials = s3_get_credentials()
     return boto3.client(
         service_name="s3",
+        aws_access_key_id=credentials.access_key_id,
+        aws_secret_access_key=credentials.secret_access_key,
+    )
+
+
+def lambda_client():
+    """Get Lambda Client."""
+    credentials = s3_get_credentials()
+    return boto3.client(
+        service_name="lambda",
         aws_access_key_id=credentials.access_key_id,
         aws_secret_access_key=credentials.secret_access_key,
     )
@@ -104,3 +115,16 @@ def mediaconvert_compress_file(s3_url: str):
         },
     )
     return response
+
+
+def create_compressed_image_job(s3_url: str):
+    """Create a job for compressing an image."""
+    client = lambda_client()
+    return client.invoke(
+        FunctionName=settings.AWS_PHOTO_COMPRESSION_ROLE_ARN,
+        Settings={
+            "Inputs": [
+                {"FileInput": s3_url}
+            ]
+        }
+    )
