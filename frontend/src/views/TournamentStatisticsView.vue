@@ -25,7 +25,7 @@ onMounted(() => {
     tournamentLoading.value = null;
   });
 
-  ApiService.getChallengesTeams(new URLSearchParams([["tournament", String(props.id)],["ordering", "points_account__transactions"]]))
+  ApiService.getChallengesTeams(new URLSearchParams([["tournament", String(props.id)],["ordering", "latest_transaction"]]))
     .then(result => {
       teams.value = result.sort((a, b) => b.points_account.balance - a.points_account.balance);
       teamsLoading.value = false;
