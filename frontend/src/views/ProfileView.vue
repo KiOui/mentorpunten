@@ -96,8 +96,11 @@ let user = ref<User|null>(null);
         <router-link :to="{ name: 'ProfileSubmissions', params: { id: team.tournament.id }}" class="link" style="text-decoration: none;">View Submissions</router-link>
       </div>
     </template>
-    <div class="d-flex justify-content-center" style="margin-top: 1rem;">
-      <button v-on:click="logout" class="btn btn-primary">Logout</button>
+    <div class="d-flex justify-content-center mx-auto" style="margin-top: 1rem; width: max-content;">
+      <router-link :to="{ name: 'FAQ' }" style="text-decoration: none; color: black; margin-left: 0.25rem; margin-right: 0.25rem;">
+        <button v-on:click="logout" class="btn btn-primary">F.A.Q.</button>
+      </router-link>
+      <button v-on:click="logout" class="btn btn-primary" style="margin-left: 0.25rem; margin-right: 0.25rem;">Logout</button>
     </div>
     <div class="d-flex justify-content-center" style="margin-top: 1rem;">
       <p class="source-code">
