@@ -124,16 +124,23 @@ async function doDirectUpload(file: File, temporaryFile: TemporaryFileUpload) {
 
   formData.append("file", file);
 
-  // If DEBUG is active, upload to debug server.
-  const fetchURL = debugActive() ? getEnvVar("VITE_API_BASE_URI") + "/api/v1/files/direct/" : temporaryFile.presigned_data.url;
-
-  return fetch(fetchURL, {
-    method: "POST",
-    body: formData,
-    headers: ApiService.getAuthorizationHeader(),
-  }).then((response) => {
-    return response.status === 204;
-  });
+  if (debugActive()) {
+    // If DEBUG is active, upload to debug server.
+    return fetch(getEnvVar("VITE_API_BASE_URI") + "/api/v1/files/direct/", {
+      method: "POST",
+      body: formData,
+      headers: ApiService.getAuthorizationHeader(),
+    }).then((response) => {
+      return response.status === 204;
+    });
+  } else {
+    return fetch(temporaryFile.presigned_data.url, {
+      method: "POST",
+      body: formData,
+    }).then((response) => {
+      return response.status === 204;
+    });
+  }
 }
 
 async function finishTemporaryFileUpload(temporaryFile: TemporaryFileUpload) {
