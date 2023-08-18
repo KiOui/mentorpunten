@@ -162,5 +162,13 @@ class SubmissionAdmin(AutocompleteFilterMixin, admin.ModelAdmin):
                 )
         return super().changeform_view(request, object_id, form_url, extra_context)
 
+    def save_model(self, request, obj, form, change):
+        """Create a Transaction for the amount of points of the challenge when a submission gets accepted."""
+        if obj.accepted is True:
+            obj.create_points_transaction()
+            obj.create_coins_transaction()
+
+        super().save_model(request, obj, form, change)
+
     class Media:
         """Necessary to use AutocompleteFilter."""

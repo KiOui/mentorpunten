@@ -196,6 +196,27 @@ class Submission(models.Model):
         related_name="coins_submission",
     )
 
+    def create_points_transaction(instance):
+        """Create a points transaction for this submission."""
+        if instance.points_transaction is None:
+            instance.points_transaction = Transaction.objects.create(
+                account=instance.team.points_account,
+                amount=instance.challenge.points,
+                description=f"Completed challenge {instance.challenge.name}",
+            )
+
+    def create_coins_transaction(instance):
+        """Create a coins transaction for this submission."""
+        if (
+            instance.coins_transaction is None
+            and instance.team.coins_account is not None
+        ):
+            instance.coins_transaction = Transaction.objects.create(
+                account=instance.team.coins_account,
+                amount=instance.challenge.points,
+                description=f"Completed challenge {instance.challenge.name}",
+            )
+
     def __str__(self):
         """Convert this object to string."""
         return f"Submission for {self.challenge} for {self.team} at {self.created}"

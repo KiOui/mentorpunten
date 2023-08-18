@@ -18,29 +18,52 @@ const submissionLoading = ref<boolean|null>(true);
 
 const submissionSearchFilters = new URLSearchParams([["accepted__isnull", "true"]]);
 
-function processSubmission(value: boolean) {
-    if (value && hasAcceptedSubmissionForSameChallengeAndTeam.value) {
-      if (!confirm("This team already has an accepted submission for this challenge, are you sure you want to grant them points for this submission as well?")) {
-        return;
-      }
+function processSubmission(value: boolean, event: Event) {
+  event.preventDefault();
+  if (value && hasAcceptedSubmissionForSameChallengeAndTeam.value) {
+    if (!confirm("This team already has an accepted submission for this challenge, are you sure you want to grant them points for this submission as well?")) {
+      return;
     }
+  }
 
-    const formData = new FormData();
-    formData.append("accepted", String(value));
-    if (submission.value === null) {
-        return;
-    }
-    ApiService.patchChallengesSubmissions(submission.value.id, formData).then(() => {
-        if (submission.value === null) {
-            return;
-        }
-        submission.value.accepted = value;
+  const formData = new FormData();
+  formData.append("accepted", String(value));
+  if (submission.value === null) {
+      return;
+  }
+  ApiService.patchChallengesSubmissions(submission.value.id, formData).then(() => {
+      if (submission.value === null) {
+          return;
+      }
+      submission.value.accepted = value;
+  }).catch(() => {
+      toast.error("Failed to process submission, please try again.")
+  }).finally(() => {
+      refresh();
+      toast.success("Submission processed successfully")
+  })
+
+  if(value === false){
+    return;
+  }
+  const pointsForm = document.getElementById("transaction") as HTMLFormElement;
+  const pointsFormData = new FormData(pointsForm);
+  const pointsData = Object.fromEntries(pointsFormData.entries());
+  const transactionFormData = new FormData();
+  transactionFormData.append("account", String(submission.value.team.points_account.id));
+  transactionFormData.append("amount", pointsData.amount);
+  transactionFormData.append("description", "Completed challenge " + submission.value.challenge.name);
+  ApiService.postTransaction(transactionFormData).then(() => {
+  }).catch(() => {
+    toast.error("Failed to add transaction, please try again.")
+  });
+  if(submission.value.team.coins_account !== null){
+    transactionFormData.set("account", String(submission.value.team.coins_account.id));
+    ApiService.postTransaction(transactionFormData).then(() => {
     }).catch(() => {
-        toast.error("Failed to process submission, please try again.")
-    }).finally(() => {
-        refresh();
-        toast.success("Submission processed successfully")
-    })
+      toast.error("Failed to add transaction, please try again.")
+    });
+  }
 }
 
 onMounted(() => {
@@ -110,18 +133,21 @@ const hasAcceptedSubmissionForSameChallengeAndTeam = computed(() => {
             <div v-if="hasAcceptedSubmissionForSameChallengeAndTeam" class="alert alert-warning">
               This team already has an accepted submission for this challenge
             </div>
-            <div class="justify-content-between d-flex flex-row">
-              <div class="flex-grow-1 justify-content-center d-flex">
-                <button class="btn btn-accept" v-on:click="processSubmission(true)">
-                  <font-awesome-icon icon="fa-solid fa-check"/>
-                </button>
-              </div>
-              <div class="flex-grow-1 justify-content-center d-flex">
-                <button class="btn btn-reject" v-on:click="processSubmission(false)">
-                  <font-awesome-icon icon="fa-solid fa-x"/>
-                </button>
-              </div>
-            </div>
+              <form class="row custom-form" id="transaction" ref="form">
+                <input type="number" id="amount" name="amount" placeholder="submission.challenge.points" v-model="submission.challenge.points">
+                <div class="d-flex flex-row">
+                  <div class="flex-grow-1 justify-content-center d-flex">
+                    <button class="btn btn-accept" v-on:click="processSubmission(true, $event)">
+                      <font-awesome-icon icon="fa-solid fa-check"/>
+                    </button>
+                  </div>
+                  <div class="flex-grow-1 justify-content-center d-flex">
+                    <button class="btn btn-reject" v-on:click="processSubmission(false, $event)">
+                      <font-awesome-icon icon="fa-solid fa-x"/>
+                    </button>
+                  </div>
+                </div>
+              </form>
           </div>
         </template>
       </template>
