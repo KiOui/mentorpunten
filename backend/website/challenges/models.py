@@ -1,4 +1,5 @@
 import os
+from typing import Iterable, Optional
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -195,6 +196,25 @@ class Submission(models.Model):
         on_delete=models.SET_NULL,
         related_name="coins_submission",
     )
+
+    def create_points_transaction(instance):
+        if instance.points_transaction is None:
+            instance.points_transaction = Transaction.objects.create(
+                account=instance.team.points_account,
+                amount=instance.challenge.points,
+                description=f"Completed challenge {instance.challenge.name}",
+            )
+
+    def create_coins_transaction(instance):
+        if (
+            instance.coins_transaction is None
+            and instance.team.coins_account is not None
+        ):
+            instance.coins_transaction = Transaction.objects.create(
+                account=instance.team.coins_account,
+                amount=instance.challenge.points,
+                description=f"Completed challenge {instance.challenge.name}",
+            )
 
     def __str__(self):
         """Convert this object to string."""
