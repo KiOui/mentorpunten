@@ -1,8 +1,10 @@
+from django.conf import settings
 from django.urls import path
 from files.api.v1.views import (
     TemporaryFileUploadListCreateAPIView,
     TemporaryFileUploadRetrieveUpdateDestroyAPIView,
     FileListCreateAPIView,
+    DebugDirectFileUploadView,
 )
 
 app_name = "files"
@@ -24,3 +26,12 @@ urlpatterns = [
         name="temporary_file_upload_retrieveupdatedestroy",
     ),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        path(
+            "direct/",
+            DebugDirectFileUploadView.as_view(),
+            name="debug_direct_file_upload",
+        )
+    ]

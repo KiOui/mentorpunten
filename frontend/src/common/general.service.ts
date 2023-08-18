@@ -105,4 +105,12 @@ function startTimeOfChallenge(challenge: Challenge): string {
     return "";
 }
 
-export { LOGOUT_TOKEN_NAME, SUBMISSIONS_ALWAYS_VISIBLE, SUBMISSIONS_VISIBLE_ON_ACCEPTED_SUBMISSION, parseHash, getEnvVar, startEndTimeOfTournament, startTimeOfChallenge };
+function debugActive(): boolean {
+    try {
+        return getEnvVar("VITE_DEBUG") === "true";
+    } catch {
+        return false;
+    }
+}
+
+export { LOGOUT_TOKEN_NAME, SUBMISSIONS_ALWAYS_VISIBLE, SUBMISSIONS_VISIBLE_ON_ACCEPTED_SUBMISSION, parseHash, getEnvVar, startEndTimeOfTournament, startTimeOfChallenge, debugActive };
