@@ -12,7 +12,7 @@ import type Team from "@/models/team.model";
 import SubmissionsList from "@/components/SubmissionsList.vue";
 import type TemporaryFileUpload from "@/models/temporaryfileupload.model";
 import type UploadedFile from "@/models/uploadedfile.model";
-import {SUBMISSIONS_VISIBLE_ON_ACCEPTED_SUBMISSION} from "@/common/general.service";
+import {debugActive, getEnvVar, SUBMISSIONS_VISIBLE_ON_ACCEPTED_SUBMISSION} from "@/common/general.service";
 
 const props = defineProps<{ id: number }>();
 
@@ -117,19 +117,30 @@ function createTemporaryFileUpload(fileName: string, fileType: string): Promise<
 
 async function doDirectUpload(file: File, temporaryFile: TemporaryFileUpload) {
   const formData = new FormData();
-  
+
   for (const key in temporaryFile.presigned_data.fields) {
     formData.append(key, temporaryFile.presigned_data.fields[key]);
   }
 
   formData.append("file", file);
 
-  return fetch(temporaryFile.presigned_data.url, {
-    method: "POST",
-    body: formData,
-  }).then((response) => {
-    return response.status === 204;
-  });
+  if (debugActive()) {
+    // If DEBUG is active, upload to debug server.
+    return fetch(getEnvVar("VITE_API_BASE_URI") + "/api/v1/files/direct/", {
+      method: "POST",
+      body: formData,
+      headers: ApiService.getAuthorizationHeader(),
+    }).then((response) => {
+      return response.status === 204;
+    });
+  } else {
+    return fetch(temporaryFile.presigned_data.url, {
+      method: "POST",
+      body: formData,
+    }).then((response) => {
+      return response.status === 204;
+    });
+  }
 }
 
 async function finishTemporaryFileUpload(temporaryFile: TemporaryFileUpload) {
@@ -163,7 +174,7 @@ async function createSubmission(createdFile: UploadedFile): Promise<boolean> {
 }
 
 
-function videoUpload() {
+function fileUpload() {
 
   if (challenge.value !== null && file.value !== null && userTeam.value !== null) {
     uploadingFile.value = true;
@@ -232,7 +243,7 @@ function videoUpload() {
         <input v-on:change="changeFile($event)" ref="fileField" type="file" class="form-control" id="file"
                accept="image/*,video/*" aria-label="Upload">
         
-        <button v-if="!uploadingFile" v-on:click="videoUpload()" class="btn btn-primary" type="button">Submit</button>
+        <button v-if="!uploadingFile" v-on:click="fileUpload()" class="btn btn-primary" type="button">Submit</button>
         <button v-else class="btn btn-primary disabled d-flex justify-content-center align-items-center" type="button">Submit <span class="loader ms-1"></span></button>
       </form>
       <div v-else-if="challenge.completed" class="alert alert-success mt-2 mb-1 mx-1">

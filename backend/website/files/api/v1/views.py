@@ -1,5 +1,8 @@
+from django.conf import settings
+from django.core.signing import TimestampSigner, SignatureExpired
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 from files import models, services
 from files.api.v1 import serializers
@@ -8,6 +11,7 @@ from rest_framework.response import Response
 
 from files.models import File
 from mentorpunten.api.openapi import CustomAutoSchema
+from django.core.files.storage import default_storage
 
 
 class TemporaryFileUploadListCreateAPIView(ListCreateAPIView):
@@ -24,11 +28,18 @@ class TemporaryFileUploadListCreateAPIView(ListCreateAPIView):
         """Create a Temporary File Upload."""
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        temporary_file = services.create_temporary_file_upload_data(
-            request.user,
-            serializer.validated_data.get("original_file_name"),
-            serializer.validated_data.get("file_type"),
-        )
+        if settings.DEBUG:
+            temporary_file = services.debug_create_temporary_file_upload_data(
+                request.user,
+                serializer.validated_data.get("original_file_name"),
+                serializer.validated_data.get("file_type"),
+            )
+        else:
+            temporary_file = services.create_temporary_file_upload_data(
+                request.user,
+                serializer.validated_data.get("original_file_name"),
+                serializer.validated_data.get("file_type"),
+            )
         output_serializer = self.get_serializer(temporary_file, many=False)
         headers = self.get_success_headers(output_serializer.data)
         return Response(
@@ -113,3 +124,33 @@ class FileListCreateAPIView(ListCreateAPIView):
         return Response(
             output_serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
+
+
+class DebugDirectFileUploadView(APIView):
+    """
+    Direct File Upload View.
+
+    This view should only be used in DEBUG mode.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        """Direct upload a file."""
+        signature = request.data.get("signature", None)
+        if signature is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        file = request.data.get("file", None)
+        if file is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        signer = TimestampSigner()
+        try:
+            location_from_signature = signer.unsign(signature, max_age=3600)
+        except SignatureExpired:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        default_storage.save(location_from_signature, file)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
