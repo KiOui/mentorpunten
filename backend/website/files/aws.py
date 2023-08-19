@@ -1,3 +1,4 @@
+import json
 from functools import lru_cache
 from typing import Any, Dict
 
@@ -63,6 +64,7 @@ def lambda_client():
         service_name="lambda",
         aws_access_key_id=credentials.access_key_id,
         aws_secret_access_key=credentials.secret_access_key,
+        region_name=credentials.region_name,
     )
 
 
@@ -122,9 +124,6 @@ def create_compressed_image_job(s3_url: str):
     client = lambda_client()
     return client.invoke(
         FunctionName=settings.AWS_PHOTO_COMPRESSION_ROLE_ARN,
-        Settings={
-            "Inputs": [
-                {"FileInput": s3_url}
-            ]
-        }
+        InvocationType="Event",
+        Payload=json.dumps({"file_name": s3_url}),
     )

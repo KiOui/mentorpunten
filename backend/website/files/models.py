@@ -19,6 +19,12 @@ def get_compressed_location(filename):
     return f"compressed/{filename_without_extension}.mp4"
 
 
+def get_compressed_photo_location(filename):
+    """Get location of compressed photo file."""
+    filename_without_extension = Path(filename).stem
+    return f"thumbnails/{filename_without_extension}.webp"
+
+
 def get_thumbnail_location(filename):
     """Get location of thumbnail file."""
     filename_without_extension = Path(filename).stem
