@@ -137,6 +137,10 @@ class CompressionRequested(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        """Convert this object to string."""
+        return f"Compression requested for {self.file}"
+
 
 class ThumbnailRequested(models.Model):
     """Thumbnail Requested class."""
@@ -145,3 +149,7 @@ class ThumbnailRequested(models.Model):
         File, on_delete=models.CASCADE, related_name="thumbnail_requested"
     )
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        """Convert this object to string."""
+        return f"Thumbnail requested for {self.file}"

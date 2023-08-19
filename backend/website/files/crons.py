@@ -82,6 +82,8 @@ class CompressedFileCronJob(CronJobBase):
         if aws_client is None:
             aws_client = s3_get_client()
 
+        print(models.get_compressed_photo_location(file.file_name))
+
         try:
             aws_client.head_object(
                 Bucket=settings.AWS_STORAGE_BUCKET_NAME,
