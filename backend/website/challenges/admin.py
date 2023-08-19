@@ -39,6 +39,23 @@ class ChallengeAdmin(ImportExportModelAdmin):
         ),
     )
     prepopulated_fields = {"slug": ("name",)}
+    actions = ["disable_challenges", "enable_challenges"]
+
+    def disable_challenges(self, request, queryset):
+        """Accept reservations."""
+        self._change_disabled(queryset, True)
+
+    disable_challenges.short_description = "Disable selected challenges"
+
+    def enable_challenges(self, request, queryset):
+        """Accept reservations."""
+        self._change_disabled(queryset, False)
+
+    enable_challenges.short_description = "Enable selected challenges"
+
+    def _change_disabled(self, queryset, value):
+        """Change disabled on queryset."""
+        queryset.update(disabled=value)
 
     def number_of_submissions(self, obj: Challenge):
         """Get the number of submissions."""
@@ -71,6 +88,7 @@ class SubmissionAdmin(AutocompleteFilterMixin, admin.ModelAdmin):
         "created",
         "updated",
         "file_tag",
+        "file",
         "accepted",
         "points_transaction",
         "coins_transaction",
@@ -143,6 +161,14 @@ class SubmissionAdmin(AutocompleteFilterMixin, admin.ModelAdmin):
                     level=messages.WARNING,
                 )
         return super().changeform_view(request, object_id, form_url, extra_context)
+
+    def save_model(self, request, obj, form, change):
+        """Create a Transaction for the amount of points of the challenge when a submission gets accepted."""
+        if obj.accepted is True:
+            obj.create_points_transaction()
+            obj.create_coins_transaction()
+
+        super().save_model(request, obj, form, change)
 
     class Media:
         """Necessary to use AutocompleteFilter."""

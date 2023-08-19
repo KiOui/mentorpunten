@@ -2,7 +2,16 @@
 import type Submission from "@/models/submission.model";
 import {RouterLink} from "vue-router";
 
-defineProps<{submission: Submission, showAccepted: boolean}>();
+const props = defineProps<{submission: Submission, showAccepted: boolean}>();
+
+import { computed } from "vue";
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toISOString().replace(/T/, ' ').replace(/\..+/, '');
+};
+
+const formattedCreatedAt = computed(() => formatDate(props.submission.file.created_at));
 </script>
 
 <template>
@@ -16,6 +25,7 @@ defineProps<{submission: Submission, showAccepted: boolean}>();
               <router-link :to="{ name: 'Challenge', params: { id: submission.challenge.id } }" style="text-decoration: none;">
                 <h4>{{ submission.challenge.name }} - {{ submission.challenge.tournament.name }}</h4>
               </router-link>
+            <h4>{{ formattedCreatedAt }}</h4>
               <template v-if="showAccepted">
                 <div v-if="submission.accepted" class="badge bg-success">Accepted</div>
                 <div v-else-if="submission.accepted === false" class="badge bg-danger">Denied</div>
@@ -30,8 +40,8 @@ defineProps<{submission: Submission, showAccepted: boolean}>();
 
         <div class="d-flex align-items-center justify-content-center image-video-container">
           <template v-if="submission.file.file_type.startsWith('image')">
-            <img v-if="submission.file.compressed_file !== null" class="image" :src="submission.file.compressed_file"/>
-            <img v-else class="image" :src="submission.file.file"/>
+            <img v-if="submission.file.compressed_file !== null" class="image" :src="submission.file.compressed_file" loading="lazy"/>
+            <img v-else class="image" :src="submission.file.file" loading="lazy"/>
           </template>
           <template v-else-if="submission.file.file_type.startsWith('video')">
             <video v-if="submission.file.thumbnail === null" controls class="video" preload="metadata">
