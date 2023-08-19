@@ -68,8 +68,9 @@ function parseHash(hashString: string): {
 }
 
 function getEnvVar(name: string): string {
-    // @ts-ignore
+    // @ts-ignore This variable is set in production.
     if (window?.__env__?.[name]) {
+        // @ts-ignore This variable is set in production.
         return window?.__env__?.[name];
     } else if (import.meta.env[name]) {
         return import.meta.env[name];

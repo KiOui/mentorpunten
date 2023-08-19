@@ -30,7 +30,7 @@ class SubmissionsWithoutChallengeSerializer(serializers.ModelSerializer):
             "accepted",
             "transaction",
         ]
-        read_only_fields = ["created", "updated"]
+        read_only_fields = ["created", "updated", "transaction"]
 
 
 class ChallengeSerializer(serializers.ModelSerializer):

@@ -7,6 +7,7 @@ import useApiService from "@/common/api.service";
 import {useToast} from "vue-toastification";
 import Loader from "@/components/Loader.vue";
 import Header from "@/components/Header.vue";
+import type Transaction from "@/models/transaction.model";
 
 const ApiService = useApiService();
 
@@ -15,64 +16,105 @@ const toast = useToast();
 const submission = ref<Submission | null>(null);
 const submissionsForSameChallengeAndTeam = ref<Submission[]>([]);
 const submissionLoading = ref<boolean|null>(true);
+const pointsForSubmission = ref<number>(0);
+const submissionProcessing = ref<boolean>(false);
 
 const submissionSearchFilters = new URLSearchParams([["accepted__isnull", "true"]]);
 
+const hasAcceptedSubmissionForSameChallengeAndTeam = computed(() => {
+  return submissionsForSameChallengeAndTeam.value.filter((currentSubmission) => {
+    if (submission.value === null)  {
+      return false;
+    }
+
+    return currentSubmission.id !== submission.value.id;
+  }).length > 0;
+});
+
+async function addPointsTransactionsToSubmission(submission: Submission) {
+  const pointsTransactionFormData = new FormData();
+  pointsTransactionFormData.append("account", String(submission.team.points_account.id));
+  pointsTransactionFormData.append("amount", String(pointsForSubmission.value));
+  pointsTransactionFormData.append("description", "Completed challenge " + submission.challenge.name);
+  return ApiService.postTransaction(pointsTransactionFormData).then(result => {
+    return result;
+  }).catch(() => {
+    toast.error("Failed to add points transaction, please refer to the admin page to fix this issue.");
+    return null;
+  });
+}
+
+async function addCoinsTransactionsToSubmission(submission: Submission) {
+  if (submission.team.coins_account === null) {
+    return null;
+  }
+
+  const pointsTransactionFormData = new FormData();
+  pointsTransactionFormData.append("account", String(submission.team.coins_account.id));
+  pointsTransactionFormData.append("amount", String(pointsForSubmission.value));
+  pointsTransactionFormData.append("description", "Completed challenge " + submission.challenge.name);
+  return ApiService.postTransaction(pointsTransactionFormData).then(result => {
+    return result;
+  }).catch(() => {
+    toast.error("Failed to add coins transaction, please refer to the admin page to fix this issue.");
+    return null;
+  });
+}
+
 function processSubmission(value: boolean, event: Event) {
   event.preventDefault();
-  if (value && hasAcceptedSubmissionForSameChallengeAndTeam.value) {
+
+  if (submission.value === null) {
+    return;
+  }
+
+  if (value && hasAcceptedSubmissionForSameChallengeAndTeam) {
     if (!confirm("This team already has an accepted submission for this challenge, are you sure you want to grant them points for this submission as well?")) {
       return;
     }
   }
 
+  submissionProcessing.value = true;
   const formData = new FormData();
   formData.append("accepted", String(value));
-  if (submission.value === null) {
-    return;
-  }
-  let pointsPromise = Promise.resolve();
-  let coinsPromise = Promise.resolve();
-  if(value !== false){
 
-    const pointsForm = document.getElementById("transaction") as HTMLFormElement;
-    const pointsFormData = new FormData(pointsForm);
-    const pointsData = Object.fromEntries(pointsFormData.entries());
-    const transactionFormData = new FormData();
-    transactionFormData.append("account", String(submission.value.team.points_account.id));
-    transactionFormData.append("amount", pointsData.amount);
-    transactionFormData.append("description", "Completed challenge " + submission.value.challenge.name);
-    pointsPromise = ApiService.postTransaction(transactionFormData).then(result => {
-      formData.append("points_transaction", result.id);
-    }).catch(() => {
-      toast.error("Failed to add transaction, please try again.")
-    });
-    
-    if(submission.value.team.coins_account !== null){
-      transactionFormData.set("account", String(submission.value.team.coins_account.id));
-      coinsPromise = ApiService.postTransaction(transactionFormData).then(result => {
-        formData.append("coins_transaction", result.id);
-      }).catch(() => {
-        toast.error("Failed to add transaction, please try again.")
-      });
-    }
-  }
-
-  Promise.all([pointsPromise, coinsPromise]).then(() => {
-    if (submission.value === null) {
-      return;
-    }
-    ApiService.patchChallengesSubmissions(submission.value.id, formData).then(() => {
-      if (submission.value === null) {
-          return;
+  ApiService.patchChallengesSubmissions(submission.value.id, formData).then((submission) => {
+    if (value) {
+      // If accepted, also add points transactions.
+      const pointsPromise = addPointsTransactionsToSubmission(submission);
+      let coinsPromise: Promise<Transaction | null> = Promise.resolve(null);
+      if (submission.team.coins_account !== null) {
+        coinsPromise = addCoinsTransactionsToSubmission(submission);
       }
-      submission.value.accepted = value;
-      }).catch(() => {
-        toast.error("Failed to process submission, please try again.")
-      }).finally(() => {
-        refresh();
-        toast.success("Submission processed successfully")
-      })
+      Promise.all([pointsPromise, coinsPromise]).then(([pointsTransaction, coinsTransaction]) => {
+        const addTransactionsToSubmissionFormData = new FormData();
+        if (pointsTransaction !== null) {
+          addTransactionsToSubmissionFormData.append("points_transaction", pointsTransaction.id);
+        }
+
+        if (coinsTransaction !== null) {
+          addTransactionsToSubmissionFormData.append("coins_transaction", coinsTransaction.id);
+        }
+
+        ApiService.patchChallengesSubmissions(submission.id, addTransactionsToSubmissionFormData).then(() => {
+          toast.success("Submission processed successfully");
+          submissionProcessing.value = false;
+          refresh();
+        }).catch(() => {
+          toast.error("Failed to update transaction data in submission, please refer to the admin page to manually fix the issue.");
+          submissionProcessing.value = false;
+          refresh();
+        });
+      });
+    } else {
+      toast.success("Submission processed successfully");
+      submissionProcessing.value = false;
+      refresh();
+    }
+  }).catch(() => {
+    toast.error("Failed to process submission, please try again.");
+    submissionProcessing.value = false;
+    refresh();
   });
 }
 
@@ -96,9 +138,11 @@ onMounted(() => {
 function refresh() {
     submissionLoading.value = true;
     submission.value = null;
+    pointsForSubmission.value = 0;
     ApiService.getChallengesSubmissions(submissionSearchFilters).then(result => {
       if (result.results.length > 0) {
           submission.value = result.results[0];
+          pointsForSubmission.value = submission.value.challenge.points;
           const sameTeamChallengeSubmissions = new URLSearchParams([["team", String(submission.value.team.id)], ["accepted", "true"], ["challenge", String(submission.value.challenge.id)]])
           ApiService.getChallengesSubmissions(sameTeamChallengeSubmissions).then(result => {
             submissionsForSameChallengeAndTeam.value = result.results;
@@ -114,16 +158,6 @@ function refresh() {
       submissionLoading.value = null;
     });
 }
-
-const hasAcceptedSubmissionForSameChallengeAndTeam = computed(() => {
-  return submissionsForSameChallengeAndTeam.value.filter((currentSubmission) => {
-    if (submission.value === null)  {
-      return false;
-    }
-
-    return currentSubmission.id !== submission.value.id;
-  }).length > 0;
-});
 </script>
 
 <template>
@@ -144,15 +178,22 @@ const hasAcceptedSubmissionForSameChallengeAndTeam = computed(() => {
               This team already has an accepted submission for this challenge
             </div>
               <form class="row custom-form" id="transaction" ref="form">
-                <input type="number" id="amount" name="amount" placeholder="submission.challenge.points" v-model="submission.challenge.points">
+                <input v-if="submissionProcessing" type="number" id="amount" name="amount" v-bind:value="pointsForSubmission" disabled>
+                <input v-else type="number" id="amount" name="amount" v-model="pointsForSubmission">
                 <div class="d-flex flex-row">
                   <div class="flex-grow-1 justify-content-center d-flex">
-                    <button class="btn btn-accept" v-on:click="processSubmission(true, $event)">
+                    <button v-if="submissionProcessing" class="btn btn-accept disabled text-white d-flex justify-content-center align-items-center p-2">
+                      <span class="loader"></span>
+                    </button>
+                    <button v-else class="btn btn-accept" v-on:click="processSubmission(true, $event)">
                       <font-awesome-icon icon="fa-solid fa-check"/>
                     </button>
                   </div>
                   <div class="flex-grow-1 justify-content-center d-flex">
-                    <button class="btn btn-reject" v-on:click="processSubmission(false, $event)">
+                    <button v-if="submissionProcessing" class="btn btn-reject disabled text-white d-flex justify-content-center align-items-center p-2">
+                      <span class="loader"></span>
+                    </button>
+                    <button v-else class="btn btn-reject" v-on:click="processSubmission(false, $event)">
                       <font-awesome-icon icon="fa-solid fa-x"/>
                     </button>
                   </div>
@@ -182,7 +223,7 @@ const hasAcceptedSubmissionForSameChallengeAndTeam = computed(() => {
     text-transform: uppercase;
     font-family: 'Gill sans MT condensed', sans-serif !important;
     font-size: 1.2rem !important;
-    padding: 0 0.75rem !important;
+    padding: 0 0.75rem;
 }
 
 .btn-reject {
@@ -192,6 +233,27 @@ const hasAcceptedSubmissionForSameChallengeAndTeam = computed(() => {
     text-transform: uppercase;
     font-family: 'Gill sans MT condensed', sans-serif !important;
     font-size: 1.2rem !important;
-    padding: 0 0.75rem !important;
+    padding: 0 0.75rem;
+}
+
+.loader {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 2px solid var(--text-color);
+  border-bottom-color: var(--background-shade);
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
