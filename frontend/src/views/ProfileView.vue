@@ -98,7 +98,7 @@ let user = ref<User|null>(null);
     </template>
     <div class="d-flex justify-content-center mx-auto" style="margin-top: 1rem; width: max-content;">
       <router-link :to="{ name: 'FAQ' }" style="text-decoration: none; color: black; margin-left: 0.25rem; margin-right: 0.25rem;">
-        <button v-on:click="logout" class="btn btn-primary">F.A.Q.</button>
+        <button class="btn btn-primary">F.A.Q.</button>
       </router-link>
       <button v-on:click="logout" class="btn btn-primary" style="margin-left: 0.25rem; margin-right: 0.25rem;">Logout</button>
     </div>
