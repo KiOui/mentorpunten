@@ -29,41 +29,51 @@ function processSubmission(value: boolean, event: Event) {
   const formData = new FormData();
   formData.append("accepted", String(value));
   if (submission.value === null) {
-      return;
+    return;
   }
-  ApiService.patchChallengesSubmissions(submission.value.id, formData).then(() => {
+  let pointsPromise = Promise.resolve();
+  let coinsPromise = Promise.resolve();
+  if(value !== false){
+
+    const pointsForm = document.getElementById("transaction") as HTMLFormElement;
+    const pointsFormData = new FormData(pointsForm);
+    const pointsData = Object.fromEntries(pointsFormData.entries());
+    const transactionFormData = new FormData();
+    transactionFormData.append("account", String(submission.value.team.points_account.id));
+    transactionFormData.append("amount", pointsData.amount);
+    transactionFormData.append("description", "Completed challenge " + submission.value.challenge.name);
+    pointsPromise = ApiService.postTransaction(transactionFormData).then(result => {
+      formData.append("points_transaction", result.id);
+    }).catch(() => {
+      toast.error("Failed to add transaction, please try again.")
+    });
+    
+    if(submission.value.team.coins_account !== null){
+      transactionFormData.set("account", String(submission.value.team.coins_account.id));
+      coinsPromise = ApiService.postTransaction(transactionFormData).then(result => {
+        formData.append("coins_transaction", result.id);
+      }).catch(() => {
+        toast.error("Failed to add transaction, please try again.")
+      });
+    }
+  }
+
+  Promise.all([pointsPromise, coinsPromise]).then(() => {
+    if (submission.value === null) {
+      return;
+    }
+    ApiService.patchChallengesSubmissions(submission.value.id, formData).then(() => {
       if (submission.value === null) {
           return;
       }
       submission.value.accepted = value;
-  }).catch(() => {
-      toast.error("Failed to process submission, please try again.")
-  }).finally(() => {
-      refresh();
-      toast.success("Submission processed successfully")
-  })
-
-  if(value === false){
-    return;
-  }
-  const pointsForm = document.getElementById("transaction") as HTMLFormElement;
-  const pointsFormData = new FormData(pointsForm);
-  const pointsData = Object.fromEntries(pointsFormData.entries());
-  const transactionFormData = new FormData();
-  transactionFormData.append("account", String(submission.value.team.points_account.id));
-  transactionFormData.append("amount", pointsData.amount);
-  transactionFormData.append("description", "Completed challenge " + submission.value.challenge.name);
-  ApiService.postTransaction(transactionFormData).then(() => {
-  }).catch(() => {
-    toast.error("Failed to add transaction, please try again.")
+      }).catch(() => {
+        toast.error("Failed to process submission, please try again.")
+      }).finally(() => {
+        refresh();
+        toast.success("Submission processed successfully")
+      })
   });
-  if(submission.value.team.coins_account !== null){
-    transactionFormData.set("account", String(submission.value.team.coins_account.id));
-    ApiService.postTransaction(transactionFormData).then(() => {
-    }).catch(() => {
-      toast.error("Failed to add transaction, please try again.")
-    });
-  }
 }
 
 onMounted(() => {
