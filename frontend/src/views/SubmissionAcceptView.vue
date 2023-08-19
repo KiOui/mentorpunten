@@ -43,26 +43,28 @@ function processSubmission(value: boolean, event: Event) {
       toast.success("Submission processed successfully")
   })
 
-  if(value === false){
-    return;
-  }
-  const pointsForm = document.getElementById("transaction") as HTMLFormElement;
-  const pointsFormData = new FormData(pointsForm);
-  const pointsData = Object.fromEntries(pointsFormData.entries());
-  const transactionFormData = new FormData();
-  transactionFormData.append("account", String(submission.value.team.points_account.id));
-  transactionFormData.append("amount", pointsData.amount);
-  transactionFormData.append("description", "Completed challenge " + submission.value.challenge.name);
-  ApiService.postTransaction(transactionFormData).then(() => {
-  }).catch(() => {
-    toast.error("Failed to add transaction, please try again.")
-  });
-  if(submission.value.team.coins_account !== null){
-    transactionFormData.set("account", String(submission.value.team.coins_account.id));
+  if(value){
+    const pointsForm = document.getElementById("transaction") as HTMLFormElement;
+    const pointsFormData = new FormData(pointsForm);
+    const pointsData = Object.fromEntries(pointsFormData.entries());
+    const transactionFormData = new FormData();
+    transactionFormData.append("account", String(submission.value.team.points_account.id));
+    transactionFormData.append("amount", pointsData.amount);
+    transactionFormData.append("description", "Completed challenge " + submission.value.challenge.name);
     ApiService.postTransaction(transactionFormData).then(() => {
     }).catch(() => {
       toast.error("Failed to add transaction, please try again.")
     });
+    if(submission.value.team.coins_account !== null){
+      const coinsForm = document.getElementById("transaction") as HTMLFormElement;
+      const coinsFormData = new FormData(coinsForm);
+      const coinsData = Object.fromEntries()
+      transactionFormData.set("account", String(submission.value.team.coins_account.id));
+      ApiService.postTransaction(transactionFormData).then(() => {
+      }).catch(() => {
+        toast.error("Failed to add transaction, please try again.")
+      });
+    }
   }
 }
 
