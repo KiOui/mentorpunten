@@ -36,7 +36,7 @@ async function addPointsTransactionsToSubmission(submission: Submission) {
   pointsTransactionFormData.append("account", String(submission.team.points_account.id));
   pointsTransactionFormData.append("amount", String(pointsForSubmission.value));
   pointsTransactionFormData.append("description", "Completed challenge " + submission.challenge.name);
-  return ApiService.postTransaction(pointsTransactionFormData).then(result => {
+  return await ApiService.postTransaction(pointsTransactionFormData).then(result => {
     return result;
   }).catch(() => {
     toast.error("Failed to add points transaction, please refer to the admin page to fix this issue.");
@@ -53,7 +53,7 @@ async function addCoinsTransactionsToSubmission(submission: Submission) {
   pointsTransactionFormData.append("account", String(submission.team.coins_account.id));
   pointsTransactionFormData.append("amount", String(pointsForSubmission.value));
   pointsTransactionFormData.append("description", "Completed challenge " + submission.challenge.name);
-  return ApiService.postTransaction(pointsTransactionFormData).then(result => {
+  return await ApiService.postTransaction(pointsTransactionFormData).then(result => {
     return result;
   }).catch(() => {
     toast.error("Failed to add coins transaction, please refer to the admin page to fix this issue.");
