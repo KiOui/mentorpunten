@@ -102,8 +102,8 @@ class SubmissionSerializer(WritableModelSerializer):
 
     challenge = ChallengeSerializer(many=False)
     team = TeamSerializer(many=False)
-    points_transaction = TransactionSerializer(many=False, read_only=True)
-    coins_transaction = TransactionSerializer(many=False, read_only=True)
+    points_transaction = TransactionSerializer(many=False, read_only=False)
+    coins_transaction = TransactionSerializer(many=False, read_only=False)
     created_by = UserSerializer(many=False)
     updated_by = UserSerializer(many=False)
     file = FileSerializer(many=False)
@@ -130,6 +130,4 @@ class SubmissionSerializer(WritableModelSerializer):
             "id",
             "created",
             "updated",
-            "points_transaction",
-            "coins_transaction",
         ]

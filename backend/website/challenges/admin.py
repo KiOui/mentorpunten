@@ -88,6 +88,7 @@ class SubmissionAdmin(AutocompleteFilterMixin, admin.ModelAdmin):
         "created",
         "updated",
         "file_tag",
+        "file",
         "accepted",
         "points_transaction",
         "coins_transaction",
