@@ -29,7 +29,7 @@ class RequestCompressionCronJob(CronJobBase):
     def request_compressed_photo(self, file: models.File):
         """Request compression of a Photo file."""
         try:
-            create_compressed_image_job(file.url)
+            create_compressed_image_job(file.file_name)
             return True
         except Exception as e:
             print("Exception occurred:\n{}".format(e))
@@ -81,8 +81,6 @@ class CompressedFileCronJob(CronJobBase):
         """Try to retrieve a compressed file."""
         if aws_client is None:
             aws_client = s3_get_client()
-
-        print(models.get_compressed_photo_location(file.file_name))
 
         try:
             aws_client.head_object(
