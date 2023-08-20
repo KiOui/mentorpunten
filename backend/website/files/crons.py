@@ -30,7 +30,7 @@ class RequestCompressionCronJob(CronJobBase):
         """Request compression of a Photo file."""
         print("Requesting compression for {}".format(file))
         try:
-            create_compressed_image_job(file.url)
+            create_compressed_image_job(file.file_name)
             return True
         except Exception as e:
             print("Exception occurred:\n{}".format(e))
