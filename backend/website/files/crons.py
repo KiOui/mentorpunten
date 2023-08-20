@@ -28,6 +28,7 @@ class RequestCompressionCronJob(CronJobBase):
 
     def request_compressed_photo(self, file: models.File):
         """Request compression of a Photo file."""
+        print("Requesting compression for {}".format(file))
         try:
             create_compressed_image_job(file.url)
             return True
@@ -40,6 +41,7 @@ class RequestCompressionCronJob(CronJobBase):
         files_to_check = models.File.objects.filter(
             compressed_file="", compression_requested__isnull=True
         )
+        print("Requesting compression for {} files".format(files_to_check.count()))
         for file in files_to_check:
             if file.is_video:
                 if self.request_compressed_video(file):
