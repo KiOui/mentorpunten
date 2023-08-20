@@ -62,7 +62,7 @@ services:
             DJANGO_AWS_DEFAULT_ACL: 'public-read'
             DJANGO_AWS_MEDIACONVERT_ROLE_ARN: '[Mediaconvert role ARN]'
             DJANGO_AWS_MEDIACONVERT_ENDPOINT_URL: '[Mediaconvert endpoint URL]'
-            DJANGO_POINTS_PER_COIN: 10
+            DJANGO_AWS_PHOTO_COMPRESSION_ROLE_ARN: '[Photo compression role ARN]'
         networks:
         - mentorpunten-network
 

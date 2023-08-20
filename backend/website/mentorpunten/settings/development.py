@@ -79,6 +79,8 @@ AWS_MEDIACONVERT_ROLE_ARN = (
 )
 AWS_MEDIACONVERT_ENDPOINT_URL = "https://2k4nj1qdb.mediaconvert.eu-west-1.amazonaws.com"
 
+AWS_PHOTO_COMPRESSION_ROLE_ARN = os.environ.get("AWS_PHOTO_COMPRESSION_ROLE_ARN")
+
 # Set to "s3" to upload files to s3
 FILE_UPLOAD_STORAGE = "s3"
 APP_DOMAIN = "http://localhost:8000"
