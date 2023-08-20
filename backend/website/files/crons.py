@@ -28,9 +28,8 @@ class RequestCompressionCronJob(CronJobBase):
 
     def request_compressed_photo(self, file: models.File):
         """Request compression of a Photo file."""
-        print("Requesting compression for {}".format(file))
         try:
-            create_compressed_image_job(file.file_name)
+            create_compressed_image_job(file.url)
             return True
         except Exception as e:
             print("Exception occurred:\n{}".format(e))
@@ -41,7 +40,6 @@ class RequestCompressionCronJob(CronJobBase):
         files_to_check = models.File.objects.filter(
             compressed_file="", compression_requested__isnull=True
         )
-        print("Requesting compression for {} files".format(files_to_check.count()))
         for file in files_to_check:
             if file.is_video:
                 if self.request_compressed_video(file):
@@ -108,7 +106,6 @@ class CompressedFileCronJob(CronJobBase):
                         models.get_compressed_location(file.file_name),
                     )
                     file.save()
-                    print("Compressed file saved for {}".format(file))
             elif file.is_photo:
                 if self.retrieve_compressed_photo_file(file, aws_client=aws_client):
                     file.compressed_file = file.compressed_file.field.attr_class(
@@ -117,7 +114,6 @@ class CompressedFileCronJob(CronJobBase):
                         models.get_compressed_photo_location(file.file_name),
                     )
                     file.save()
-                    print("Compressed file saved for {}".format(file))
 
 
 class ThumbnailFileCronJob(CronJobBase):
@@ -155,4 +151,3 @@ class ThumbnailFileCronJob(CronJobBase):
                     models.get_thumbnail_location(file.file_name),
                 )
                 file.save()
-                print("Thumbnail file saved for {}".format(file))
