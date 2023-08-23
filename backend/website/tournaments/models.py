@@ -1,3 +1,7 @@
+from datetime import datetime
+
+import pytz
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils import timezone
@@ -58,6 +62,14 @@ class Tournament(models.Model):
     def __str__(self):
         """Convert this object to string."""
         return f"{self.name}"
+
+    @property
+    def revealed(self):
+        """Get whether challenge is revealed."""
+        timezone = pytz.timezone(settings.TIME_ZONE)
+        current_time = timezone.localize(datetime.now())
+
+        return self.active_from is None or self.active_from >= current_time
 
     class Meta:
         """Meta class."""
