@@ -134,13 +134,13 @@ class Challenge(models.Model):
         if self.disabled:
             return False
 
+        if not self.tournament.revealed:
+            return False
+
         timezone = pytz.timezone(settings.TIME_ZONE)
         current_time = timezone.localize(datetime.now())
 
-        if self.active_from is not None and self.active_from > current_time:
-            return False
-        else:
-            return True
+        return self.active_from is None or self.active_from <= current_time
 
     def __str__(self):
         """Convert this object to string."""
