@@ -65,11 +65,11 @@ class Tournament(models.Model):
 
     @property
     def revealed(self):
-        """Get whether challenge is revealed."""
+        """Get whether tournament is revealed."""
         timezone = pytz.timezone(settings.TIME_ZONE)
         current_time = timezone.localize(datetime.now())
 
-        return self.active_from is None or self.active_from >= current_time
+        return self.active_from is None or self.active_from <= current_time
 
     class Meta:
         """Meta class."""
