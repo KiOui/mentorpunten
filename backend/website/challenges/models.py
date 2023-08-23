@@ -134,6 +134,9 @@ class Challenge(models.Model):
         if self.disabled:
             return False
 
+        if not self.tournament.revealed:
+            return False
+
         timezone = pytz.timezone(settings.TIME_ZONE)
         current_time = timezone.localize(datetime.now())
 
