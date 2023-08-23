@@ -68,7 +68,7 @@ function processSubmission(value: boolean, event: Event) {
     return;
   }
 
-  if (value && hasAcceptedSubmissionForSameChallengeAndTeam) {
+  if (value && hasAcceptedSubmissionForSameChallengeAndTeam.value) {
     if (!confirm("This team already has an accepted submission for this challenge, are you sure you want to grant them points for this submission as well?")) {
       return;
     }
